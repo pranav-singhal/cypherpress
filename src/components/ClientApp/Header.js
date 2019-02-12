@@ -10,9 +10,33 @@ export default class Header extends React.Component {
       <Row className="header">
         <Col>
           <Navbar bg="light">
-            <Nav>
-              <Nav.Link href="/client-app/upload"> Upload </Nav.Link>
-              <Nav.Link href="/client-app/view"> view </Nav.Link>
+            <Nav as="ul">
+              <Nav.Item as="li">
+                <Nav.Link eventKey="disabled">
+                  {" "}
+                  Welcome {localStorage.getItem("username")}{" "}
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item as="li">
+                <Nav.Link
+                  onClick={e => {
+                    this.props.changePanel("UploadPanel");
+                  }}
+                >
+                  {" "}
+                  Upload{" "}
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item as="li">
+                <Nav.Link
+                  onClick={e => {
+                    this.props.changePanel("ViewPanel");
+                  }}
+                >
+                  {" "}
+                  view{" "}
+                </Nav.Link>
+              </Nav.Item>
             </Nav>
           </Navbar>
         </Col>

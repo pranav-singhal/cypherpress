@@ -1,13 +1,5 @@
 import React, { PropTypes } from "react";
-import {
-  Form,
-  Button,
-  Container,
-  Row,
-  Col,
-  Navbar,
-  Nav
-} from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 export default class LoginForm extends React.Component {
   constructor(props) {
     super(props);
