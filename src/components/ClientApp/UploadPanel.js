@@ -5,10 +5,20 @@ export default class UploadPanel extends React.Component {
     super(props);
     this.fileRef = React.createRef();
   }
-  componentDidMount() {}
+  state = {
+    clientAppJson: {}
+  };
+  componentDidMount() {
+    const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
+    this.setState({ clientAppJson: clientAppJson });
+  }
   getDelegates = () => {
     //returns a list of people you can delegate access to
-    return ["delegate1", "delegate2", "delegate3"];
+
+    return this.state.clientAppJson.delegateInfo;
+  };
+  getDataInfo = () => {
+    return this.state.dataInfo;
   };
   render() {
     return (

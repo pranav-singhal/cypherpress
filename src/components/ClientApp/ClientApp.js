@@ -47,7 +47,7 @@ export default class ClientApp extends React.Component {
         />
         <Row>
           <Col>
-            <h1 class="title"> {this.state.appname}</h1>{" "}
+            <h1 className="title"> {this.state.appname}</h1>{" "}
           </Col>
         </Row>
         {this.state.panel === "UploadPanel" ? <UploadPanel /> : <ViewPanel />}

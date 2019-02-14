@@ -14,15 +14,69 @@ import "../../App.scss";
 export default class CreateAppForm extends React.Component {
   state = {
     delegates: ["input-1"],
-    delegateButtonState: true,
+    delegateButtonState: false,
     dataFields: ["dataInput-1"],
-    dataFieldButtonDisabled: true
+    fileFields: [],
+    dataFieldButtonDisabled: true,
+    delegateInfo: [{ username: "", publicKey: "" }],
+    dataInfo: [],
+    fileInfo: []
   };
   constructor(props) {
     super(props);
 
     this.appNameRef = React.createRef();
   }
+  addDelegateInfo = () => {
+    this.setState(prevState => ({
+      delegateInfo: prevState.delegateInfo.concat([
+        { username: "", publicKey: "" }
+      ])
+    }));
+    this.addDelegate();
+  };
+  handleDelegaInfoChange = (id, username, publicKey) => {
+    const newDelegateprops = this.state.delegateInfo.map((delegate, idx) => {
+      if (id !== idx) {
+        return delegate;
+      }
+      return { ...delegate, username: username, publicKey: publicKey };
+    });
+    this.setState({ delegateInfo: newDelegateprops });
+  };
+
+  addDataInfo = type => {
+    if (type === "PlainText") {
+      this.setState(prevState => ({
+        dataInfo: prevState.dataInfo.concat([{ fieldName: "" }])
+      }));
+    } else {
+      this.setState(prevState => ({
+        fileInfo: prevState.fileInfo.concat([{ fileName: "" }])
+      }));
+    }
+  };
+  handleFieldNameChange = (id, value, fieldType) => {
+    console.log(id, value, fieldType);
+    if (fieldType === "PlainText") {
+      const newfieldProperties = this.state.dataInfo.map((field, idx) => {
+        if (id !== idx) {
+          return field;
+        }
+        return { ...field, fieldName: value, fieldType: "PlainText" };
+      });
+      this.setState({ dataInfo: newfieldProperties });
+    } else {
+      console.log(id, "file");
+      const newfieldProperties = this.state.fileInfo.map((field, idx) => {
+        if (id !== idx) {
+          return field;
+        }
+        return { ...field, fieldName: value, fieldType: "file" };
+      });
+      this.setState({ fileInfo: newfieldProperties });
+    }
+  };
   toggleButtonState = (button, bool) => {
     if (button === "delegateButtonState") {
       this.setState({ delegateButtonState: bool });
@@ -31,11 +85,20 @@ export default class CreateAppForm extends React.Component {
       this.setState({ dataFieldButtonDisabled: bool });
     }
   };
-
+  updateFileFields = field => {
+    this.setState(prevState => ({
+      fileFields: prevState.fileFields.concat([field])
+    }));
+  };
   handleSubmit = event => {
     event.preventDefault();
     console.log(this.appNameRef);
+    const clientAppJson = {};
+    clientAppJson.dataInfo = this.state.dataInfo;
+    clientAppJson.delegateInfo = this.state.delegateInfo;
+    localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
     window.open(`/client-app/${this.appNameRef.current.value}`, "_blank");
+    //create a clientJson and store it in localstorage
   };
   addDelegate = () => {
     const newDelegate = `input-${this.state.delegates.length + 1}`;
@@ -50,6 +113,12 @@ export default class CreateAppForm extends React.Component {
       dataFields: prevState.dataFields.concat([newDataField])
     }));
   };
+  setDelegateInfo = delegateInfo => {
+    this.setState(prevState => ({
+      delegateInfo: prevState.delegateInfo.concat([delegateInfo])
+    }));
+  };
+
   render() {
     return (
       <Container>
@@ -78,6 +147,15 @@ export default class CreateAppForm extends React.Component {
                     toggleButtonState={bool => {
                       this.toggleButtonState("dataFieldButtonDisabled", bool);
                     }}
+                    addDataField={type => {
+                      this.addDataInfo(type);
+                    }}
+                    handleFieldNameChange={(id, value, fieldType) => {
+                      this.handleFieldNameChange(id, value, fieldType);
+                    }}
+                    updateFileFields={field => {
+                      this.updateFileFields(field);
+                    }}
                   />
                 );
               })}
@@ -95,12 +173,15 @@ export default class CreateAppForm extends React.Component {
           <Row>
             <Col sm={12}>
               <Col sm={4}>
-                {this.state.delegates.map(input => {
+                {this.state.delegates.map((input, id) => {
                   return (
                     <DelegateInput
                       key={input}
                       toggleButtonState={bool => {
                         this.toggleButtonState("delegateButtonState", bool);
+                      }}
+                      handleDelegaInfoChange={(username, publicKey) => {
+                        this.handleDelegaInfoChange(id, username, publicKey);
                       }}
                     />
                   );
@@ -110,7 +191,7 @@ export default class CreateAppForm extends React.Component {
             <Col>
               <Button
                 variant="primary"
-                onClick={this.addDelegate}
+                onClick={this.addDelegateInfo}
                 disabled={this.state.delegateButtonState}
               >
                 Add a delegate
