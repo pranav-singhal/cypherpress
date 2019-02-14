@@ -8,33 +8,36 @@ export default class UploadPanel extends React.Component {
   state = {
     clientAppJson: {}
   };
-  componentDidMount() {
+  componentWillMount() {
     const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
     this.setState({ clientAppJson: clientAppJson });
   }
   getDelegates = () => {
-    //returns a list of people you can delegate access to
-
     return this.state.clientAppJson.delegateInfo;
   };
   getDataInfo = () => {
-    return this.state.dataInfo;
+    return this.state.clientAppJson.dataInfo;
+  };
+  generateForm = () => {
+    const dataInfo = this.getDataInfo();
+    console.log(dataInfo);
+    return dataInfo.map(field => {
+      console.log(field);
+      return (
+        <Form.Control
+          key={field.fieldName}
+          placeholder={`enter your ${field.fieldName}`}
+        />
+      );
+    });
   };
   render() {
     return (
       <Row>
         <Col>
           <Form>
-            <Form.Group controlId="fileUpload">
-              <Form.Label>Upload File</Form.Label>
-              <Form.Control
-                type="file"
-                placeholder="Select file for Upload"
-                ref={this.fileRef}
-              />
-              <Form.Text className="text-muted">
-                Upload a file to IPFS
-              </Form.Text>
+            <Form.Group controlId="uploadForm">
+              {this.generateForm()}
             </Form.Group>
           </Form>
         </Col>
