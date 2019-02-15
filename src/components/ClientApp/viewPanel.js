@@ -1,18 +1,21 @@
 import React, { PropTypes } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
+import { getClientJson } from "../../connections/httpInteractions";
+import Document from "./Document";
 import {
   fetchUploadedDocuments,
   doConnections
 } from "../../connections/Controller";
 export default class ViewPanel extends React.Component {
   state = {
+    dataArrays: [],
     fetchingLabels: []
   };
 
-  async componentWillMount() {
+  async componentDidMount() {
     console.log("view panel mounted");
-    let clientAppJson = localStorage.getItem("clientAppJson");
-    clientAppJson = JSON.parse(clientAppJson);
+    const clientAppJson = await getClientJson(this.props.appName);
+    console.log("clientAppJson:", clientAppJson);
     const dataInfo = clientAppJson.dataInfo;
     const fetchingLabels = dataInfo.map(field => {
       // select isFile based on field.fieldType
@@ -26,7 +29,7 @@ export default class ViewPanel extends React.Component {
     const alicePrivateKey = localStorage.getItem("alicePrivateKey");
     // await doConnections(contractAddress);
     // console.log("connections done");
-    await fetchUploadedDocuments(
+    fetchUploadedDocuments(
       username,
       privateKey,
       alicePrivateKey,
@@ -36,14 +39,32 @@ export default class ViewPanel extends React.Component {
   }
   documentUploadedCallback = async (dataArray, documentId) => {
     console.log(dataArray, documentId);
+    this.setState(prevState => ({
+      dataArrays: prevState.dataArrays.concat([
+        {
+          dataArray: dataArray,
+          documentId: documentId
+        }
+      ])
+    }));
   };
 
-  componentDidMount() {}
   render() {
     return (
       <Row>
         <Col>
-          <div> View Panel</div>
+          <div> Documents you have uploaded</div>
+          <Col>
+            {this.state.dataArrays.map((dataArray, id) => {
+              return (
+                <Document
+                  dataArray={dataArray.dataArray}
+                  documentId={dataArray.documentId}
+                  key={dataArray.documentId}
+                />
+              );
+            })}
+          </Col>
         </Col>
       </Row>
     );

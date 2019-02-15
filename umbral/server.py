@@ -8,6 +8,7 @@ from umbral.curve import SECP256K1
 # our encoding
 kfrags_array = []
 contractAddressList ={}
+clientJsons = {}
 def bytes_to_string(b):
     encoded = base64.b64encode(b)
     return encoded.decode('utf-8')
@@ -138,3 +139,19 @@ def getContractAddress():
     contractAddress = contractAddressList[dappName]
 
     return contractAddress
+
+@app.route('/setClientJson', methods=['POST'])
+def setClientJson():
+    json_data = json.loads(request.data.decode('utf-8'))
+    dappName = json_data['dappName']
+    clientJson = json_data['clientJson']
+    clientJsons[dappName] = clientJson
+    return jsonify(clientJsons)
+
+@app.route('/getClientJson', methods=['POST'])
+def getClientJson():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print('json_data:', json_data)
+    dappName = json_data['dappName']
+    clientJson = clientJsons[dappName]
+    return clientJson

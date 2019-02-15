@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = "http://10.0.0.52:5000";
+let url = "http://172.16.4.90:5000";
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
@@ -64,6 +64,19 @@ export async function getContractAddress(dappName) {
     dappName: dappName
   });
   return contractAddress.data;
+}
+export async function setClientJson(dappName, clientJson) {
+  await axios.post(url + "/setClientJson", {
+    dappName: dappName,
+    clientJson: JSON.stringify(clientJson)
+  });
+}
+export async function getClientJson(dappName) {
+  const res = await axios.post(url + "/getClientJson", {
+    dappName: dappName
+  });
+  console.log("Res", res);
+  return res.data;
 }
 /*
     Function to decrypt uploaded Document

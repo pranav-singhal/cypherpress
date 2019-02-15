@@ -20,9 +20,11 @@ export default class ClientApp extends React.Component {
   async componentWillMount() {
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
-    const contractAddress = localStorage.getItem("contractAddress");
-    const resp = await getContractAddress(this.props.match.params.appname);
-    console.log("resp", resp);
+    // const contractAddress = localStorage.getItem("contractAddress");
+    const contractAddress = await getContractAddress(
+      this.props.match.params.appname
+    );
+    // console.log("resp", resp);
     await doConnections(contractAddress);
     if (username) {
       this.setState({
@@ -56,7 +58,11 @@ export default class ClientApp extends React.Component {
             <h1 className="title"> {this.state.appname}</h1>{" "}
           </Col>
         </Row>
-        {this.state.panel === "UploadPanel" ? <UploadPanel /> : <ViewPanel />}
+        {this.state.panel === "UploadPanel" ? (
+          <UploadPanel appName={this.props.match.params.appname} />
+        ) : (
+          <ViewPanel appName={this.props.match.params.appname} />
+        )}
       </Container>
     );
   }

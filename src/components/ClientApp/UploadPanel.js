@@ -1,6 +1,7 @@
 import React from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { uploadDocument } from "../../connections/Controller";
+import { getClientJson } from "../../connections/httpInteractions";
 export default class UploadPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -8,14 +9,18 @@ export default class UploadPanel extends React.Component {
   }
   state = {
     clientAppJson: {},
-    formData: []
+    formData: [],
+    generateForm: false
   };
-  componentWillMount() {
-    const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
-    this.setState({ clientAppJson: clientAppJson });
+  async componentWillMount() {
+    // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
   }
-  componentDidMount() {
+  async componentDidMount() {
+    const clientAppJson = await getClientJson(this.props.appName);
+    console.log("clientAppJson:", clientAppJson);
+    this.setState({ clientAppJson: clientAppJson });
     this.addFormFields();
+    this.setState({ generateForm: true });
   }
   getDelegates = () => {
     return this.state.clientAppJson.delegateInfo;
@@ -64,6 +69,12 @@ export default class UploadPanel extends React.Component {
         console.log("insufficientFunds");
       }
     };
+    console.log("array", array);
+    console.log("username", username);
+    console.log("alicePublicKey", alicePublicKey);
+    console.log("privateKey", privateKey);
+    console.log("aliceVerifyingKey", aliceVerifyingKey);
+
     await uploadDocument(
       array,
       username,
@@ -95,7 +106,7 @@ export default class UploadPanel extends React.Component {
         <Col>
           <Form>
             <Form.Group controlId="uploadForm">
-              {this.generateForm()}
+              {this.state.generateForm ? this.generateForm() : null}
               <Button onClick={this.submitForm}>Submit</Button>
             </Form.Group>
           </Form>

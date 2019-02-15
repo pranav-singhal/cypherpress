@@ -12,6 +12,7 @@ import DelegateInput from "./DelegateInput";
 import DataType from "./DataType";
 import "../../App.scss";
 import { deployContract } from "../../connections/web3Dev";
+import { setClientJson } from "../../connections/httpInteractions";
 
 export default class CreateAppForm extends React.Component {
   state = {
@@ -100,6 +101,7 @@ export default class CreateAppForm extends React.Component {
     clientAppJson.dataInfo = this.state.dataInfo;
     clientAppJson.delegateInfo = this.state.delegateInfo;
     localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
+    await setClientJson(this.appNameRef.current.value, clientAppJson);
     // get private key
     // deploy contract function
     const adminPrivateKey = this.adminPrivateKeyRef.current.value;
@@ -119,7 +121,7 @@ export default class CreateAppForm extends React.Component {
       adminPrivateKey,
       callingObject
     );
-    fetch("http://10.0.0.52:5000/setContractAddress", {
+    await fetch("http://172.16.4.90:5000/setContractAddress", {
       method: "POST",
       body: JSON.stringify({
         contractAddress: contractAddress,
