@@ -1,4 +1,5 @@
-from flask import Flask,jsonify,request
+from flask import Flask,jsonify,request, Response
+from flask_cors import CORS
 from umbral import pre, keys, signing, params
 import json
 import base64
@@ -16,7 +17,9 @@ def string_to_bytes(s):
     return base64.b64decode(sd)
 uconfig.set_default_curve()
 app = Flask(__name__)
+CORS(app)
 @app.route("/generateKeys",methods=['GET'])
+
 def generateKeys():
     alices_private_key = keys.UmbralPrivateKey.gen_key()
     alices_public_key = alices_private_key.get_pubkey()

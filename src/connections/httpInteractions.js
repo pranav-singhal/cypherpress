@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = "http://localhost:5000";
+let url = "http://10.0.0.52:5000";
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
