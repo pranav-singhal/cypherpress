@@ -12,6 +12,7 @@ import DelegateInput from "./DelegateInput";
 import DataType from "./DataType";
 import "../../App.scss";
 import { deployContract } from "../../connections/web3Dev";
+import { setKey, getKey } from "../../helpers";
 export default class CreateAppForm extends React.Component {
   state = {
     delegates: ["input-1"],
@@ -118,7 +119,9 @@ export default class CreateAppForm extends React.Component {
       adminPrivateKey,
       callingObject
     );
+
     localStorage.setItem("contractAddress", contractAddress);
+    setKey("contractAddress", contractAddress);
     console.log("contract addess set");
     window.open(`/client-app/${this.appNameRef.current.value}`, "_blank");
     //create a clientJson and store it in localstorage

@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
+import { uploadDocument } from "../../connections/Controller";
 export default class UploadPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -39,7 +40,39 @@ export default class UploadPanel extends React.Component {
     });
     this.setState({ formData: newFormData });
   };
-  submitForm = () => {};
+  submitForm = async () => {
+    let array = this.state.formData.map(field => {
+      let obj = {};
+      obj.name = field.fieldName;
+      obj.value = field.fieldValue;
+      obj.isFile = false;
+      return obj;
+    });
+    const username = localStorage.getItem("username");
+    const alicePublicKey = localStorage.getItem("alicePublicKey");
+    const privateKey = localStorage.getItem("privateKey");
+    const aliceVerifyingKey = localStorage.getItem("aliceVerifyingKey");
+    const callingObject = {
+      verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
+        console.log(transaction, gasInEth, transactionName);
+        callback();
+      },
+      transactionMining: hash => {
+        console.log("hash:", hash);
+      },
+      insufficientFunds: () => {
+        console.log("insufficientFunds");
+      }
+    };
+    await uploadDocument(
+      array,
+      username,
+      alicePublicKey,
+      privateKey,
+      aliceVerifyingKey,
+      callingObject
+    );
+  };
   generateForm = () => {
     const dataInfo = this.getDataInfo();
     console.log(dataInfo);

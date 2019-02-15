@@ -1,37 +1,35 @@
-import IPFS from 'ipfs';
-import {Buffer} from 'buffer';
+import IPFS from "ipfs";
+import { Buffer } from "buffer";
 
 const ipfsNode = new IPFS({
-    host : 'ipfs.infura.io',
-    port : 5001,
-    protocol : 'https'
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https"
 });
 
 /*
     Function to check if the ipfs node is connected
     @return {boolean} : true when done
  */
-async function connectNode(){
-    return new Promise(function (resolve, reject) {
-        ipfsNode.on('ready', function () {
-            resolve(true);
-        });
+async function connectNode() {
+  return new Promise(function(resolve, reject) {
+    ipfsNode.on("ready", function() {
+      resolve(true);
     });
+  });
 }
-
 
 /*
     Function to upload a json object to the ipfs network
     @param {object} _json : in any format that is to be uploaded to the ipfs network
     @return {string} ipfs path to the uploaded json
  */
-async function uploadJSON(_json){
-    console.log(_json);
-    let buffer = await Buffer.from(JSON.stringify(_json));
-    let ipfsResponse = await ipfsNode.add(buffer);
-    return ipfsResponse[0].path;
+async function uploadJSON(_json) {
+  console.log(_json);
+  let buffer = await Buffer.from(JSON.stringify(_json));
+  let ipfsResponse = await ipfsNode.add(buffer);
+  return ipfsResponse[0].path;
 }
-
 
 /*
     Function to upload a file object to the ipfs network
@@ -39,9 +37,9 @@ async function uploadJSON(_json){
     @return {string} ipfs path to the uploaded file
  */
 async function uploadFile(_fileReaderResult) {
-    let buffer = await Buffer.from(_fileReaderResult);
-    let ipfsResponse = await ipfsNode.add(buffer);
-    return ipfsResponse[0].path;
+  let buffer = await Buffer.from(_fileReaderResult);
+  let ipfsResponse = await ipfsNode.add(buffer);
+  return ipfsResponse[0].path;
 }
 
 /*
@@ -55,86 +53,89 @@ async function uploadFile(_fileReaderResult) {
     @return {string} : ipfs hash
  */
 
-
 async function handleUpload(_array) {
-    let finalJsonToBeUploaded = {};
-    for(let i = 0; i < _array.length; i++){
-        let element = _array[i];
-        if(element.isFile === true){
-            let value = element.value;
-            let hash = await uploadFile(value);
-            let name = element.name;
-            finalJsonToBeUploaded[name] = hash;
-        }else{
-            finalJsonToBeUploaded[element.name] = element.value;
-        }
+  let finalJsonToBeUploaded = {};
+  for (let i = 0; i < _array.length; i++) {
+    let element = _array[i];
+    if (element.isFile === true) {
+      let value = element.value;
+      let hash = await uploadFile(value);
+      let name = element.name;
+      finalJsonToBeUploaded[name] = hash;
+    } else {
+      finalJsonToBeUploaded[element.name] = element.value;
     }
-    let hash = await uploadJSON(finalJsonToBeUploaded);
-    return hash;
+  }
+  let hash = await uploadJSON(finalJsonToBeUploaded);
+  console.log("handle upload hash", hash);
+  return hash;
 }
 
 async function getFile(_path) {
-    let response = await ipfsNode.get(_path);
-    let content = response[0].content;
-    return content.toString();
+  let response = await ipfsNode.get(_path);
+  let content = response[0].content;
+  return content.toString();
 }
 
 async function getJson(_path) {
-    let response = await ipfsNode.get(_path);
-    let content = response[0].content;
-    let json = JSON.parse(content.toString());
-    return json;
+  console.log("_path", _path);
+  _path = _path.hash;
+  let response = await ipfsNode.get(_path);
+  console.log("response", response);
+  let content = response[0].content;
+  console.log(content);
+  let json = JSON.parse(content.toString());
+  console.log(json);
+  return json;
 }
 
 async function getData(_path, _requestedArray) {
-    let dataArrayToBereturned = [];
-    let valueJson = await getJson(_path);
-    for(let i = 0; i < _requestedArray.length; i++){
-       if(_requestedArray[i].isFile === true){
-           let value = await getFile(valueJson[_requestedArray[i].name]);
-           let objToBePushed = {
-               isFile : true,
-               name : _requestedArray[i].name,
-               value : value
-           };
-           dataArrayToBereturned.push(objToBePushed);
-       } else {
-           let objToBePushed = {
-               isFile : false,
-               name : _requestedArray[i].name,
-               value : valueJson[_requestedArray[i].name]
-           };
-           dataArrayToBereturned.push(objToBePushed);
-       }
+  let dataArrayToBereturned = [];
+  let valueJson = await getJson(_path);
+  for (let i = 0; i < _requestedArray.length; i++) {
+    if (_requestedArray[i].isFile === true) {
+      let value = await getFile(valueJson[_requestedArray[i].name]);
+      let objToBePushed = {
+        isFile: true,
+        name: _requestedArray[i].name,
+        value: value
+      };
+      dataArrayToBereturned.push(objToBePushed);
+    } else {
+      let objToBePushed = {
+        isFile: false,
+        name: _requestedArray[i].name,
+        value: valueJson[_requestedArray[i].name]
+      };
+      dataArrayToBereturned.push(objToBePushed);
     }
+  }
+  return dataArrayToBereturned;
+  console.log(dataArrayToBereturned);
 }
 
-export {
-    getData,
-    handleUpload,
-    connectNode
-}
-async function testing() {
-    await connectNode();
-    // let test = [
-    //     {
-    //         isFile : false,
-    //         name : 'Name',
-    //         value : 'arvind'
-    //     },
-    //     {
-    //         isFile : false,
-    //         name : 'age',
-    //         value : '21'
-    //     }
-    // ];
-    // let hash = await handleSubmission(test);
-    // let path = await  uploadJSON({
-    //    hell : "hello"
-    // });
-    // console.log(path);
-    let hash = await getJson('QmYFmvb4EyC7jWT2sjQviBjnkxEfrmeLdXuScxLLK8q1Pn');
-    // console.log(hash);
-}
+export { getData, handleUpload, connectNode };
+// async function testing() {
+//     await connectNode();
+//     // let test = [
+//     //     {
+//     //         isFile : false,
+//     //         name : 'Name',
+//     //         value : 'arvind'
+//     //     },
+//     //     {
+//     //         isFile : false,
+//     //         name : 'age',
+//     //         value : '21'
+//     //     }
+//     // ];
+//     // let hash = await handleSubmission(test);
+//     // let path = await  uploadJSON({
+//     //    hell : "hello"
+//     // });
+//     // console.log(path);
+//     let hash = await getJson('QmYFmvb4EyC7jWT2sjQviBjnkxEfrmeLdXuScxLLK8q1Pn');
+//     // console.log(hash);
+// }
 
-testing();
+// testing();

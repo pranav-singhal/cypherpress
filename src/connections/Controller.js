@@ -20,8 +20,12 @@ import {
 import { connectNode, getData, handleUpload } from "./ipfsInteractions";
 
 export async function doConnections(_contractAddress) {
+  console.log("inside doConnections");
+  console.log("contract address:", _contractAddress);
   await connectToContract(_contractAddress);
+  console.log("middle of doConnections");
   await connectNode();
+  console.log("end of doConnections");
 }
 
 export async function checkUsernameAvailability(_username) {
@@ -43,9 +47,8 @@ export async function signUpAndGetNucypherKeys(
   return rv;
 }
 
-async function uploadDocument(
+export async function uploadDocument(
   _array,
-  _privateKey,
   _uploader,
   _alicePublicKey,
   _aliceEthereumPrivateKey,
@@ -100,7 +103,7 @@ async function grantDocumentAccess(
   );
 }
 
-async function fetchUploadedDocuments(
+export async function fetchUploadedDocuments(
   _uploader,
   _aliceEthereumPrivateKey,
   _alicePrivateKey,
@@ -108,8 +111,9 @@ async function fetchUploadedDocuments(
   _documentUploadedCallback
 ) {
   // Fetch the list of documents uploaded by the _uploader
+  console.log("inside fetchUploadedDocuments");
   let arr = await getUploadedDocumentIds(_uploader, _aliceEthereumPrivateKey);
-
+  console.log("arr", arr);
   for (let i = 0; i < arr.length; i++) {
     // Fetch information regarding the document
     let {
@@ -125,10 +129,12 @@ async function fetchUploadedDocuments(
       capsule,
       _alicePrivateKey
     );
+    console.log("ipfshash", ipfsHash);
 
     // Fetch data using generated ipfs hash
     let dataArray = await getData(ipfsHash, _requestedObject);
-    _documentUploadedCallback(dataArray);
+    console.log(dataArray);
+    _documentUploadedCallback(dataArray, arr[i]);
   }
 }
 
