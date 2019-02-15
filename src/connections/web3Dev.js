@@ -72,7 +72,7 @@ async function testing() {
         },
         insufficientFunds: function (eth) {
         }
-    }
+    };
     deployContract('0x36B298BE4646D2044F02ADCD1AF39A9069EF798CA4EF6F439553AA05935AAE47',
         callingObject);
 
