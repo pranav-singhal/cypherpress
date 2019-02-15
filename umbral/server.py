@@ -6,7 +6,7 @@ from umbral import  config as uconfig
 from umbral.curve import SECP256K1
 # our encoding
 kfrags_array = []
-
+contractAddressList ={}
 def bytes_to_string(b):
     encoded = base64.b64encode(b)
     return encoded.decode('utf-8')
@@ -118,3 +118,20 @@ def decryptDelegated():
                             decrypting_key=bobs_private_key)
     json_my_list = json.dumps(bob_cleartext.decode('utf-8'))
     return json_my_list
+
+@app.route('/setContractAddress', methods=['POST'])
+def setContractAddress():
+    json_data = json.loads(request.data.decode('utf-8'))
+    contractAddress = json_data['contractAddress']
+    dappName = json_data['dappName']
+    contractAddressList[dappName] = contractAddress
+    return contractAddress
+
+@app.route('/getContractAddress', methods=['POST'])
+def getContractAddress():
+    json_data = json.loads(request.data.decode('utf-8'))
+
+    dappName = json_data['dappName']
+    contractAddress = contractAddressList[dappName]
+
+    return contractAddress

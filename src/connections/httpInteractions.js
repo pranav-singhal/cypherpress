@@ -59,7 +59,12 @@ async function createPolicy(_alicePrivateKey, _aliceSigningKey, _bobPublicKey) {
     policyId: content.data
   };
 }
-
+export async function getContractAddress(dappName) {
+  let contractAddress = await axios.post(url + "/getContractAddress", {
+    dappName: dappName
+  });
+  return contractAddress.data;
+}
 /*
     Function to decrypt uploaded Document
     @param {string} _cipherText

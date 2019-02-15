@@ -6,6 +6,7 @@ import UploadPanel from "./UploadPanel";
 import ViewPanel from "./ViewPanel";
 import { Container, Row, Col } from "react-bootstrap";
 import { doConnections } from "../../connections/Controller";
+import { getContractAddress } from "../../connections/httpInteractions";
 export default class ClientApp extends React.Component {
   state = {
     username: "",
@@ -20,6 +21,8 @@ export default class ClientApp extends React.Component {
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
     const contractAddress = localStorage.getItem("contractAddress");
+    const resp = await getContractAddress(this.props.match.params.appname);
+    console.log("resp", resp);
     await doConnections(contractAddress);
     if (username) {
       this.setState({
