@@ -11,6 +11,7 @@ import {
 import DelegateInput from "./DelegateInput";
 import DataType from "./DataType";
 import "../../App.scss";
+import { deployContract } from "../../connections/web3Dev";
 export default class CreateAppForm extends React.Component {
   state = {
     delegates: ["input-1"],
@@ -26,6 +27,7 @@ export default class CreateAppForm extends React.Component {
     super(props);
 
     this.appNameRef = React.createRef();
+    this.adminPrivateKeyRef = React.createRef();
   }
   addDelegateInfo = () => {
     this.setState(prevState => ({
@@ -90,13 +92,34 @@ export default class CreateAppForm extends React.Component {
       fileFields: prevState.fileFields.concat([field])
     }));
   };
-  handleSubmit = event => {
+  handleSubmit = async event => {
     event.preventDefault();
     console.log(this.appNameRef);
     const clientAppJson = {};
     clientAppJson.dataInfo = this.state.dataInfo;
     clientAppJson.delegateInfo = this.state.delegateInfo;
     localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
+    // get private key
+    // deploy contract function
+    const adminPrivateKey = this.adminPrivateKeyRef.current.value;
+    const callingObject = {
+      verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
+        console.log(transaction, gasInEth, transactionName);
+        callback();
+      },
+      transactionMining: hash => {
+        console.log("hash:", hash);
+      },
+      insufficientFunds: () => {
+        console.log("insufficientFunds");
+      }
+    };
+    const contractAddress = await deployContract(
+      adminPrivateKey,
+      callingObject
+    );
+    localStorage.setItem("contractAddress", contractAddress);
+    console.log("contract addess set");
     window.open(`/client-app/${this.appNameRef.current.value}`, "_blank");
     //create a clientJson and store it in localstorage
   };
@@ -134,6 +157,11 @@ export default class CreateAppForm extends React.Component {
                 <Form.Control
                   placeholder="Enter a name for your app"
                   ref={this.appNameRef}
+                />
+                <Form.Control
+                  controlId="adminPrivateKey"
+                  placeholder="enter your private key"
+                  ref={this.adminPrivateKeyRef}
                 />
               </Form.Group>
             </Col>

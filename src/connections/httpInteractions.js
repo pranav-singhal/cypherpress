@@ -1,5 +1,5 @@
-import axios from 'axios';
-let url = 'http://10.0.0.52:5000';
+import axios from "axios";
+let url = "http://localhost:5000";
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
@@ -11,17 +11,15 @@ let url = 'http://10.0.0.52:5000';
                            }
  */
 async function generateKeyPairs() {
-    let content = await axios.get(url + '/generateKeys')
-    content = content.data;
-    return {
-        alicePrivateKey : content.alicePrivate,
-        alicePublicKey : content.alicePublic,
-        aliceSigningKey : content.aliceSigning,
-        aliceVerifyingKey : content.aliceVerifying
-    }
-
+  let content = await axios.get(url + "/generateKeys");
+  content = content.data;
+  return {
+    alicePrivateKey: content.alicePrivate,
+    alicePublicKey: content.alicePublic,
+    aliceSigningKey: content.aliceSigning,
+    aliceVerifyingKey: content.aliceVerifying
+  };
 }
-
 
 /*
     Function to encrypt ipfs hash using pyUmbral
@@ -33,17 +31,16 @@ async function generateKeyPairs() {
                                 }
  */
 async function encryptData(_hash, _alicePublicKey) {
-    let content = await axios.post(url + '/encryptData', {
-        alices_public_key : _alicePublicKey,
-        hash : _hash
-    })
-    content = content.data;
-    return {
-        cipherText : content.cipherText,
-        capsule : content.capsule
-    }
+  let content = await axios.post(url + "/encryptData", {
+    alices_public_key: _alicePublicKey,
+    hash: _hash
+  });
+  content = content.data;
+  return {
+    cipherText: content.cipherText,
+    capsule: content.capsule
+  };
 }
-
 
 /*
     Function to create a new Policy using pyUmbral
@@ -52,17 +49,15 @@ async function encryptData(_hash, _alicePublicKey) {
     @param {string} _bobPublicKey
     @return {string} policyId of the delegation
 */
-async  function createPolicy(_alicePrivateKey,
-                             _aliceSigningKey,
-                             _bobPublicKey) {
-    let content = await axios.post(url + '/createPolicy', {
-        alices_private_key : _alicePrivateKey,
-        alices_signing_key : _aliceSigningKey,
-        bobs_public_key : _bobPublicKey
-    });
-    return {
-        policyId: content.data
-    }
+async function createPolicy(_alicePrivateKey, _aliceSigningKey, _bobPublicKey) {
+  let content = await axios.post(url + "/createPolicy", {
+    alices_private_key: _alicePrivateKey,
+    alices_signing_key: _aliceSigningKey,
+    bobs_public_key: _bobPublicKey
+  });
+  return {
+    policyId: content.data
+  };
 }
 
 /*
@@ -72,19 +67,20 @@ async  function createPolicy(_alicePrivateKey,
     @param {string} _alicePrivateKey
     @return {string} hash : ipfs hash of the document to be fetched
  */
-async function decryptUploadedDocument(_cipherText,
-                                       _capsule,
-                                       _alicePrivateKey) {
-    let content = await axios.post(url + '/decryptUploaded', {
-        alices_private_key : _alicePrivateKey,
-        capsule : _capsule,
-        cipherText : _cipherText
-    });
-    return {
-        hash: content.data
-    }
+async function decryptUploadedDocument(
+  _cipherText,
+  _capsule,
+  _alicePrivateKey
+) {
+  let content = await axios.post(url + "/decryptUploaded", {
+    alices_private_key: _alicePrivateKey,
+    capsule: _capsule,
+    cipherText: _cipherText
+  });
+  return {
+    hash: content.data
+  };
 }
-
 
 /*
     Function to decrypt deligated document
@@ -97,27 +93,28 @@ async function decryptUploadedDocument(_cipherText,
     @param {string} _policyId
     @return {string} hash : ipfs hash of the document to be fetched
  */
-async function decryptDeligatedDocument(_alicePublicKey,
-                                        _aliceVerifyKey,
-                                        _bobPublicKey,
-                                        _bobPrivateKey,
-                                        _capsule,
-                                        _cipherText,
-                                        _policyId) {
-
-    let content = await axios.post(url + '/decryptDelegated', {
-        alices_public_key : _alicePublicKey,
-        alices_verifying_key : _aliceVerifyKey,
-        bobs_public_key : _bobPublicKey,
-        bobs_private_key : _bobPrivateKey,
-        capsule : _capsule,
-        cipherText : _cipherText,
-        policyId : _policyId
-    });
-    // content = content.data;
-    return {
-        hash: content.data
-    }
+async function decryptDeligatedDocument(
+  _alicePublicKey,
+  _aliceVerifyKey,
+  _bobPublicKey,
+  _bobPrivateKey,
+  _capsule,
+  _cipherText,
+  _policyId
+) {
+  let content = await axios.post(url + "/decryptDelegated", {
+    alices_public_key: _alicePublicKey,
+    alices_verifying_key: _aliceVerifyKey,
+    bobs_public_key: _bobPublicKey,
+    bobs_private_key: _bobPrivateKey,
+    capsule: _capsule,
+    cipherText: _cipherText,
+    policyId: _policyId
+  });
+  // content = content.data;
+  return {
+    hash: content.data
+  };
 }
 
 // async function testing() {
@@ -135,9 +132,9 @@ async function decryptDeligatedDocument(_alicePublicKey,
 // testing();
 
 export {
-    generateKeyPairs,
-    encryptData,
-    decryptDeligatedDocument,
-    decryptUploadedDocument,
-    createPolicy
-}
+  generateKeyPairs,
+  encryptData,
+  decryptDeligatedDocument,
+  decryptUploadedDocument,
+  createPolicy
+};
