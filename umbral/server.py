@@ -35,8 +35,8 @@ def encryptData():
     print('data')
     json_data = json.loads(request.data.decode('utf-8'))
     hash = json_data['hash']
-    alicePublic = json_data['alicePublic']
-    alices_public_key = string_to_bytes(alicePublic)
+    alices_public_key = json_data['alices_public_key']
+    alices_public_key = string_to_bytes(alices_public_key)
     alices_public_key = keys.UmbralPublicKey.from_bytes(alices_public_key)
     # hash = input.get('hash').encode('utf-8')
     hash = hash.encode('utf-8')
@@ -51,7 +51,7 @@ def decryptUploaded():
     json_data = json.loads(request.data.decode('utf-8'))
     capsule = json_data['capsule']
     cipherText = json_data['cipherText']
-    alices_private_key = json_data['alicePrivate']
+    alices_private_key = json_data['alices_private_key']
     ciphertext = string_to_bytes(cipherText)
     capsule = string_to_bytes(capsule)
     capsule = pre.Capsule.from_bytes(capsule, params.UmbralParameters(SECP256K1))
@@ -66,12 +66,12 @@ def decryptUploaded():
 @app.route('/createPolicy', methods=['POST'])
 def createPolicy():
     json_data = json.loads(request.data.decode('utf-8'))
-    alice_private_key = json_data['alice_private_key']
-    alice_signing_key = json_data['alice_signing_key']
-    bob_public_key = json_data['bob_public_key']
-    alices_private_key = keys.UmbralPrivateKey.from_bytes(string_to_bytes(alice_private_key))
-    bobs_public_key = keys.UmbralPublicKey.from_bytes(string_to_bytes(bob_public_key))
-    alices_signing_key = keys.UmbralPrivateKey.from_bytes(string_to_bytes(alice_signing_key))
+    alices_private_key = json_data['alices_private_key']
+    alices_signing_key = json_data['alices_signing_key']
+    bobs_public_key = json_data['bobs_public_key']
+    alices_private_key = keys.UmbralPrivateKey.from_bytes(string_to_bytes(alices_private_key))
+    bobs_public_key = keys.UmbralPublicKey.from_bytes(string_to_bytes(bobs_public_key))
+    alices_signing_key = keys.UmbralPrivateKey.from_bytes(string_to_bytes(alices_signing_key))
     alices_signer = signing.Signer(private_key=alices_signing_key)
     kfrags = pre.generate_kfrags(delegating_privkey=alices_private_key,
                                  signer=alices_signer,
