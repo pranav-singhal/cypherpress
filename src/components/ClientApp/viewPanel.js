@@ -1,15 +1,21 @@
 import React, { PropTypes } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import { getClientJson } from "../../connections/httpInteractions";
+import {
+  getClientJson,
+  getContractAddress
+} from "../../connections/httpInteractions";
 import Document from "./Document";
+import { getJson } from "../../connections/ipfsInteractions";
 import {
   fetchUploadedDocuments,
-  doConnections
+  doConnections,
+  fetchDelegatedDouments
 } from "../../connections/Controller";
 export default class ViewPanel extends React.Component {
   state = {
     dataArrays: [],
-    fetchingLabels: []
+    fetchingLabels: [],
+    fetchedDataArrays: []
   };
 
   async componentDidMount() {
@@ -23,12 +29,13 @@ export default class ViewPanel extends React.Component {
     });
     this.setState({ fetchingLabels: fetchingLabels });
 
-    const contractAddress = localStorage.getItem("contractAddress");
+    const contractAddress = await getContractAddress(this.props.appName);
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
     const alicePrivateKey = localStorage.getItem("alicePrivateKey");
-    // await doConnections(contractAddress);
-    // console.log("connections done");
+    const alicePublicKey = localStorage.getItem("alicePublicKey");
+    await doConnections(contractAddress);
+    console.log("connections done");
     fetchUploadedDocuments(
       username,
       privateKey,
@@ -36,7 +43,30 @@ export default class ViewPanel extends React.Component {
       fetchingLabels,
       this.documentUploadedCallback
     );
+    // console.log(
+    //   await getJson("QmdPwKejYqXkpxBZwWFzttsR7Mx4SAVgXzabyWrkgmYBQu")
+    // );
+    fetchDelegatedDouments(
+      username,
+      privateKey,
+      alicePublicKey,
+      alicePrivateKey,
+      fetchingLabels,
+      this.documentFetchedCallback
+    );
   }
+  documentFetchedCallback = (dataArray, documentId) => {
+    console.log("inside doucmentFetchedCallback");
+    console.log(dataArray, documentId);
+    this.setState(prevState => ({
+      fetchedDataArrays: prevState.fetchedDataArrays.concat([
+        {
+          dataArray: dataArray,
+          documentId: documentId
+        }
+      ])
+    }));
+  };
   documentUploadedCallback = async (dataArray, documentId) => {
     console.log(dataArray, documentId);
     this.setState(prevState => ({
@@ -52,12 +82,16 @@ export default class ViewPanel extends React.Component {
   render() {
     return (
       <Row>
-        <Col>
-          <div> Documents you have uploaded</div>
+        <Col md={12}>
+          <div>
+            {" "}
+            <h1> Documents you have uploaded </h1>
+          </div>
           <Col>
             {this.state.dataArrays.map((dataArray, id) => {
               return (
                 <Document
+                  fetchedData={false}
                   dataArray={dataArray.dataArray}
                   documentId={dataArray.documentId}
                   key={dataArray.documentId}
@@ -65,6 +99,22 @@ export default class ViewPanel extends React.Component {
               );
             })}
           </Col>
+        </Col>
+        <Col md={12}>
+          <div>
+            {" "}
+            <h1> Documents you have acess to </h1>
+          </div>
+          {this.state.fetchedDataArrays.map((dataArray, id) => {
+            return (
+              <Document
+                fetchedData={true}
+                dataArray={dataArray.dataArray}
+                documentId={dataArray.documentId}
+                key={dataArray.name + id.toString()}
+              />
+            );
+          })}
         </Col>
       </Row>
     );

@@ -1,6 +1,10 @@
 import React, { PropTypes } from "react";
 import { Form, Button } from "react-bootstrap";
-import { getDelegatees, isDelegatee } from "../../connections/Controller";
+import {
+  getDelegatees,
+  isDelegatee,
+  grantDocumentAccess
+} from "../../connections/Controller";
 export default class Document extends React.Component {
   state = {
     delegatees: [],
@@ -11,9 +15,13 @@ export default class Document extends React.Component {
   }
   async componentDidMount() {
     console.log(this.props.dataArray);
-    await this.fetchDelegatees();
+    if (!this.props.fetchedData) {
+      await this.fetchDelegatees();
+    }
   }
   displayData = data => {
+    console.log("data:", data);
+    console.log(this.props.fetchedData && this.state.delegatees.length !== 0);
     if (!data.isFile) {
       return (
         <p key={data.name}>
@@ -22,7 +30,35 @@ export default class Document extends React.Component {
       );
     }
   };
-  setDelegatees = async () => {};
+  setDelegatees = async () => {
+    let alicePrivateKey = localStorage.getItem("alicePrivateKey");
+    let aliceSigningKey = localStorage.getItem("aliceSigningKey");
+    let uploader = localStorage.getItem("username");
+    let aliceEthereumPrivateKey = localStorage.getItem("privateKey");
+    let callingObject = {
+      verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
+        console.log(transaction, gasInEth, transactionName);
+        callback();
+      },
+      transactionMining: hash => {
+        console.log("hash:", hash);
+      },
+      insufficientFunds: () => {
+        console.log("insufficientFunds");
+      }
+    };
+    this.state.selectedDelegatees.forEach(async delegatee => {
+      await grantDocumentAccess(
+        this.props.documentId,
+        alicePrivateKey,
+        aliceSigningKey,
+        delegatee,
+        uploader,
+        aliceEthereumPrivateKey,
+        callingObject
+      );
+    });
+  };
   fetchDelegatees = async () => {
     const allDelegatees = await getDelegatees();
     let potentialDelegatees = [];
@@ -33,9 +69,12 @@ export default class Document extends React.Component {
         return;
       } else {
         potentialDelegatees.push(delegate);
-        this.setState(prevState => ({
-          delegatees: [...prevState.delegatees, delegate]
-        }));
+        const username = localStorage.getItem("username");
+        if (delegate !== username) {
+          this.setState(prevState => ({
+            delegatees: [...prevState.delegatees, delegate]
+          }));
+        }
       }
     });
     return potentialDelegatees;
@@ -71,7 +110,13 @@ export default class Document extends React.Component {
             />
           );
         })}
-        <Button onClick={this.setDelegatees}>Grant access</Button>
+        {this.props.fetchedData
+          ? null
+          : [
+              this.state.delegatees.length > 0 ? (
+                <Button onClick={this.setDelegatees}>Grant access</Button>
+              ) : null
+            ]}
       </React.Fragment>
     );
   }

@@ -1,5 +1,5 @@
 import axios from "axios";
-let url = "http://172.16.4.90:5000";
+let url = "http://10.0.0.228:5000";
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
@@ -55,8 +55,9 @@ async function createPolicy(_alicePrivateKey, _aliceSigningKey, _bobPublicKey) {
     alices_signing_key: _aliceSigningKey,
     bobs_public_key: _bobPublicKey
   });
+  console.log("content:", content);
   return {
-    policyId: content.data
+    policyId: content.data.toString()
   };
 }
 export async function getContractAddress(dappName) {
@@ -127,7 +128,7 @@ async function decryptDeligatedDocument(
     bobs_private_key: _bobPrivateKey,
     capsule: _capsule,
     cipherText: _cipherText,
-    policyId: _policyId
+    policyId: _policyId - 1 + 1
   });
   // content = content.data;
   return {

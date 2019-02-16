@@ -76,7 +76,7 @@ export async function uploadDocument(
   );
 }
 
-async function grantDocumentAccess(
+export async function grantDocumentAccess(
   _documentId,
   _alicePrivateKey,
   _aliceSigningKey,
@@ -141,7 +141,7 @@ export async function fetchUploadedDocuments(
   }
 }
 
-async function fetchDelegatedDouments(
+export async function fetchDelegatedDouments(
   _deligatee,
   _aliceEthereumPrivateKey,
   _alicePublicKey,
@@ -150,8 +150,9 @@ async function fetchDelegatedDouments(
   _documentUploadedCallback
 ) {
   // Fetch the list of documents deligated to the _deligatee
+  console.log("inside fetchDelegatedDouments");
   let arr = await getDeligatedDocumentIds(_deligatee, _aliceEthereumPrivateKey);
-
+  console.log("arr:", arr);
   for (let i = 0; i < arr.length; i++) {
     // Fetch information regarding the document
 
@@ -177,9 +178,10 @@ async function fetchDelegatedDouments(
       cipherText,
       policyId
     );
-
+    console.log("ipfs sfd", ipfsHash);
     // Fetch data using generated ipfs hash
     let dataArray = await getData(ipfsHash, _requestedObject);
+    console.log("dataArray is awesome", dataArray);
     _documentUploadedCallback(dataArray);
   }
 }

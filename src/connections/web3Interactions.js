@@ -517,6 +517,13 @@ async function deligateDocument(
   _callingObject
 ) {
   return new Promise(function(resolve, reject) {
+    console.log(_documentId);
+    console.log(_policyId);
+    console.log(_deligatee);
+    console.log(_uploader);
+    console.log(_privateKey);
+    console.log(_callingObject);
+    _policyId = _policyId.policyId;
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
       .deligateDocument(_documentId, _policyId, _deligatee, _uploader)
@@ -558,6 +565,7 @@ async function deligateDocument(
                         signedTx.raw || signedTx.rawTransaction
                       );
                       sentTx.on("receipt", receipt => {
+                        console.log(receipt);
                         resolve(receipt);
                       });
                       sentTx.on("transactionHash", function(hash) {

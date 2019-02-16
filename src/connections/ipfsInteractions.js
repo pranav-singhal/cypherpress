@@ -1,4 +1,4 @@
-import IPFS from "ipfs";
+import IPFS from "ipfs-http-client";
 import { Buffer } from "buffer";
 
 const ipfsNode = new IPFS({
@@ -13,9 +13,7 @@ const ipfsNode = new IPFS({
  */
 async function connectNode() {
   return new Promise(function(resolve, reject) {
-    ipfsNode.on("ready", function() {
-      resolve(true);
-    });
+    resolve(true);
   });
 }
 
@@ -77,11 +75,11 @@ async function getFile(_path) {
   return content.toString();
 }
 
-async function getJson(_path) {
+export async function getJson(_path) {
   console.log("_path", _path);
   _path = _path.hash;
-  let response = await ipfsNode.get(_path);
-  console.log("response", response);
+  let response = await ipfsNode.get("/ipfs/" + _path);
+  console.log("response", response[0].content);
   let content = response[0].content;
   console.log(content);
   let json = JSON.parse(content.toString());
