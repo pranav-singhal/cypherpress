@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button, File } from "react-bootstrap";
 import { uploadDocument } from "../../connections/Controller";
 import { getClientJson } from "../../connections/httpInteractions";
 export default class UploadPanel extends React.Component {
@@ -90,14 +90,26 @@ export default class UploadPanel extends React.Component {
 
     return dataInfo.map((field, id) => {
       console.log(field);
-
-      return (
-        <Form.Control
-          key={field.fieldName}
-          placeholder={`enter your ${field.fieldName}`}
-          onChange={this.handleChange(id)}
-        />
-      );
+      if (field.fieldType === "PlainText") {
+        return (
+          <Form.Control
+            key={field.fieldName}
+            placeholder={`enter your ${field.fieldName}`}
+            onChange={this.handleChange(id)}
+          />
+        );
+      } else {
+        return (
+          <Form.Group>
+            <Form.Label>{field.fieldName}</Form.Label>
+            <Form.Control
+              key={field.fieldName}
+              type="file"
+              onChange={this.handleChange(id)}
+            />
+          </Form.Group>
+        );
+      }
     });
   };
   render() {
