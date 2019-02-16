@@ -30,6 +30,8 @@ contract white_label {
     // Mapping to store username to account
     mapping(string => address) usernameToAddress;
     mapping(string => string) usernameToNucypher;
+    string[] delegatees;
+
 
     // Mapping to store documents ids uploaded by a certain username
     mapping(string => uint[]) usernameToUploadedDocuments;
@@ -64,9 +66,17 @@ contract white_label {
 
     //UTILS END
 
-    function addDeligateeAccounts(string _username, address _deligatee) public{
+    function addDeligateeAccounts(string _username) public{
         require(msg.sender == owner);
-        usernameToAddress[_username] = _deligatee;
+        delegatees.push(_username);
+    }
+
+    function getNumberOfDeligatee() public view returns(uint){
+        return delegatees.length;
+    }
+
+    function getDelegteeUsername(uint _index) public view returns(string){
+        return delegatees[_index];
     }
 
     function usernameAvailability(string _username) public view returns(bool){
@@ -104,6 +114,14 @@ contract white_label {
         require(equal(documentList[_documentId].uploader, _uploader));
         usernameToDeligatedDocuments[_deligatee].push(_documentId);
         documentList[_documentId].deligateeToPolicyId[_deligatee] = _policyId;
+    }
+
+    function isDeligatee(uint _documentId, string _delegatee) public view returns(bool){
+        if(bytes(documentList[_documentId].deligateeToPolicyId[_delegatee]).length == 0){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     function getUploadedDocuments(string _uploader) public view returns(uint []){

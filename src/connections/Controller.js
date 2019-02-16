@@ -15,7 +15,8 @@ import {
   getUploadedDocumentIds,
   getUploadedDocumentInfo,
   signInUser,
-  uploadADocument
+  uploadADocument,
+  isDeligatee, getNumberOfDeligatee, getDelegteeUsername
 } from "./web3Interactions";
 import { connectNode, getData, handleUpload } from "./ipfsInteractions";
 
@@ -179,4 +180,18 @@ async function fetchDelegatedDouments(
     let dataArray = await getData(ipfsHash, _requestedObject);
     _documentUploadedCallback(dataArray);
   }
+}
+
+async function getDelegatees() {
+  let usernames = [];
+  let number = await getNumberOfDeligatee();
+  for(let i = 0; i < number; i++){
+    let username = await getDelegteeUsername(i);
+    usernames.push(username);
+  }
+  return usernames;
+}
+
+async function isDelegatee(_documentId, _delegatee) {
+  return await isDeligatee(_documentId, _delegatee);
 }

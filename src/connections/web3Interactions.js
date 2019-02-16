@@ -6,135 +6,7 @@ const web3 = new Web3(
   )
 );
 
-const contractAbi = [
-  {
-    constant: false,
-    inputs: [
-      { name: "_documentId", type: "uint256" },
-      { name: "_policyId", type: "string" },
-      { name: "_deligatee", type: "string" },
-      { name: "_uploader", type: "string" }
-    ],
-    name: "deligateDocument",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: "_username", type: "string" },
-      { name: "_deligatee", type: "address" }
-    ],
-    name: "addDeligateeAccounts",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: "_username", type: "string" },
-      { name: "_nucypherPublic", type: "string" }
-    ],
-    name: "signUpUsername",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_deligatee", type: "string" }],
-    name: "getDeligatedDocument",
-    outputs: [{ name: "", type: "uint256[]" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_username", type: "string" }],
-    name: "getNucypherPublicKey",
-    outputs: [{ name: "", type: "string" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_documentId", type: "uint256" }],
-    name: "getUploadedDocumentInfo",
-    outputs: [
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [
-      { name: "_documentId", type: "uint256" },
-      { name: "_deligatee", type: "string" }
-    ],
-    name: "getDeligatedDocumentInfo",
-    outputs: [
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
-      { name: "_cipherText", type: "string" },
-      { name: "_capsule", type: "string" },
-      { name: "_aliceVerifyingKey", type: "string" },
-      { name: "_alicePublicKey", type: "string" },
-      { name: "_uploader", type: "string" }
-    ],
-    name: "uploadADocument",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_username", type: "string" }],
-    name: "usernameAvailability",
-    outputs: [{ name: "", type: "bool" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_uploader", type: "string" }],
-    name: "getUploadedDocuments",
-    outputs: [{ name: "", type: "uint256[]" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "constructor"
-  }
-];
+const contractAbi = [{"constant":false,"inputs":[{"name":"_documentId","type":"uint256"},{"name":"_policyId","type":"string"},{"name":"_deligatee","type":"string"},{"name":"_uploader","type":"string"}],"name":"deligateDocument","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_documentId","type":"uint256"},{"name":"_delegatee","type":"string"}],"name":"isDeligatee","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_username","type":"string"}],"name":"addDeligateeAccounts","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_username","type":"string"},{"name":"_nucypherPublic","type":"string"}],"name":"signUpUsername","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_deligatee","type":"string"}],"name":"getDeligatedDocument","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"}],"name":"getNucypherPublicKey","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_documentId","type":"uint256"}],"name":"getUploadedDocumentInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_documentId","type":"uint256"},{"name":"_deligatee","type":"string"}],"name":"getDeligatedDocumentInfo","outputs":[{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"},{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_cipherText","type":"string"},{"name":"_capsule","type":"string"},{"name":"_aliceVerifyingKey","type":"string"},{"name":"_alicePublicKey","type":"string"},{"name":"_uploader","type":"string"}],"name":"uploadADocument","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_index","type":"uint256"}],"name":"getDelegteeUsername","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_username","type":"string"}],"name":"usernameAvailability","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"_uploader","type":"string"}],"name":"getUploadedDocuments","outputs":[{"name":"","type":"uint256[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getNumberOfDeligatee","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"}];
 let contract;
 let contractAddress;
 
@@ -149,6 +21,47 @@ async function connectToContract(_contractAddress) {
   contractAddress = _contractAddress;
   return true;
 }
+
+async function isDeligatee(_documentId, _delegatee){
+  return new Promise(function(resolve, reject) {
+    contract.methods
+        .isDeligatee(_documentId, _delegatee)
+        .call()
+        .then(function(_boolean) {
+          console.log("from checkUsernameAvailability", _boolean);
+          if (_boolean) {
+            resolve(_boolean);
+          } else {
+            resolve(_boolean);
+          }
+        });
+  });
+}
+
+
+async function getNumberOfDeligatee(){
+  return new Promise(function(resolve, reject) {
+    contract.methods
+        .getNumberOfDeligatee()
+        .call()
+        .then(function(_num) {
+          resolve(num);
+        });
+  });
+}
+
+
+async function getDelegteeUsername(_idx){
+  return new Promise(function(resolve, reject) {
+    contract.methods
+        .getDelegteeUsername(_idx)
+        .call()
+        .then(function(_name) {
+          resolve(_name);
+        });
+  });
+}
+
 
 // TODO OK Tested
 /*
@@ -637,7 +550,10 @@ export {
   signInUser,
   checkUsernameWeb3,
   connectToContract,
-  getDelegateePublicKey
+  getDelegateePublicKey,
+    isDeligatee,
+    getNumberOfDeligatee,
+    getDelegteeUsername
 };
 
 /*
