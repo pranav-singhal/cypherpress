@@ -83,7 +83,7 @@ export default class CreateAppForm extends React.Component {
       adminPrivateKey,
       callingObject
     );
-    await fetch("http://10.0.0.228:5000/setContractAddress", {
+    await fetch("http://172.16.4.93:5000/setContractAddress", {
       method: "POST",
       body: JSON.stringify({
         contractAddress: contractAddress,

@@ -2,7 +2,7 @@ import Web3 from "web3";
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://ropsten.infura.io/ZWXhYfP2uIvdg1yKuQNY "
+    "http://127.0.0.1:8545  "
   )
 );
 
@@ -397,6 +397,7 @@ async function uploadADocument(
   console.log("_privateKey", _privateKey);
 
   return new Promise(function(resolve, reject) {
+    console.log('inside upload document');
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
       .uploadADocument(
