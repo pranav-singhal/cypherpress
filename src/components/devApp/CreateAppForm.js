@@ -18,11 +18,10 @@ export default class CreateAppForm extends React.Component {
   state = {
     delegates: ["input-1"],
     delegateButtonState: false,
-    dataFields: ["dataInput-1"],
+    dataFields: ["field-1"],
     dataFieldButtonDisabled: true,
     delegateInfo: [{ username: "", publicKey: "" }],
-    dataInfo: [],
-    fileInfo: []
+    dataInfo: [{ fieldName: "", fieldType: "" }]
   };
   constructor(props) {
     super(props);
@@ -48,38 +47,6 @@ export default class CreateAppForm extends React.Component {
     this.setState({ delegateInfo: newDelegateprops });
   };
 
-  addDataInfo = type => {
-    if (type === "PlainText") {
-      this.setState(prevState => ({
-        dataInfo: prevState.dataInfo.concat([{ fieldName: "" }])
-      }));
-    } else {
-      this.setState(prevState => ({
-        dataInfo: prevState.fileInfo.concat([{ fileName: "" }])
-      }));
-    }
-  };
-  handleFieldNameChange = (id, value, fieldType) => {
-    console.log(id, value, fieldType);
-    if (fieldType === "PlainText") {
-      const newfieldProperties = this.state.dataInfo.map((field, idx) => {
-        if (id !== idx) {
-          return field;
-        }
-        return { ...field, fieldName: value, fieldType: "PlainText" };
-      });
-      this.setState({ dataInfo: newfieldProperties });
-    } else {
-      console.log(id, "file");
-      const newfieldProperties = this.state.dataInfo.map((field, idx) => {
-        if (id !== idx) {
-          return field;
-        }
-        return { ...field, fieldName: value, fieldType: "file" };
-      });
-      this.setState({ dataInfo: newfieldProperties });
-    }
-  };
   toggleButtonState = (button, bool) => {
     if (button === "delegateButtonState") {
       this.setState({ delegateButtonState: bool });
@@ -88,11 +55,7 @@ export default class CreateAppForm extends React.Component {
       this.setState({ dataFieldButtonDisabled: bool });
     }
   };
-  updateFileFields = field => {
-    this.setState(prevState => ({
-      fileFields: prevState.fileFields.concat([field])
-    }));
-  };
+
   handleSubmit = async event => {
     event.preventDefault();
     console.log(this.appNameRef);
@@ -140,18 +103,27 @@ export default class CreateAppForm extends React.Component {
     }));
     console.log(this.delegateButton);
   };
-  addDataField = () => {
-    const newDataField = `dataInput-${this.state.dataFields.length + 1}`;
-    this.setState(prevState => ({
-      dataFields: prevState.dataFields.concat([newDataField])
-    }));
-  };
+
   setDelegateInfo = delegateInfo => {
     this.setState(prevState => ({
       delegateInfo: prevState.delegateInfo.concat([delegateInfo])
     }));
   };
-
+  handleFieldChange = (id, fieldType, fieldName) => {
+    const newDataInfo = this.state.dataInfo.map((field, idx) => {
+      if (id !== idx) return field;
+      return { ...field, fieldType: fieldType, fieldName: fieldName };
+    });
+    this.setState({ dataInfo: newDataInfo });
+  };
+  addDataField = () => {
+    const newField = `field-${this.state.dataFields.length + 1}`;
+    console.log(newField);
+    this.setState(prevState => ({
+      dataFields: prevState.dataFields.concat([newField]),
+      dataInfo: prevState.dataInfo.concat({ fieldName: "", fieldType: "" })
+    }));
+  };
   render() {
     return (
       <Container>
@@ -178,21 +150,12 @@ export default class CreateAppForm extends React.Component {
           </Row>
           <Row>
             <Col sm={12}>
-              {this.state.dataFields.map(input => {
+              {this.state.dataFields.map((field, id) => {
                 return (
                   <DataType
-                    key={input}
-                    toggleButtonState={bool => {
-                      this.toggleButtonState("dataFieldButtonDisabled", bool);
-                    }}
-                    addDataField={type => {
-                      this.addDataInfo(type);
-                    }}
-                    handleFieldNameChange={(id, value, fieldType) => {
-                      this.handleFieldNameChange(id, value, fieldType);
-                    }}
-                    updateFileFields={field => {
-                      this.updateFileFields(field);
+                    key={id}
+                    handleLabelChange={(fieldType, fieldName) => {
+                      this.handleFieldChange(id, fieldType, fieldName);
                     }}
                   />
                 );
@@ -200,8 +163,10 @@ export default class CreateAppForm extends React.Component {
             </Col>
             <Button
               variant="primary"
-              onClick={this.addDataField}
-              disabled={this.state.dataFieldButtonDisabled}
+              onClick={() => {
+                this.addDataField();
+              }}
+              disabled={false}
             >
               {" "}
               Add another Data Field
