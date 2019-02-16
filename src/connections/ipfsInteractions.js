@@ -92,11 +92,12 @@ async function getData(_path, _requestedArray) {
   let valueJson = await getJson(_path);
   for (let i = 0; i < _requestedArray.length; i++) {
     if (_requestedArray[i].isFile === true) {
-      let value = await getFile(valueJson[_requestedArray[i].name]);
+      let hash = valueJson[_requestedArray[i].name];
+      let url = `https://ipfs.io/ipfs/${value}`;
       let objToBePushed = {
         isFile: true,
         name: _requestedArray[i].name,
-        value: value
+        value: url
       };
       dataArrayToBereturned.push(objToBePushed);
     } else {

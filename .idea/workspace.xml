@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51738620-a883-4a8b-ade2-6a63a36bba03" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/connections/Controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/Controller.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/connections/web3Dev.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/web3Dev.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/connections/web3Interactions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/web3Interactions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/white-lable.sol" beforeDir="false" afterPath="$PROJECT_DIR$/white-lable.sol" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/connections/ipfsInteractions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/connections/ipfsInteractions.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -20,53 +16,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/connections/Controller.js">
+        <entry file="file://$PROJECT_DIR$/src/connections/ipfsInteractions.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="191" column="19" selection-start-line="191" selection-start-column="19" selection-end-line="191" selection-end-column="19" />
-              <folding>
-                <element signature="e#0#142#0" expanded="true" />
-                <element signature="n#!!block;n#signUpAndGetNucypherKeys#0" />
-                <element signature="n#!!block;n#uploadDocument#0" />
-                <element signature="n#!!block;n#grantDocumentAccess#0" />
-                <element signature="n#!!block;n#fetchUploadedDocuments#0" />
-                <element signature="n#!!block;n#fetchDelegatedDouments#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/connections/web3Interactions.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="555" column="23" selection-start-line="555" selection-start-column="23" selection-end-line="555" selection-end-column="23" />
-              <folding>
-                <element signature="n#!!block;n#isDeligatee#0" />
-                <element signature="n#!!block;n#getNumberOfDeligatee#0" />
-                <element signature="n#!!block;n#getDelegteeUsername#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/connections/web3Dev.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="70" selection-start-line="70" selection-end-line="70" />
-              <folding>
-                <element signature="n#!!block;n#deployContract#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/white-lable.sol">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="130" lean-forward="true" selection-start-line="130" selection-end-line="130" />
+            <state relative-caret-position="22">
+              <caret line="54" column="16" lean-forward="true" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -90,6 +43,7 @@
         <option value="$PROJECT_DIR$/src/connections/web3Dev.js" />
         <option value="$PROJECT_DIR$/src/connections/web3Interactions.js" />
         <option value="$PROJECT_DIR$/src/connections/Controller.js" />
+        <option value="$PROJECT_DIR$/src/connections/ipfsInteractions.js" />
       </list>
     </option>
   </component>
@@ -169,17 +123,18 @@
       <option name="presentableId" value="Default" />
       <updated>1550192543042</updated>
       <workItem from="1550192544363" duration="3714000" />
+      <workItem from="1550318745650" duration="273000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5475000" />
+    <option name="totallyTimeSpent" value="5748000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="25" width="1366" height="743" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24944155" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.24944155" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -207,16 +162,6 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/connections/.editorconfig" />
-    <entry file="file://$PROJECT_DIR$/src/connections/ipfsInteractions.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2">
-          <caret line="81" column="21" selection-start-line="81" selection-start-column="21" selection-end-line="81" selection-end-column="21" />
-          <folding>
-            <element signature="e#0#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/connections/httpInteractions.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3014">
@@ -224,10 +169,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/white-lable.sol">
+    <entry file="file://$PROJECT_DIR$/src/connections/Controller.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="130" lean-forward="true" selection-start-line="130" selection-end-line="130" />
+        <state relative-caret-position="518">
+          <caret line="195" column="19" selection-start-line="195" selection-start-column="19" selection-end-line="195" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/connections/web3Interactions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="715" column="21" selection-start-line="715" selection-start-column="21" selection-end-line="715" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -241,30 +193,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/connections/web3Interactions.js">
+    <entry file="file://$PROJECT_DIR$/white-lable.sol">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="555" column="23" selection-start-line="555" selection-start-column="23" selection-end-line="555" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!block;n#isDeligatee#0" />
-            <element signature="n#!!block;n#getNumberOfDeligatee#0" />
-            <element signature="n#!!block;n#getDelegteeUsername#0" />
-          </folding>
+        <state relative-caret-position="191">
+          <caret line="130" selection-start-line="130" selection-end-line="130" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/connections/Controller.js">
+    <entry file="file://$PROJECT_DIR$/src/connections/ipfsInteractions.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="191" column="19" selection-start-line="191" selection-start-column="19" selection-end-line="191" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#142#0" expanded="true" />
-            <element signature="n#!!block;n#signUpAndGetNucypherKeys#0" />
-            <element signature="n#!!block;n#uploadDocument#0" />
-            <element signature="n#!!block;n#grantDocumentAccess#0" />
-            <element signature="n#!!block;n#fetchUploadedDocuments#0" />
-            <element signature="n#!!block;n#fetchDelegatedDouments#0" />
-          </folding>
+        <state relative-caret-position="22">
+          <caret line="54" column="16" lean-forward="true" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
         </state>
       </provider>
     </entry>
