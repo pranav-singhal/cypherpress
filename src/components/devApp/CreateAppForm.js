@@ -19,7 +19,6 @@ export default class CreateAppForm extends React.Component {
     delegates: ["input-1"],
     delegateButtonState: false,
     dataFields: ["dataInput-1"],
-    fileFields: [],
     dataFieldButtonDisabled: true,
     delegateInfo: [{ username: "", publicKey: "" }],
     dataInfo: [],
@@ -56,7 +55,7 @@ export default class CreateAppForm extends React.Component {
       }));
     } else {
       this.setState(prevState => ({
-        fileInfo: prevState.fileInfo.concat([{ fileName: "" }])
+        dataInfo: prevState.fileInfo.concat([{ fileName: "" }])
       }));
     }
   };
@@ -72,13 +71,13 @@ export default class CreateAppForm extends React.Component {
       this.setState({ dataInfo: newfieldProperties });
     } else {
       console.log(id, "file");
-      const newfieldProperties = this.state.fileInfo.map((field, idx) => {
+      const newfieldProperties = this.state.dataInfo.map((field, idx) => {
         if (id !== idx) {
           return field;
         }
         return { ...field, fieldName: value, fieldType: "file" };
       });
-      this.setState({ fileInfo: newfieldProperties });
+      this.setState({ dataInfo: newfieldProperties });
     }
   };
   toggleButtonState = (button, bool) => {

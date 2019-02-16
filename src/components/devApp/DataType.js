@@ -21,8 +21,7 @@ export default class DataType extends React.Component {
     if (value === "Plain Text") {
       this.addField("Plain Text");
     } else {
-      console.log("selected file");
-      this.setState({ fileType: true });
+      this.addField("file");
     }
   };
   addField = type => {
@@ -35,7 +34,14 @@ export default class DataType extends React.Component {
         ])
       }));
       this.props.addDataField("PlainText");
-    } else {
+    } else if (type === "file") {
+      const field = `file-${this.state.plainTextFields.length + 1}`;
+      this.setState(prevState => ({
+        plainTextFields: prevState.plainTextFields.concat([field]),
+        fieldProperties: prevState.fieldProperties.concat([
+          { fieldName: "", fieldType: "file" }
+        ])
+      }));
     }
   };
   handleChange = () => {
@@ -45,20 +51,26 @@ export default class DataType extends React.Component {
       this.props.toggleButtonState(true);
     }
   };
-  handleFieldNameChange = id => event => {
-    const newfieldProperties = this.state.fieldProperties.map((field, idx) => {
-      if (id !== idx) {
-        return field;
-      }
-      return { ...field, fieldName: event.target.value };
-    });
-    this.setState({ fieldProperties: newfieldProperties });
-    this.props.handleFieldNameChange(id, event.target.value, "PlainText");
+  handleFieldNameChange = (id, type) => event => {
+    if (type === "plainText") {
+      const newfieldProperties = this.state.fieldProperties.map(
+        (field, idx) => {
+          if (id !== idx) {
+            return field;
+          }
+          return { ...field, fieldName: event.target.value };
+        }
+      );
+      this.setState({ fieldProperties: newfieldProperties });
+      this.props.handleFieldNameChange(id, event.target.value, "PlainText");
+    } else if (type === "file") {
+      this.props.handleFieldNameChange(id, event.target.value, "file");
+    }
   };
   handleFileNameChange = event => {
     this.setState({ filename: event.target.value });
     // this.props.handleFieldNameChange(id, event.target.value, "file");
-    this.props.handleFileNameChange(event.target.value);
+    // this.props.handleFileNameChange(event.target.value);
   };
 
   render() {
@@ -75,12 +87,12 @@ export default class DataType extends React.Component {
           <option>File</option>
         </Form.Control>
         {this.state.plainTextFields.map((field, id) => {
-          return (
+          return field.slice(0, 5) === "input" ? (
             <React.Fragment key={field}>
               <Form.Control
                 placeholder="enter field name"
                 ref={this.fieldTypeRef}
-                onChange={this.handleFieldNameChange(id)}
+                onChange={this.handleFieldNameChange(id, "plainText")}
               />
               <Form.Control as="select">
                 <option>choose</option>
@@ -89,14 +101,15 @@ export default class DataType extends React.Component {
                 <option>text</option>
               </Form.Control>
             </React.Fragment>
+          ) : (
+            <Form.Control
+              key={field + id.toString()}
+              placeholder="enter a file label"
+              onChange={this.handleFieldNameChange(id, "file")}
+            />
           );
         })}
-        {this.state.fileType ? (
-          <Form.Control
-            placeholder="enter a file label"
-            onChange={this.handleFileNameChange}
-          />
-        ) : null}
+
         {this.state.plainTextFields.length > 0 ? (
           <Button
             onClick={() => {
