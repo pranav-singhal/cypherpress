@@ -1,11 +1,10 @@
-import React, { PropTypes } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import React from "react";
+import { Button, Row, Col } from "react-bootstrap";
 import {
   getClientJson,
   getContractAddress
 } from "../../connections/httpInteractions";
 import Document from "./Document";
-import { getJson } from "../../connections/ipfsInteractions";
 import {
   fetchUploadedDocuments,
   doConnections,
@@ -19,22 +18,25 @@ export default class ViewPanel extends React.Component {
   };
 
   async componentDidMount() {
-    console.log("view panel mounted");
+    console.log("view panel ksj");
     const clientAppJson = await getClientJson(this.props.appName);
     console.log("clientAppJson:", clientAppJson);
     const dataInfo = clientAppJson.dataInfo;
+    console.log(dataInfo);
+    const contractAddress = await getContractAddress(this.props.appName);
+    await doConnections(contractAddress);
     const fetchingLabels = dataInfo.map(field => {
       // select isFile based on field.fieldType
-      return { name: field.fieldName, isFile: false };
+      console.log("viewpanel27", field.fieldType);
+      return { name: field.fieldName, isFile: field.fieldType === "file" };
     });
     this.setState({ fetchingLabels: fetchingLabels });
 
-    const contractAddress = await getContractAddress(this.props.appName);
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
     const alicePrivateKey = localStorage.getItem("alicePrivateKey");
     const alicePublicKey = localStorage.getItem("alicePublicKey");
-    await doConnections(contractAddress);
+
     console.log("connections done");
     fetchUploadedDocuments(
       username,

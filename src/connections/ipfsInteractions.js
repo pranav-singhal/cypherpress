@@ -88,12 +88,14 @@ export async function getJson(_path) {
 }
 
 async function getData(_path, _requestedArray) {
+  console.log(_requestedArray);
   let dataArrayToBereturned = [];
   let valueJson = await getJson(_path);
   for (let i = 0; i < _requestedArray.length; i++) {
     if (_requestedArray[i].isFile === true) {
       let hash = valueJson[_requestedArray[i].name];
-      let url = `https://ipfs.io/ipfs/${value}`;
+      let url = `https://ipfs.io/ipfs/${hash}`;
+      console.log("generated url", url);
       let objToBePushed = {
         isFile: true,
         name: _requestedArray[i].name,
@@ -109,6 +111,7 @@ async function getData(_path, _requestedArray) {
       dataArrayToBereturned.push(objToBePushed);
     }
   }
+  console.log("data Array from ipfs", dataArrayToBereturned);
   return dataArrayToBereturned;
   console.log(dataArrayToBereturned);
 }

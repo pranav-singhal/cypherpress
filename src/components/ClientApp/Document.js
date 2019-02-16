@@ -1,4 +1,4 @@
-import React, { PropTypes } from "react";
+import React from "react";
 import { Form, Button } from "react-bootstrap";
 import {
   getDelegatees,
@@ -10,9 +10,7 @@ export default class Document extends React.Component {
     delegatees: [],
     selectedDelegatees: []
   };
-  constructor(props) {
-    super(props);
-  }
+
   async componentDidMount() {
     console.log(this.props.dataArray);
     if (!this.props.fetchedData) {
@@ -21,12 +19,17 @@ export default class Document extends React.Component {
   }
   displayData = data => {
     console.log("data:", data);
-    console.log(this.props.fetchedData && this.state.delegatees.length !== 0);
     if (!data.isFile) {
       return (
         <p key={data.name}>
           {data.name} <i>{data.value}</i>
         </p>
+      );
+    } else {
+      return (
+        <a href={data.value} target="_blank">
+          {data.name}
+        </a>
       );
     }
   };
@@ -81,7 +84,7 @@ export default class Document extends React.Component {
   };
   handleSelect = event => {
     const name = event.target.name;
-    if (this.state.selectedDelegatees.indexOf(name) == -1) {
+    if (this.state.selectedDelegatees.indexOf(name) === -1) {
       this.setState(prevState => ({
         selectedDelegatees: prevState.selectedDelegatees.concat(name)
       }));

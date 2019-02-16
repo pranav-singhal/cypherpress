@@ -31,26 +31,49 @@ export default class UploadPanel extends React.Component {
   addFormFields = () => {
     const dataInfo = this.getDataInfo();
     dataInfo.map((field, id) => {
-      const newField = { fieldName: field.fieldName, fieldValue: "" };
+      const newField = {
+        fieldName: field.fieldName,
+        fieldValue: "",
+        isFile: field.fieldType === "file"
+      };
       this.setState(prevState => ({
         formData: prevState.formData.concat([newField])
       }));
     });
   };
   handleChange = id => event => {
-    console.log("handling");
+    console.log(id);
+    event.preventDefault();
     const newFormData = this.state.formData.map((field, idx) => {
       if (idx !== id) return field;
-      return { ...field, fieldValue: event.target.value };
+
+      let obj = { ...field, fieldValue: event.target.value };
+
+      return obj;
     });
+    console.log("newFormData", newFormData);
     this.setState({ formData: newFormData });
+  };
+  handleFile = id => event => {
+    event.preventDefault();
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(event.target.files[0]);
+    reader.onloadend = () => {
+      let newFormData = this.state.formData;
+
+      let readerresult = reader.result;
+
+      newFormData[id].fieldValue = readerresult;
+
+      this.setState({ formData: newFormData });
+    };
   };
   submitForm = async () => {
     let array = this.state.formData.map(field => {
       let obj = {};
       obj.name = field.fieldName;
       obj.value = field.fieldValue;
-      obj.isFile = false;
+      obj.isFile = field.isFile;
       return obj;
     });
     const username = localStorage.getItem("username");
@@ -93,7 +116,7 @@ export default class UploadPanel extends React.Component {
       if (field.fieldType === "PlainText") {
         return (
           <Form.Control
-            key={field.fieldName}
+            key={field.fieldName + id.toString()}
             placeholder={`enter your ${field.fieldName}`}
             onChange={this.handleChange(id)}
           />
@@ -105,7 +128,7 @@ export default class UploadPanel extends React.Component {
             <Form.Control
               key={field.fieldName}
               type="file"
-              onChange={this.handleChange(id)}
+              onChange={this.handleFile(id)}
             />
           </Form.Group>
         );

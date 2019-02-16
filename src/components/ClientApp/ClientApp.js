@@ -18,7 +18,7 @@ export default class ClientApp extends React.Component {
     super(props);
   }
   async componentWillMount() {
-    console.log("willmount");
+    console.log("ss");
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
     // const contractAddress = localStorage.getItem("contractAddress");
