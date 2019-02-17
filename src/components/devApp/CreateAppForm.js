@@ -24,7 +24,11 @@ export default class CreateAppForm extends React.Component {
     dataFieldButtonDisabled: true,
     delegateInfo: [{ username: "", publicKey: "" }],
     dataInfo: [{ fieldName: "", fieldType: "" }],
-    showModal: false
+    showModal: false,
+    transaction: "",
+    gasInEth: "",
+    transactionName: "",
+    modalCallBack: {}
   };
   constructor(props) {
     super(props);
@@ -75,8 +79,10 @@ export default class CreateAppForm extends React.Component {
     const adminPrivateKey = this.adminPrivateKeyRef.current.value;
     const callingObject = {
       verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
-        console.log(transaction, gasInEth, transactionName);
-        callback();
+        this.setState({ transaction, gasInEth, transactionName });
+        window.modalCallBack = callback;
+
+        this.setState({ showModal: true });
       },
       transactionMining: hash => {
         console.log("hash:", hash);
@@ -244,7 +250,18 @@ export default class CreateAppForm extends React.Component {
             </Form>
           </Col>
         </Row>
-        <TransactionModal showModal={this.state.showModal} />
+        <TransactionModal
+          toggleModal={bool => {
+            this.setState({ showModal: bool });
+          }}
+          showModal={this.state.showModal}
+          transaction={this.state.transaction}
+          gasInEth={this.state.gasInEth}
+          transactionName={this.state.transactionName}
+          completeTransaction={() => {
+            window.modalCallBack();
+          }}
+        />
       </Container>
     );
   }

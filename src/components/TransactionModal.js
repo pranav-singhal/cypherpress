@@ -10,22 +10,24 @@ export default class TransactionModal extends React.Component {
   handleClose = () => {
     this.setState({ show: false });
   };
-  componentDidRecieveProps() {
-    console.log("something");
-    this.setState({ show: this.props.showModal });
-  }
+
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.handleClose}>
+      <Modal show={this.props.showModal} onHide={this.handleClose}>
         <Modal.Dialog>
           <Modal.Header closeButton>
-            <Modal.Title>Modal title</Modal.Title>
+            <Modal.Title>{this.props.transactionName}</Modal.Title>
           </Modal.Header>
 
-          <Modal.Body>
-            <p>Modal body text goes here.</p>
-          </Modal.Body>
-          <Button onClick={this.handleClose}>Close</Button>
+          <Modal.Body>gasInEth : {this.props.gasInEth}</Modal.Body>
+          <Button
+            onClick={() => {
+              this.props.completeTransaction();
+              this.props.toggleModal(false);
+            }}
+          >
+            Close
+          </Button>
           <Modal.Footer />
         </Modal.Dialog>
       </Modal>
