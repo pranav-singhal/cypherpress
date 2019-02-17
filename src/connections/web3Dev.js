@@ -2,7 +2,7 @@ import Web3 from "web3";
 
 const web3 = new Web3(
   new Web3.providers.HttpProvider(
-    "https://ropsten.infura.io/ZWXhYfP2uIvdg1yKuQNY "
+    "http://127.0.0.1:8545"
   )
 );
 
@@ -165,6 +165,8 @@ const contractAbi = [
   }
 ];
 let contract = new web3.eth.Contract(contractAbi);
+let contractAddress;
+
 
 export function deployContract(_privateKey, _callingObject) {
   return new Promise(function(resolve, reject) {
@@ -221,6 +223,79 @@ export function deployContract(_privateKey, _callingObject) {
           _callingObject.insufficientFunds(gasInEth);
         }
       });
+  });
+}
+
+export async function connectToContract(_contractAddress) {
+  contract.options.address = _contractAddress;
+  contractAddress = _contractAddress;
+  return true;
+}
+
+export async function deligateAccess(_username, _privateKey, _callingObject) {
+  return new Promise(function(resolve, reject) {
+    let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
+    contract.methods
+        .addDeligateeAccounts(_username)
+        .estimateGas({
+          from: address
+        })
+        .then(async function(gasAmount) {
+          web3.eth.getGasPrice().then(function(gasPrice) {
+            let gasValue = gasPrice * gasAmount;
+
+            let transaction = {
+              from: web3.utils.toChecksumAddress(address),
+              to: web3.utils.toChecksumAddress(contractAddress),
+              gas: gasAmount + 10,
+              data: contract.methods
+                  .addDeligateeAccounts(_username)
+                  .encodeABI()
+            };
+
+            web3.eth.getBalance(address).then(bal => {
+              let requiredEth = gasValue;
+              let gasInEth = web3.utils.fromWei(requiredEth.toString());
+              // console.log(typeof requiredEth);
+              if (bal > requiredEth) {
+                _callingObject.verifyTransaction(
+                    transaction,
+                    gasInEth,
+                    "Adding Delegatee",
+                    function() {
+                      let signPromise = web3.eth.accounts.signTransaction(
+                          transaction,
+                          _privateKey
+                      );
+                      // console.log(signPromise);
+                      signPromise
+                          .then(signedTx => {
+                            // console.log(signedTx);
+                            const sentTx = web3.eth.sendSignedTransaction(
+                                signedTx.raw || signedTx.rawTransaction
+                            );
+                            sentTx.on("receipt", receipt => {
+                              resolve(true);
+                            });
+                            sentTx.on("transactionHash", function(hash) {
+                              _callingObject.transactionMining(hash);
+                              // console.log("Allowance hash =", hash);
+                            });
+                            sentTx.on("error", err => {
+                              resolve(err);
+                            });
+                          })
+                          .catch(err => {
+                            console.error(err);
+                          });
+                    }
+                );
+              } else {
+                _callingObject.insufficientFunds(gasInEth);
+              }
+            });
+          });
+        });
   });
 }
 
