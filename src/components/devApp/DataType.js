@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
+
 export default class DataType extends React.Component {
   state = {
     labelValue: "",
@@ -32,17 +33,21 @@ export default class DataType extends React.Component {
   render() {
     return (
       <>
-        <Form.Control as="select" onChange={this.handleSelect}>
-          <option>choose</option>
-          <option>Plain text</option>
-          <option>file</option>
-        </Form.Control>
-        {this.state.labelVisible ? (
-          <Form.Control
-            placeholder={this.state.labelPlaceholder}
-            onChange={this.handleLabelChange}
-          />
-        ) : null}
+        <Form.Group>
+          <Form.Control as="select" onChange={this.handleSelect}>
+            <option>choose</option>
+            <option>Plain text</option>
+            <option>file</option>
+          </Form.Control>
+
+          {this.state.labelVisible ? (
+            <Form.Control
+              placeholder={this.state.labelPlaceholder}
+              onChange={this.handleLabelChange}
+            />
+          ) : null}
+        </Form.Group>
+        <br />
       </>
     );
   }

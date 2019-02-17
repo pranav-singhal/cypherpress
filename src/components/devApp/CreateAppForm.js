@@ -8,9 +8,11 @@ import {
   Form,
   Button
 } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DelegateInput from "./DelegateInput";
 import DataType from "./DataType";
 import "../../App.scss";
+import TransactionModal from "../TransactionModal";
 import { deployContract } from "../../connections/web3Dev";
 import { setClientJson } from "../../connections/httpInteractions";
 
@@ -21,13 +23,17 @@ export default class CreateAppForm extends React.Component {
     dataFields: ["field-1"],
     dataFieldButtonDisabled: true,
     delegateInfo: [{ username: "", publicKey: "" }],
-    dataInfo: [{ fieldName: "", fieldType: "" }]
+    dataInfo: [{ fieldName: "", fieldType: "" }],
+    showModal: false
   };
   constructor(props) {
     super(props);
 
     this.appNameRef = React.createRef();
     this.adminPrivateKeyRef = React.createRef();
+  }
+  componentDidMount() {
+    console.log("mounted");
   }
   addDelegateInfo = () => {
     this.setState(prevState => ({
@@ -126,87 +132,119 @@ export default class CreateAppForm extends React.Component {
   };
   render() {
     return (
-      <Container>
+      <Container className="devApp">
         <Row>
-          <Col sm={12}>
-            <h1 className="title"> EthDenver !!!! </h1>
+          <Col md={12}>
+            <h1 className="title"> CypherPress</h1>
           </Col>
         </Row>
-        <Form onSubmit={this.handleSubmit}>
-          <Row>
-            <Col>
-              <Form.Group controlId="appName">
-                <Form.Control
-                  placeholder="Enter a name for your app"
-                  ref={this.appNameRef}
-                />
-                <Form.Control
-                  controlId="adminPrivateKey"
-                  placeholder="enter your private key"
-                  ref={this.adminPrivateKeyRef}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={12}>
-              {this.state.dataFields.map((field, id) => {
-                return (
-                  <DataType
-                    key={id}
-                    handleLabelChange={(fieldType, fieldName) => {
-                      this.handleFieldChange(id, fieldType, fieldName);
+        <Row className="CreateAppForm">
+          <Col md={3} />
+          <Col md={6}>
+            <Form onSubmit={this.handleSubmit}>
+              <Row>
+                <Col>
+                  <Form.Group>
+                    <h2>
+                      <Form.Label> Select an App Name </Form.Label>
+                    </h2>
+                    <Form.Control
+                      ref={this.appNameRef}
+                      placeholder="Enter Name Here"
+                    />
+                    <Form.Text>
+                      This will be the name of your new decentralised DataBase
+                    </Form.Text>
+                  </Form.Group>
+                  <Form.Group>
+                    <h2>
+                      <Form.Label> Enter Your Private Key</Form.Label>
+                    </h2>
+                    <Form.Control
+                      ref={this.adminPrivateKeyRef}
+                      placeholder="Enter Private Key Here"
+                    />
+                    <Form.Text>
+                      We Promise that your private key will not leave your
+                      browser(Buffy's honor)
+                    </Form.Text>
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  <Row>
+                    <Col md={12}>
+                      <h2>Add DataFields</h2>
+                    </Col>
+                    <Form.Text>
+                      You can store PlainText data where you need to supply a
+                      'label' for the field, or you can store files (on IPFS)
+                      which you can access
+                    </Form.Text>
+                  </Row>
+                  {this.state.dataFields.map((field, id) => {
+                    return (
+                      <DataType
+                        key={id}
+                        handleLabelChange={(fieldType, fieldName) => {
+                          this.handleFieldChange(id, fieldType, fieldName);
+                        }}
+                      />
+                    );
+                  })}
+                </Col>
+
+                <Col md={12}>
+                  <FontAwesomeIcon
+                    icon="plus-circle"
+                    className="plus-circle"
+                    onClick={() => {
+                      this.addDataField();
                     }}
                   />
-                );
-              })}
-            </Col>
-            <Button
-              variant="primary"
-              onClick={() => {
-                this.addDataField();
-              }}
-              disabled={false}
-            >
-              {" "}
-              Add another Data Field
-            </Button>
-          </Row>
+                </Col>
+              </Row>
 
-          <Row>
-            <Col sm={12}>
-              <Col sm={4}>
-                {this.state.delegates.map((input, id) => {
-                  return (
-                    <DelegateInput
-                      key={input}
-                      toggleButtonState={bool => {
-                        this.toggleButtonState("delegateButtonState", bool);
-                      }}
-                      handleDelegaInfoChange={(username, publicKey) => {
-                        this.handleDelegaInfoChange(id, username, publicKey);
-                      }}
-                    />
-                  );
-                })}
-              </Col>
-            </Col>
-            <Col>
-              <Button
-                variant="primary"
-                onClick={this.addDelegateInfo}
-                disabled={this.state.delegateButtonState}
-              >
-                Add a delegate
-              </Button>
-            </Col>
-            <Col sm={12}>
-              <Button variant="primary" type="submit">
-                Submit
-              </Button>
-            </Col>
-          </Row>
-        </Form>
+              <Row>
+                {/* <Col md={12}>
+                  {this.state.delegates.map((input, id) => {
+                    return (
+                      <DelegateInput
+                        key={input}
+                        toggleButtonState={bool => {
+                          this.toggleButtonState("delegateButtonState", bool);
+                        }}
+                        handleDelegaInfoChange={(username, publicKey) => {
+                          this.handleDelegaInfoChange(id, username, publicKey);
+                        }}
+                      />
+                    );
+                  })}
+                </Col>
+                <Col>
+                  <Button
+                    variant="primary"
+                    onClick={this.addDelegateInfo}
+                    disabled={this.state.delegateButtonState}
+                  >
+                    Add a delegate
+                  </Button>
+                </Col>*/}
+                <Col sm={12}>
+                  <Button
+                    variant="primary"
+                    type="submit"
+                    className="RenderAppButton"
+                  >
+                    Render App
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </Col>
+        </Row>
+        <TransactionModal showModal={this.state.showModal} />
       </Container>
     );
   }

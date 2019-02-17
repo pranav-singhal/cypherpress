@@ -1,7 +1,76 @@
-#test {
-  background-color: red;
+#root {
+  background: rgb(233, 236, 239);
 }
+
 h1.title {
   text-align: center;
   text-transform: capitalize;
+  font-family: "Pacifico";
+}
+h1.main {
+  margin-top: 100px;
+  font-size: 8em;
+  font-family: "Pacifico";
+  text-align: center;
+}
+.jumbotron {
+  height: 100vh;
+  margin: 0;
+  font-family: "Pacifico";
+  p {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 2em;
+  }
+  .button {
+    display: block;
+    margin: 0 auto;
+    background-color: black;
+    border-color: white;
+  }
+}
+.devApp {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding-top: 10px;
+  font-family: "Roboto";
+  h2 {
+    text-align: center;
+    width: 100%;
+  }
+  .form-text {
+    text-align: center;
+  }
+  .CreateAppForm {
+    margin-top: 30px;
+    input:focus,
+    .form-control:focus {
+      box-shadow: none;
+      border: none;
+    }
+
+    input {
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      background: rgb(233, 236, 239);
+    }
+    .form-control {
+      background: rgb(233, 236, 239);
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .plus-circle {
+      font-size: 2em;
+      position: relative;
+      left: 92%;
+      top: -46%;
+    }
+    .RenderAppButton {
+      background-color: black;
+      border: none;
+      margin-bottom: 50px;
+      width: 100%;
+    }
+  }
 }
