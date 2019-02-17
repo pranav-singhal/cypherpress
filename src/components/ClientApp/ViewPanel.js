@@ -83,23 +83,27 @@ export default class ViewPanel extends React.Component {
 
   render() {
     return (
-      <Row>
+      <Row className="viewClientApp">
         <Col md={12}>
           <div>
             {" "}
             <h1> Documents you have uploaded </h1>
           </div>
           <Col>
-            {this.state.dataArrays.map((dataArray, id) => {
-              return (
-                <Document
-                  fetchedData={false}
-                  dataArray={dataArray.dataArray}
-                  documentId={dataArray.documentId}
-                  key={dataArray.documentId}
-                />
-              );
-            })}
+            <Col md={12}>
+              <Row>
+                {this.state.dataArrays.map((dataArray, id) => {
+                  return (
+                    <Document
+                      fetchedData={false}
+                      dataArray={dataArray.dataArray}
+                      documentId={dataArray.documentId}
+                      key={dataArray.documentId.toString() + id.toString()}
+                    />
+                  );
+                })}
+              </Row>
+            </Col>
           </Col>
         </Col>
         <Col md={12}>

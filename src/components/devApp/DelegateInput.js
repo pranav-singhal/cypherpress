@@ -62,11 +62,11 @@ export default class DelegateInput extends React.Component {
           onChange={this.updateUsername}
         />
 
-        <Form.Control
+        {/*<Form.Control
           placeholder="Enter a delegate's public key"
           ref={this.publicKeyRef}
           onChange={this.updatePublicKey}
-        />
+        />*/}
       </Form.Group>
     );
   }

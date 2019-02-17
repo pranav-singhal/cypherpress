@@ -5,7 +5,11 @@ import {
   checkUsernameAvailability,
   signUpAndGetNucypherKeys
 } from "../../connections/Controller";
+import TransactionModal from "../TransactionModal";
 export default class LoginForm extends React.Component {
+  state = {
+    showModal: false
+  };
   constructor(props) {
     super(props);
     this.usernameRef = React.createRef();
@@ -39,12 +43,14 @@ export default class LoginForm extends React.Component {
           console.log("insufficientFunds");
         }
       };
+      this.setState({ showModal: true });
       let {
         alicePrivateKey,
         alicePublicKey,
         aliceSigningKey,
         aliceVerifyingKey
       } = await signUpAndGetNucypherKeys(username, privateKey, callingObject);
+      this.setState({ showModal: false });
       localStorage.setItem("alicePrivateKey", alicePrivateKey);
       localStorage.setItem("alicePublicKey", alicePublicKey);
       localStorage.setItem("aliceSigningKey", aliceSigningKey);
@@ -95,6 +101,7 @@ export default class LoginForm extends React.Component {
             </Form>
           </Col>
         </Row>
+        <TransactionModal showModal={this.state.showModal} />
       </Container>
     );
   }

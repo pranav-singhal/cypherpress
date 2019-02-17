@@ -1,5 +1,6 @@
 import React, { PropTypes } from "react";
 import { Row, Col, Navbar, Nav } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
@@ -23,8 +24,8 @@ export default class Header extends React.Component {
                     this.props.changePanel("UploadPanel");
                   }}
                 >
-                  {" "}
-                  Upload{" "}
+                  <FontAwesomeIcon icon="upload" className="uploadIcon" />
+                  &nbsp; Upload{" "}
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item as="li">
@@ -33,8 +34,8 @@ export default class Header extends React.Component {
                     this.props.changePanel("ViewPanel");
                   }}
                 >
-                  {" "}
-                  view{" "}
+                  <FontAwesomeIcon icon="download" className="uploadIcon" />
+                  &nbsp; view{" "}
                 </Nav.Link>
               </Nav.Item>
             </Nav>

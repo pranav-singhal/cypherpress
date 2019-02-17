@@ -8,10 +8,13 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import {
   faCheckSquare,
   faCoffee,
-  faPlusCircle
+  faPlusCircle,
+  faUpload,
+  faDownload,
+  faLink
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faCheckSquare, faPlusCircle);
+library.add(faCheckSquare, faPlusCircle, faUpload, faDownload, faLink);
 class App extends Component {
   state = {
     launchApp: false

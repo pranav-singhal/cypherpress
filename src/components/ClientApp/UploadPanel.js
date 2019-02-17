@@ -2,6 +2,7 @@ import React from "react";
 import { Form, Row, Col, Button, File } from "react-bootstrap";
 import { uploadDocument } from "../../connections/Controller";
 import { getClientJson } from "../../connections/httpInteractions";
+import TransactionModal from "../TransactionModal";
 export default class UploadPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -10,7 +11,8 @@ export default class UploadPanel extends React.Component {
   state = {
     clientAppJson: {},
     formData: [],
-    generateForm: false
+    generateForm: false,
+    showModal: false
   };
   async componentWillMount() {
     // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
@@ -97,7 +99,7 @@ export default class UploadPanel extends React.Component {
     console.log("alicePublicKey", alicePublicKey);
     console.log("privateKey", privateKey);
     console.log("aliceVerifyingKey", aliceVerifyingKey);
-
+    this.setState({ showModal: true });
     await uploadDocument(
       array,
       username,
@@ -106,6 +108,8 @@ export default class UploadPanel extends React.Component {
       aliceVerifyingKey,
       callingObject
     );
+
+    this.setState({ showModal: false });
   };
   generateForm = () => {
     const dataInfo = this.getDataInfo();
@@ -115,21 +119,36 @@ export default class UploadPanel extends React.Component {
       console.log(field);
       if (field.fieldType === "PlainText") {
         return (
-          <Form.Control
-            key={field.fieldName + id.toString()}
-            placeholder={`enter your ${field.fieldName}`}
-            onChange={this.handleChange(id)}
-          />
+          <Form.Group>
+            <h2>
+              <Form.Label>{field.fieldName}</Form.Label>
+            </h2>
+            <Form.Control
+              key={field.fieldName + id.toString()}
+              placeholder={"Type Here"}
+              onChange={this.handleChange(id)}
+            />
+          </Form.Group>
         );
       } else {
         return (
           <Form.Group>
-            <Form.Label>{field.fieldName}</Form.Label>
-            <Form.Control
-              key={field.fieldName}
-              type="file"
-              onChange={this.handleFile(id)}
-            />
+            <h2>
+              <Form.Label>{field.fieldName}</Form.Label>
+            </h2>
+
+            <div className="custom-file">
+              <Form.Control
+                key={field.fieldName}
+                type="file"
+                onChange={this.handleFile(id)}
+                className="custom-file-input"
+                id="inputGroupFile01"
+              />
+              <label class="custom-file-label" for="inputGroupFile01">
+                Choose file
+              </label>
+            </div>
           </Form.Group>
         );
       }
@@ -137,16 +156,17 @@ export default class UploadPanel extends React.Component {
   };
   render() {
     return (
-      <Row>
-        <Col>
-          <Form>
-            <Form.Group controlId="uploadForm">
-              {this.state.generateForm ? this.generateForm() : null}
-              <Button onClick={this.submitForm}>Submit</Button>
-            </Form.Group>
-          </Form>
-        </Col>
-      </Row>
+      <Col>
+        <Form>
+          {this.state.generateForm ? this.generateForm() : null}
+          <Form.Group>
+            <Button className="button" onClick={this.submitForm}>
+              Submit
+            </Button>
+          </Form.Group>
+        </Form>
+        <TransactionModal showModal={this.state.showModal} />
+      </Col>
     );
   }
 }

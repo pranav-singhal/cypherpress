@@ -13,7 +13,11 @@ import DelegateInput from "./DelegateInput";
 import DataType from "./DataType";
 import "../../App.scss";
 import TransactionModal from "../TransactionModal";
-import { deployContract } from "../../connections/web3Dev";
+import {
+  deployContract,
+  connectToContract,
+  deligateAccess
+} from "../../connections/web3Dev";
 import { setClientJson } from "../../connections/httpInteractions";
 
 export default class CreateAppForm extends React.Component {
@@ -80,8 +84,7 @@ export default class CreateAppForm extends React.Component {
     const callingObject = {
       verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
         this.setState({ transaction, gasInEth, transactionName });
-        window.modalCallBack = callback;
-
+        callback();
         this.setState({ showModal: true });
       },
       transactionMining: hash => {
@@ -91,10 +94,12 @@ export default class CreateAppForm extends React.Component {
         console.log("insufficientFunds");
       }
     };
+    this.setState({ showModal: true });
     const contractAddress = await deployContract(
       adminPrivateKey,
       callingObject
     );
+    this.setState({ showModal: false });
     await fetch("http://localhost:5000/setContractAddress", {
       method: "POST",
       body: JSON.stringify({
@@ -108,12 +113,43 @@ export default class CreateAppForm extends React.Component {
     window.open(`/client-app/${this.appNameRef.current.value}`, "_blank");
     //create a clientJson and store it in localstorage
   };
-  addDelegate = () => {
+  addDelegate = async () => {
+    await connectToContract(localStorage.getItem("contractAddress"));
     const newDelegate = `input-${this.state.delegates.length + 1}`;
     this.setState(prevState => ({
       delegates: prevState.delegates.concat([newDelegate])
     }));
-    console.log(this.delegateButton);
+    this.state.delegateInfo.map(async (delegate, id) => {
+      if (delegate.username === "") {
+        return;
+      } else {
+        const callingObject = {
+          verifyTransaction: (
+            transaction,
+            gasInEth,
+            transactionName,
+            callback
+          ) => {
+            this.setState({ transaction, gasInEth, transactionName });
+            console.log("inside deligteeacesss");
+            callback();
+          },
+          transactionMining: hash => {
+            console.log("hash:", hash);
+          },
+          insufficientFunds: () => {
+            console.log("insufficientFunds");
+          }
+        };
+        this.setState({ showModal: true });
+        await deligateAccess(
+          delegate.username,
+          this.adminPrivateKeyRef.current.value,
+          callingObject
+        );
+        this.setState({ showModal: false });
+      }
+    });
   };
 
   setDelegateInfo = delegateInfo => {
@@ -181,7 +217,9 @@ export default class CreateAppForm extends React.Component {
                 <Col md={12}>
                   <Row>
                     <Col md={12}>
-                      <h2>Add DataFields</h2>
+                      <h2>
+                        <Form.Label>Add DataFields</Form.Label>
+                      </h2>
                     </Col>
                     <Form.Text>
                       You can store PlainText data where you need to supply a
@@ -211,9 +249,16 @@ export default class CreateAppForm extends React.Component {
                   />
                 </Col>
               </Row>
+              <Button
+                variant="primary"
+                type="submit"
+                className="RenderAppButton"
+              >
+                Render App
+              </Button>
 
               <Row>
-                {/* <Col md={12}>
+                <Col md={12}>
                   {this.state.delegates.map((input, id) => {
                     return (
                       <DelegateInput
@@ -230,22 +275,15 @@ export default class CreateAppForm extends React.Component {
                 </Col>
                 <Col>
                   <Button
+                    className="button"
                     variant="primary"
                     onClick={this.addDelegateInfo}
                     disabled={this.state.delegateButtonState}
                   >
                     Add a delegate
                   </Button>
-                </Col>*/}
-                <Col sm={12}>
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    className="RenderAppButton"
-                  >
-                    Render App
-                  </Button>
                 </Col>
+                <Col sm={12} />
               </Row>
             </Form>
           </Col>
@@ -255,12 +293,7 @@ export default class CreateAppForm extends React.Component {
             this.setState({ showModal: bool });
           }}
           showModal={this.state.showModal}
-          transaction={this.state.transaction}
           gasInEth={this.state.gasInEth}
-          transactionName={this.state.transactionName}
-          completeTransaction={() => {
-            window.modalCallBack();
-          }}
         />
       </Container>
     );

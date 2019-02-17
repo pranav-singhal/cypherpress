@@ -48,8 +48,9 @@ export default class ClientApp extends React.Component {
       );
     }
     return (
-      <Container>
+      <Container className="clientApp">
         <Header
+          className="header"
           changePanel={panel => {
             this.setPanel(panel);
           }}
@@ -59,11 +60,13 @@ export default class ClientApp extends React.Component {
             <h1 className="title"> {this.state.appname}</h1>{" "}
           </Col>
         </Row>
-        {this.state.panel === "UploadPanel" ? (
-          <UploadPanel appName={this.props.match.params.appname} />
-        ) : (
-          <ViewPanel appName={this.props.match.params.appname} />
-        )}
+        <Row>
+          {this.state.panel === "UploadPanel" ? (
+            <UploadPanel appName={this.props.match.params.appname} />
+          ) : (
+            <ViewPanel appName={this.props.match.params.appname} />
+          )}
+        </Row>
       </Container>
     );
   }

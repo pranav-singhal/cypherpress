@@ -1,14 +1,19 @@
 import React from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Col } from "react-bootstrap";
 import {
   getDelegatees,
   isDelegatee,
   grantDocumentAccess
 } from "../../connections/Controller";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import TransactionModal from "../TransactionModal";
 export default class Document extends React.Component {
   state = {
     delegatees: [],
-    selectedDelegatees: []
+    selectedDelegatees: [],
+    flipped: false,
+    showModal: false
   };
 
   async componentDidMount() {
@@ -17,19 +22,22 @@ export default class Document extends React.Component {
       await this.fetchDelegatees();
     }
   }
-  displayData = data => {
-    console.log("data:", data);
+  displayData = (data, id) => {
     if (!data.isFile) {
       return (
-        <p key={data.name}>
-          {data.name} <i>{data.value}</i>
-        </p>
+        <div key={data.name + id.toString()} clasName="documentFields">
+          <h5>{data.name}</h5>
+          <i>{data.value}</i>
+        </div>
       );
     } else {
       return (
-        <a href={data.value} target="_blank">
-          {data.name}
-        </a>
+        <div key={data.name + id.toString()} clasName="documentFields">
+          <a href={data.value} target="_blank">
+            <FontAwesomeIcon icon="link" />
+            {data.name}
+          </a>
+        </div>
       );
     }
   };
@@ -51,6 +59,7 @@ export default class Document extends React.Component {
       }
     };
     this.state.selectedDelegatees.forEach(async delegatee => {
+      this.setState({ showModal: true });
       await grantDocumentAccess(
         this.props.documentId,
         alicePrivateKey,
@@ -60,6 +69,7 @@ export default class Document extends React.Component {
         aliceEthereumPrivateKey,
         callingObject
       );
+      this.setState({ showModal: false });
     });
   };
   fetchDelegatees = async () => {
@@ -94,33 +104,51 @@ export default class Document extends React.Component {
       this.setState({ selectedDelegatees: newDelegates });
     }
   };
+  flip = () => {
+    this.setState(prevState => ({ flipped: !prevState.flipped }));
+    console.log(this.state.flipped);
+  };
   render() {
     return (
-      <React.Fragment>
+      <Col md={3} className="document">
+        <section class="container">
+          <div
+            className={this.state.flipped ? "card flipped" : "card flipper"}
+            onClick={this.flip}
+          >
+            <div class="front">
+              {this.props.dataArray.map((data, id) => {
+                return this.displayData(data, id);
+              })}
+            </div>
+            <div class="back">
+              Select the delegatess from below
+              <br />
+              {this.state.delegatees.map((delegate, id) => {
+                return (
+                  <Form.Check
+                    type="checkbox"
+                    label={delegate}
+                    key={delegate + id.toString()}
+                    name={delegate}
+                    onChange={this.handleSelect}
+                  />
+                );
+              })}
+              {this.props.fetchedData
+                ? null
+                : [
+                    this.state.delegatees.length > 0 ? (
+                      <Button onClick={this.setDelegatees}>Grant access</Button>
+                    ) : null
+                  ]}
+            </div>
+          </div>
+        </section>
+
         <hr />
-        {this.props.dataArray.map((data, id) => {
-          return this.displayData(data);
-        })}
-        <h1>Select the delegatess from below</h1>
-        {this.state.delegatees.map((delegate, id) => {
-          return (
-            <Form.Check
-              type="checkbox"
-              label={delegate}
-              key={delegate + id}
-              name={delegate}
-              onChange={this.handleSelect}
-            />
-          );
-        })}
-        {this.props.fetchedData
-          ? null
-          : [
-              this.state.delegatees.length > 0 ? (
-                <Button onClick={this.setDelegatees}>Grant access</Button>
-              ) : null
-            ]}
-      </React.Fragment>
+        <TransactionModal showModal={this.state.showModal} />
+      </Col>
     );
   }
 }

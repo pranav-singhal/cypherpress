@@ -22,21 +22,18 @@ h1.main {
     text-align: center;
     font-size: 2em;
   }
-  .button {
-    display: block;
-    margin: 0 auto;
-    background-color: black;
-    border-color: white;
-  }
+}
+.button {
+  display: block;
+  margin: 0 auto;
+  background-color: black;
+  border-color: white;
 }
 .devApp {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding-top: 10px;
   font-family: "Roboto";
-  h2 {
-    text-align: center;
-    width: 100%;
-  }
+
   .form-text {
     text-align: center;
   }
@@ -71,6 +68,106 @@ h1.main {
       border: none;
       margin-bottom: 50px;
       width: 100%;
+    }
+  }
+}
+h2 {
+  text-transform: capitalize;
+  text-align: center;
+  width: 100%;
+}
+.clientApp {
+  h2 {
+    text-align: left;
+    padding-left: 12px;
+  }
+  .header {
+    .navbar {
+      background-color: black !important;
+      a {
+        color: white !important;
+        text-transform: capitalize;
+        margin-right: 100px;
+      }
+    }
+  }
+  .custom-file-label {
+    background: rgb(233, 236, 239);
+    color: grey;
+    text-transform: capitalize;
+  }
+  .button {
+    width: 100%;
+  }
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding-top: 10px;
+  font-family: "Roboto";
+  h1.title {
+    margin: 50px 0;
+  }
+  input:focus,
+  .form-control:focus {
+    box-shadow: none;
+    border: none;
+  }
+
+  input {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    background: rgb(233, 236, 239);
+  }
+  .form-control {
+    background: rgb(233, 236, 239);
+    border-top: none;
+    border-left: none;
+    border-right: none;
+  }
+}
+.viewClientApp {
+  .document {
+    .container {
+      width: 100%;
+
+      height: 300px;
+
+      position: relative;
+
+      perspective: 800px;
+    }
+    .card {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      background: rgb(233, 236, 239);
+      transition: transform 1s;
+      transform-style: preserve-3d;
+      -webkit-transform-origin: 50% 50%;
+
+      .front,
+      .back {
+        display: block;
+        // height: 100%;
+        width: 100%;
+
+        position: absolute;
+        backface-visibility: hidden;
+      }
+    }
+
+    .card .front {
+      backface-visibility: hidden;
+      .documentFields {
+        padding-left: 14px;
+      }
+    }
+    .card .back {
+      transform: rotateY(180deg);
+    }
+    .flipped {
+      transform: rotateY(-180deg);
     }
   }
 }
