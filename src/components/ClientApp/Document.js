@@ -25,19 +25,19 @@ export default class Document extends React.Component {
   displayData = (data, id) => {
     if (!data.isFile) {
       return (
-        <div key={data.name + id.toString()} clasName="documentFields">
-          <h5>{data.name}</h5>
-          <i>{data.value}</i>
-        </div>
+        <li key={data.name + id.toString()} className="documentFields">
+          <h5>{data.name}</h5> : <i>{data.value}</i>
+        </li>
       );
     } else {
       return (
-        <div key={data.name + id.toString()} clasName="documentFields">
+        <li key={data.name + id.toString()} className="documentFields">
+          File : &nbsp;
           <a href={data.value} target="_blank">
             <FontAwesomeIcon icon="link" />
             {data.name}
           </a>
-        </div>
+        </li>
       );
     }
   };
@@ -117,24 +117,29 @@ export default class Document extends React.Component {
             onClick={this.flip}
           >
             <div class="front">
-              {this.props.dataArray.map((data, id) => {
-                return this.displayData(data, id);
-              })}
+              <ul>
+                {this.props.dataArray.map((data, id) => {
+                  return this.displayData(data, id);
+                })}
+              </ul>
             </div>
             <div class="back">
-              Select the delegatess from below
+              <h5>Select the delegates from below</h5>
+
               <br />
-              {this.state.delegatees.map((delegate, id) => {
-                return (
-                  <Form.Check
-                    type="checkbox"
-                    label={delegate}
-                    key={delegate + id.toString()}
-                    name={delegate}
-                    onChange={this.handleSelect}
-                  />
-                );
-              })}
+              <ul>
+                {this.state.delegatees.map((delegate, id) => {
+                  return (
+                    <Form.Check
+                      type="checkbox"
+                      label={delegate}
+                      key={delegate + id.toString()}
+                      name={delegate}
+                      onChange={this.handleSelect}
+                    />
+                  );
+                })}
+              </ul>
               {this.props.fetchedData
                 ? null
                 : [

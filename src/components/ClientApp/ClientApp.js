@@ -56,8 +56,9 @@ export default class ClientApp extends React.Component {
           }}
         />
         <Row>
-          <Col>
+          <Col className="title">
             <h1 className="title"> {this.state.appname}</h1>{" "}
+            <span> Powered By: CypherPress</span>
           </Col>
         </Row>
         <Row>
