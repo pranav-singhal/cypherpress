@@ -9,6 +9,7 @@
 /coverage
 
 # production
+/.idea/
 /build
 /ubmbral/__pycache__/
 # misc
