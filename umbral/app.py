@@ -133,7 +133,7 @@ def encryptData():
     data['message'] = message_kit_bytes.hex()
     data['label'] = label.decode('utf-8')
     data['policy_public_key'] = policy_pubkey.to_bytes().hex()
-    data['alice_sig_pubkey"'] = bytes(alicia.stamp).hex()
+    data['alice_sig_pubkey'] = bytes(alicia.stamp).hex()
     data['data_source'] = bytes(enrico.stamp).hex()
 
 
