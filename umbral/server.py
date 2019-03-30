@@ -19,8 +19,8 @@ def string_to_bytes(s):
 uconfig.set_default_curve()
 app = Flask(__name__)
 CORS(app)
-@app.route("/generateKeys",methods=['GET'])
 
+@app.route("/generateKeys",methods=['GET'])
 def generateKeys():
     alices_private_key = keys.UmbralPrivateKey.gen_key()
     alices_public_key = alices_private_key.get_pubkey()
@@ -32,6 +32,7 @@ def generateKeys():
     data['aliceSigning'] = bytes_to_string(alices_signing_key.to_bytes())
     data['aliceVerifying'] = bytes_to_string(alices_verifying_key.to_bytes())
     return jsonify(data)
+
 @app.route('/encryptData',methods=['POST'])
 def encryptData():
     print('data')
