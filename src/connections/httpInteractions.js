@@ -1,5 +1,7 @@
 import axios from "axios";
 let url = "http://localhost:5000";
+
+// Updated according to new flask server
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
@@ -10,17 +12,25 @@ let url = "http://localhost:5000";
                                 aliceSigner
                            }
  */
-async function generateKeyPairs() {
-  let content = await axios.get(url + "/generateKeys");
+async function generateKeyPairs(_username, _password) {
+  if (_password.length < 16) {
+    console.log("Password should be more than 16 characters");
+    return null;
+  }
+
+  let content = await axios.post(url + "/generateKeys", {
+    username: _username,
+    password: _password
+  });
+
   content = content.data;
   return {
-    alicePrivateKey: content.alicePrivate,
-    alicePublicKey: content.alicePublic,
-    aliceSigningKey: content.aliceSigning,
-    aliceVerifyingKey: content.aliceVerifying
+    aliceKey: content.alice,
+    bobKey: content.bob
   };
 }
 
+// Updated according to new flask server
 /*
     Function to encrypt ipfs hash using pyUmbral
     @param {string} _hash : ipfs hash of the data uploaded
@@ -30,18 +40,25 @@ async function generateKeyPairs() {
                                 capsule
                                 }
  */
-async function encryptData(_hash, _alicePublicKey) {
+async function encryptData(_username, _password, _hash, _aliceKey, _label) {
   let content = await axios.post(url + "/encryptData", {
-    alices_public_key: _alicePublicKey,
-    hash: _hash
+    username: _username,
+    password: _password,
+    hash: _hash,
+    alice: _aliceKey,
+    label: _label
   });
   content = content.data;
   return {
-    cipherText: content.cipherText,
-    capsule: content.capsule
+    messageKit: content.message,
+    label: content.label,
+    policyPubKey: content.policy_public_key,
+    aliceSigKey: content.alice_sig_pubkey,
+    dataSource: content.data_source
   };
 }
 
+// Updated according to new flask server
 /*
     Function to create a new Policy using pyUmbral
     @param {string} _alicePrivateKey
@@ -49,17 +66,19 @@ async function encryptData(_hash, _alicePublicKey) {
     @param {string} _bobPublicKey
     @return {string} policyId of the delegation
 */
-async function createPolicy(_alicePrivateKey, _aliceSigningKey, _bobPublicKey) {
+async function createPolicy(_password, _bobName, _aliceKeys, _label) {
   let content = await axios.post(url + "/createPolicy", {
-    alices_private_key: _alicePrivateKey,
-    alices_signing_key: _aliceSigningKey,
-    bobs_public_key: _bobPublicKey
+    password: _password,
+    bob: _bobName,
+    alice: _aliceKeys,
+    label: _label
   });
   console.log("content:", content);
   return {
-    policyId: content.data.toString()
+    done: true
   };
 }
+
 export async function getContractAddress(dappName) {
   let contractAddress = await axios.post(url + "/getContractAddress", {
     dappName: dappName
@@ -79,6 +98,8 @@ export async function getClientJson(dappName) {
   console.log("Res", res);
   return res.data;
 }
+
+// Updated according to new flask server
 /*
     Function to decrypt uploaded Document
     @param {string} _cipherText
@@ -86,15 +107,21 @@ export async function getClientJson(dappName) {
     @param {string} _alicePrivateKey
     @return {string} hash : ipfs hash of the document to be fetched
  */
-async function decryptUploadedDocument(
-  _cipherText,
-  _capsule,
-  _alicePrivateKey
+async function decryptDocument(
+  _bobKeys,
+  _policyPubKey,
+  _aliceSigKey,
+  _label,
+  _messageKit,
+  _data_source
 ) {
-  let content = await axios.post(url + "/decryptUploaded", {
-    alices_private_key: _alicePrivateKey,
-    capsule: _capsule,
-    cipherText: _cipherText
+  let content = await axios.post(url + "/decryptDelegated", {
+    bobKeys: _bobKeys,
+    policy_public_key: _policyPubKey,
+    alice_sig_pubkey: _aliceSigKey,
+    label: _label,
+    message: _messageKit,
+    data_source: _data_source
   });
   return {
     hash: content.data
@@ -112,6 +139,7 @@ async function decryptUploadedDocument(
     @param {string} _policyId
     @return {string} hash : ipfs hash of the document to be fetched
  */
+/*
 async function decryptDeligatedDocument(
   _alicePublicKey,
   _aliceVerifyKey,
@@ -135,7 +163,7 @@ async function decryptDeligatedDocument(
     hash: content.data
   };
 }
-
+*/
 // async function testing() {
 //     console.log(await encryptData('hello 1111', 'A9/F09ny8rzKFP5vutqJgddo83M0rqsZST4hd+D9cTXA'));
 //     console.log(await createPolicy('XzCwNou8Q0oS3ZyO84UUcYfeEnFECqYRR0nLFfZ9ei8=', 'WKcxN1Jh/Lu42hDN70tm4Qq/vtxiajaGAbc4vJvOF34=', 'Ak70lJFy656wf0SY9ddAKqdn4acxaDODYSrHVrqRxLLs'))
@@ -150,10 +178,4 @@ async function decryptDeligatedDocument(
 //
 // testing();
 
-export {
-  generateKeyPairs,
-  encryptData,
-  decryptDeligatedDocument,
-  decryptUploadedDocument,
-  createPolicy
-};
+export { generateKeyPairs, encryptData, decryptDocument, createPolicy };
