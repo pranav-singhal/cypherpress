@@ -24,7 +24,7 @@ from umbral.keys import UmbralPrivateKey, UmbralPublicKey
 from umbral.keys import UmbralPrivateKey, UmbralPublicKey
 
 # Flask imports
-from flask import Flask,jsonify,request, Response
+from flask import Flask,jsonify,request, Response, send_file
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -87,18 +87,37 @@ def generateKeys():
 
 @app.route('/encryptData',methods=['POST'])
 def encryptData():
-    print('data')
-    print(request.data.decode('utf-8'))
-    print('data\n\n')
-    json_data = json.loads(request.data.decode('utf-8'))
-    hash = json_data['hash']
+
+
+
+    # print('data')
+    # print(request.data.decode('utf-8'))
+    # print('data\n\n')
+    # json_data = json.loads(request.data.decode('utf-8'))
+    # hash = json_data['hash']
+    # aliceFile = json_data['alice']
+    # # username = json_data['username']
+    # password = json_data['password']
+    # label = json_data['label']
+    #
+    # label = label.encode()
+    # print ('93\t' + hash)
+
+
+
+    # Test
+    file = request.files['photo'].read()
+    json_data = request.form.to_dict()
+    rest_data = json_data['restData']
+    # json_data = json.loads(request.data.decode('utf-8'))
+    # hash = json_data['hash']
     aliceFile = json_data['alice']
     # username = json_data['username']
     password = json_data['password']
     label = json_data['label']
-
     label = label.encode()
-    # print ('93\t' + hash)
+    # Test end
+
 
     alice_config = AliceConfiguration.from_configuration_file(
         filepath=aliceFile,
@@ -266,7 +285,20 @@ def decryptDelegated():
         alice_verifying_key=alices_sig_pubkey
     )
 
+
+
     plaintext = msgpack.loads(retrieved_plaintexts[0], raw=False)
+
+    print ('\n\nplainText')
+    print (type(plaintext))
+
+    f = open('/tmp/out', 'wb')
+    f.write(plaintext)
+    f.close()
+
+
+    print ('\n\nfile')
+    print (type(f))
 
     data = {
         "plainText" : plaintext
@@ -275,9 +307,20 @@ def decryptDelegated():
     return jsonify(data)
 
 
+@app.route('/decrypted/', methods=['GET'])
+def decrypted():
+    send_file('/tmp/out', attachment_filename='success.jpeg')
+    os.remove('/tmp/out')
+    return '0'
 
 
-
+@app.route('/encrypt', methods=['POST'])
+def encrypt():
+    # json_data = json.loads(request.data.decode('utf-8'))
+    # print (request.data.fil)
+    print (request.files['photo'].read())
+    print (request.form.to_dict())
+    return "he"
 
 
 
