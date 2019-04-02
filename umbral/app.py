@@ -87,35 +87,52 @@ def generateKeys():
 
 @app.route('/encryptData',methods=['POST'])
 def encryptData():
-
-
-
-    # print('data')
-    # print(request.data.decode('utf-8'))
-    # print('data\n\n')
-    # json_data = json.loads(request.data.decode('utf-8'))
-    # hash = json_data['hash']
-    # aliceFile = json_data['alice']
-    # # username = json_data['username']
-    # password = json_data['password']
-    # label = json_data['label']
+    # { the object received in the request
+    #     "fileFieldCount": 2,
+    #     "textFieldCount": 2,
+    #     "0": "1st File",
+    #     "1": "2nd File",
+    #     "fileNames  (stringified)": {
+    #         "0": "blood",
+    #         "1": "2nd File Name"
+    #     },
+    #     "textFields (stringified)": {
+    #         "age": "18",
+    #         "name": "arvind"
+    #     }
     #
-    # label = label.encode()
-    # print ('93\t' + hash)
-
-
-
-    # Test
-    file = request.files['photo'].read()
+    #     "username": "arvind",
+    #     "password": "TEST_ALICIA_INSECURE_DEVELOPMENT_PASSWORD",
+    #     "hash": "",
+    #     "alice": "/home/arvind/Documents/ethDenver/umbral/alice/arvind/alice.config",
+    #     "label": "1stlabel"
+    #
+    # }
     json_data = request.form.to_dict()
-    rest_data = json_data['restData']
-    # json_data = json.loads(request.data.decode('utf-8'))
-    # hash = json_data['hash']
+    fileFieldCount= json_data['fileFieldCount']
+    # textFieldCount = json_data['textFieldCount']
+    # object that contains the files
+    file_obj={}
+    # object that contains all the other form fields
+    form_field_obj ={}
+    for i in range(0,fileFieldCount):
+        file_obj[json_data.fileName[str(i)]] = request.files[str(i)].read()
+
+    textFields = list(json_data.textFields.keys())
+    for key in textFields:
+      form_field_obj[key] = json_data.textFields[key]
+
+
+    data_obj = {}
+    data_obj['file_obj'] = file_obj
+    data_obj['form_field_obj'] = form_field_obj
+    label = json_data['label']
     aliceFile = json_data['alice']
     # username = json_data['username']
     password = json_data['password']
-    label = json_data['label']
+
     label = label.encode()
+    hash = data_obj
     # Test end
 
 
@@ -219,11 +236,20 @@ def createPolicy():
 @app.route('/decryptDelegated', methods=['POST'])
 def decryptDelegated():
     # Fetch Request Data
+    # {
+    #     "bobKeys": "{\"enc\": \"40f05590a27491caf37049366fefd43e46034e4308f4f1fd233c166bc3980ab4\", \"sig\": \"3bcf21d3cb160118b499a883023569c60476f8731bd9eade11016c5030c1ca5d\"}",
+    #     "policy_public_key": "02aef01b40c0a62a9a1f650dd9a8381695e21a7b3826c748a5b64831aa0dd9862c",
+    #     "alice_sig_pubkey": "036c5d361000e6fbf3c4a84c98f924a3206e8a72c758a67e8300b5bee111b5fa97",
+    #     "label": "1stlabel",
+    #     "message": "messagekit",
+    #     "data_source": "03a38eef9fd09c9841585dea93791e139a3003d540539673c8c719af55e46c0c1b",
+    # }
     json_data = json.loads(request.data.decode('utf-8'))
     bob_private_keys = json.loads(json_data['bobKeys'])
     policy_public_key = json_data['policy_public_key']
     alice_signing_key = json_data['alice_sig_pubkey']
     label = json_data['label']
+    username = json_data['username']
     message = json_data['message']
     data_source = json_data['data_source']
 
@@ -234,7 +260,7 @@ def decryptDelegated():
     sig = UmbralPrivateKey.from_bytes(bytes.fromhex(bob_private_keys["sig"]))
 
     signingPublic = sig.get_pubkey()
-    bobFilePath = os.path.join(os.getcwd(), 'bob/' + 'pranav' + '.json')
+    bobFilePath = os.path.join(os.getcwd(), 'bob/' + username + '.json')
     doctor_pubkeys = _get_keys(bobFilePath, UmbralPublicKey)
     print (signingPublic == doctor_pubkeys['sig'])
     print (signingPublic)
@@ -285,31 +311,62 @@ def decryptDelegated():
         alice_verifying_key=alices_sig_pubkey
     )
 
+    # the object to be sent back to front end
 
+    # {
+    #     "fileFieldCount": 2,
+    #     "textFieldCount": 2,
+    #     "files  (stringified)": {
+    #         "fileKey1": "fileUrl1",
+    #         "fileKey2": "fileUrl2"
+    #     },
+    #     "textFields (stringified)": {
+    #         "age": "18",
+    #         "name": "arvind"
+    #     }
+    #  }
 
     plaintext = msgpack.loads(retrieved_plaintexts[0], raw=False)
 
-    print ('\n\nplainText')
-    print (type(plaintext))
+    # print ('\n\nplainText')
+    # print (plaintext['file1'])
 
-    f = open('/tmp/out', 'wb')
-    f.write(plaintext)
-    f.close()
+    # the object from plaintext
+    decrypted_obj = json.loads(plaintext)
+
+    file_obj = decrypted_obj['file_obj']
+    form_field_obj = decrypted_obj['form_field_obj']
+
+    data_obj = {}
+    data_obj['fileFieldCount'] = len(file_obj.key())
+    data_obj['textFieldCount'] = len(form_field_obj.key())
+    fileNameArray = list(file_obj.keys())
+    files = {}
+    for fileName in fileNameArray:
+        file_url = '/temp/' + fileName
+        f = open(file_url)
+        f.write(file_obj[fileName])
+        f.close()
+        files[fileName] = file_url
+
+    data_obj['files'] = files
+
+    textFieldLabelArray = list(form_field_obj.key())
+    textFields = {}
+    for label in textFieldLabelArray:
+        textFields[label] = form_field_obj[label]
+
+    data_obj['textFields'] = textFields
 
 
-    print ('\n\nfile')
-    print (type(f))
-
-    data = {
-        "plainText" : plaintext
-    }
-
-    return jsonify(data)
+    return data_obj
 
 
-@app.route('/decrypted/', methods=['GET'])
+@app.route('/decrypted/?', methods=['GET'])
 def decrypted():
-    send_file('/tmp/out', attachment_filename='success.jpeg')
+    fileName = request.args.get('fileName')
+
+    send_file('/tmp/' + fileName, attachment_filename='success.jpeg')
     os.remove('/tmp/out')
     return '0'
 
