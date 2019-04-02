@@ -88,7 +88,9 @@ def generateKeys():
     json_data = json.loads(request.data.decode('utf-8'))
 
     # Fetch username and password
+
     username = json_data['username']
+    print (username, "username")
     password = json_data['password']
 
     # directory to store alice keys
@@ -144,13 +146,16 @@ def encryptData():
     #
     # }
     json_data = request.form.to_dict()
-    fileFieldCount= json_data['fileFieldCount']
+    fileFieldCount= int(json_data['fileFieldCount'])
     # textFieldCount = json_data['textFieldCount']
     # object that contains the files
     file_obj={}
     # object that contains all the other form fields
     form_field_obj ={}
-    for i in range(0,fileFieldCount):
+    print("requetssss ------")
+    print(request.files.to_dict())
+    print(request.form.to_dict())
+    for i in range(0, fileFieldCount):
         file_obj[json_data.fileName[str(i)]] = request.files[str(i)].read()
 
     textFields = list(json_data.textFields.keys())
