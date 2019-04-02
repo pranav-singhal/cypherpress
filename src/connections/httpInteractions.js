@@ -40,14 +40,40 @@ async function generateKeyPairs(_username, _password) {
                                 capsule
                                 }
  */
-async function encryptData(_username, _password, _hash, _aliceKey, _label) {
-  let content = await axios.post(url + "/encryptData", {
-    username: _username,
-    password: _password,
-    hash: _hash,
-    alice: _aliceKey,
-    label: _label
+async function encryptData(_username, _password, _aliceKey, _label, _array) {
+  let form = new FormData();
+  let files = 0;
+  let texts = 0;
+  let fileNames = {};
+  let textFields = {};
+  for (let i = 0; i < _array.length; i++) {
+    let element = _array[i];
+    if (element.isFile === true) {
+      let fileBuffer = element.value;
+      form.append(files.toString(), fileBuffer);
+      fileNames[files.toString()] = element.key;
+      files++;
+    } else {
+      textFields[element.key] = element.value;
+      texts++;
+    }
+  }
+
+  form.append("fileFieldCount", files.toString());
+  form.append("textFieldCount", texts.toString());
+  form.append("fileNames", JSON.stringify(fileNames));
+  form.append("textFields", JSON.stringify(textFields));
+  form.append("username", _username);
+  form.append("password", _password);
+  form.append("alice", _aliceKey);
+  form.append("label", _label);
+
+  let content = await axios.post(url + "/encryptData", form, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
   });
+
   content = content.data;
   return {
     messageKit: content.message,
@@ -113,19 +139,59 @@ async function decryptDocument(
   _aliceSigKey,
   _label,
   _messageKit,
-  _data_source
+  _data_source,
+  _requestedObject
 ) {
+  // creating Request Object
+  let numFiles = 0;
+  let fileNames = [];
+  let numText = 0;
+  let textNames = [];
+  for (let i = 0; i < _requestedObject.length; i++) {
+    let curr = _requestedObject[i];
+    if (curr.isFile) {
+      numFiles++;
+      fileNames.push(curr.name);
+    } else {
+      numText++;
+      textNames.push(curr.name);
+    }
+  }
+
   let content = await axios.post(url + "/decryptDelegated", {
     bobKeys: _bobKeys,
     policy_public_key: _policyPubKey,
     alice_sig_pubkey: _aliceSigKey,
     label: _label,
     message: _messageKit,
-    data_source: _data_source
+    data_source: _data_source,
+    fileFieldCount: numFiles,
+    textFieldCount: numText,
+    filesKeys: fileNames,
+    textkeys: textNames
   });
-  return {
-    hash: content.data
-  };
+
+  let dataArrayToBeReturned = [];
+  for (let i = 0; i < _requestedObject.length; i++) {
+    if (_requestedObject[i].isFile === true) {
+      let url = content.files[_requestedObject[i].name];
+      let objToBePushed = {
+        isFile: true,
+        name: _requestedObject[i].name,
+        value: url
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    } else {
+      let objToBePushed = {
+        isFile: false,
+        name: _requestedObject[i].name,
+        value: content.textFields[_requestedObject[i].name]
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    }
+  }
+
+  return dataArrayToBeReturned;
 }
 
 /*
