@@ -14,6 +14,7 @@ export default class LoginForm extends React.Component {
     super(props);
     this.usernameRef = React.createRef();
     this.privateKeyRef = React.createRef();
+    this.passwordRef = React.createRef();
   }
   async componentWillMount() {
     // const contractAddress = localStorage.getItem("contractAddress");
@@ -23,6 +24,7 @@ export default class LoginForm extends React.Component {
   setUser = async event => {
     event.preventDefault();
     const username = this.usernameRef.current.value;
+    const password = this.passwordRef.current.value;
     const usernameAvailable = await checkUsernameAvailability(username);
     if (usernameAvailable) {
       const privateKey = this.privateKeyRef.current.value;
@@ -45,17 +47,16 @@ export default class LoginForm extends React.Component {
       };
       this.setState({ showModal: true });
       let {
-        alicePrivateKey,
-        alicePublicKey,
-        aliceSigningKey,
-        aliceVerifyingKey
-      } = await signUpAndGetNucypherKeys(username, privateKey, callingObject);
+        aliceKey,
+        bobKey
+      } = await signUpAndGetNucypherKeys(username, privateKey, password, callingObject);
       this.setState({ showModal: false });
-      localStorage.setItem("alicePrivateKey", alicePrivateKey);
-      localStorage.setItem("alicePublicKey", alicePublicKey);
-      localStorage.setItem("aliceSigningKey", aliceSigningKey);
-      localStorage.setItem("aliceVerifyingKey", aliceVerifyingKey);
 
+
+
+      localStorage.setItem('aliceKey', aliceKey);
+      localStorage.setItem('bobKey', bobKey);
+      localStorage.setItem('password',password)
       localStorage.setItem("username", username);
       localStorage.setItem("privateKey", privateKey);
       window.location.reload();
@@ -93,6 +94,20 @@ export default class LoginForm extends React.Component {
                   Please enter your Private Key(We will not share it with
                   anyone)
                 </Form.Text>
+              </Form.Group>
+              <Form.Group controlId='password'>
+                <Form.Label> Password</Form.Label>
+                  <Form.Control
+                      type='text'
+                      placeholder={'enter a password'}
+                      ref={this.passwordRef}
+                  />
+                <Form.Text>
+                  Please enter a password
+                </Form.Text>
+
+
+
               </Form.Group>
 
               <Button variant="primary" type="submit" onClick={this.setUser}>

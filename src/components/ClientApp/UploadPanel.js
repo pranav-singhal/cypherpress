@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Button, File } from "react-bootstrap";
-import { uploadDocument } from "../../connections/Controller";
+import {createRandomHex, uploadDocument} from "../../connections/Controller";
 import { getClientJson } from "../../connections/httpInteractions";
 import TransactionModal from "../TransactionModal";
 export default class UploadPanel extends React.Component {
@@ -18,10 +18,11 @@ export default class UploadPanel extends React.Component {
     // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
   }
   async componentDidMount() {
-    const clientAppJson = await getClientJson(this.props.appName);
+    // const clientAppJson = await getClientJson(this.props.appName);
+    const clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
     this.setState({ clientAppJson: clientAppJson });
-    this.addFormFields();
+    this.addFormFields(clientAppJson.dataInfo);
     this.setState({ generateForm: true });
   }
   getDelegates = () => {
@@ -30,8 +31,9 @@ export default class UploadPanel extends React.Component {
   getDataInfo = () => {
     return this.state.clientAppJson.dataInfo;
   };
-  addFormFields = () => {
-    const dataInfo = this.getDataInfo();
+  addFormFields = (dataInfo) => {
+    // const dataInfo = this.getDataInfo();
+    console.log(dataInfo,'dataInfo')
     dataInfo.map((field, id) => {
       const newField = {
         fieldName: field.fieldName,
@@ -82,6 +84,10 @@ export default class UploadPanel extends React.Component {
     const alicePublicKey = localStorage.getItem("alicePublicKey");
     const privateKey = localStorage.getItem("privateKey");
     const aliceVerifyingKey = localStorage.getItem("aliceVerifyingKey");
+    const password = localStorage.getItem('password');
+    const aliceKey = localStorage.getItem('aliceKey');
+    const label = createRandomHex(10);
+
     const callingObject = {
       verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
         console.log(transaction, gasInEth, transactionName);
@@ -103,9 +109,10 @@ export default class UploadPanel extends React.Component {
     await uploadDocument(
       array,
       username,
-      alicePublicKey,
+      password,
+      aliceKey,
+      label,
       privateKey,
-      aliceVerifyingKey,
       callingObject
     );
 

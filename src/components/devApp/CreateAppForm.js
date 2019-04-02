@@ -77,7 +77,8 @@ export default class CreateAppForm extends React.Component {
     clientAppJson.dataInfo = this.state.dataInfo;
     clientAppJson.delegateInfo = this.state.delegateInfo;
     localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
-    await setClientJson(this.appNameRef.current.value, clientAppJson);
+    // await setClientJson(this.appNameRef.current.value, clientAppJson);
+
     // get private key
     // deploy contract function
     const adminPrivateKey = this.adminPrivateKeyRef.current.value;
@@ -100,13 +101,13 @@ export default class CreateAppForm extends React.Component {
       callingObject
     );
     this.setState({ showModal: false });
-    await fetch("http://localhost:5000/setContractAddress", {
-      method: "POST",
-      body: JSON.stringify({
-        contractAddress: contractAddress,
-        dappName: this.appNameRef.current.value
-      })
-    });
+    // await fetch("http://localhost:5000/setContractAddress", {
+    //   method: "POST",
+    //   body: JSON.stringify({
+    //     contractAddress: contractAddress,
+    //     dappName: this.appNameRef.current.value
+    //   })
+    // });
     await localStorage.setItem("contractAddress", contractAddress);
 
     console.log("contract addess set");
