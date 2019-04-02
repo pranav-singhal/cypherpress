@@ -778,7 +778,7 @@ async function getDocumentInfo(_documentId, _privateKey) {
       })
       .then(function(response) {
         let rv = {
-          messageKit: response["0"],
+          ipfsPath: response["0"],
           dataSource: response["1"],
           label: response["2"],
           aliceSigKey: response["3"],
