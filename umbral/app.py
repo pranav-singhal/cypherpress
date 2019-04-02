@@ -43,6 +43,42 @@ ursula = Ursula.from_seed_and_stake_info(seed_uri=SEEDNODE_URL,
 MessageKit = 0
 EnricoS  = 0
 
+contractAddressList ={}
+clientJsons = {}
+@app.route('/setContractAddress', methods=['POST'])
+def setContractAddress():
+    json_data = json.loads(request.data.decode('utf-8'))
+    contractAddress = json_data['contractAddress']
+    dappName = json_data['dappName']
+    contractAddressList[dappName] = contractAddress
+    return contractAddress
+
+@app.route('/getContractAddress', methods=['POST'])
+def getContractAddress():
+    json_data = json.loads(request.data.decode('utf-8'))
+
+    dappName = json_data['dappName']
+    contractAddress = contractAddressList[dappName]
+
+    return contractAddress
+
+@app.route('/setClientJson', methods=['POST'])
+def setClientJson():
+    json_data = json.loads(request.data.decode('utf-8'))
+    dappName = json_data['dappName']
+    print (dappName, "dappname")
+    clientJson = json_data['clientJson']
+    clientJsons[dappName] = clientJson
+    return jsonify(clientJsons)
+
+@app.route('/getClientJson', methods=['POST'])
+def getClientJson():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print('json_data:', json_data)
+    dappName = json_data['dappName']
+    clientJson = clientJsons[dappName]
+    return clientJson
+
 @app.route("/generateKeys", methods=['POST'])
 def generateKeys():
 
@@ -83,7 +119,6 @@ def generateKeys():
     print(data)
 
     return jsonify(data)
-
 
 @app.route('/encryptData',methods=['POST'])
 def encryptData():
