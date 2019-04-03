@@ -201,10 +201,12 @@ async function decryptDocument(
 }
 
 async function decryptUploaded(_label, _requestedObject) {
-  let content = await axios.post(
+  let content = await axios.get(
     url + `/fetchUploadedDocument?label=${_label}`
   );
   let dataArrayToBeReturned = [];
+  console.log('content',content)
+  content =content.data
   for (let i = 0; i < _requestedObject.length; i++) {
     if (_requestedObject[i].isFile === true) {
       let url = content.files[_requestedObject[i].name];
@@ -223,7 +225,7 @@ async function decryptUploaded(_label, _requestedObject) {
       dataArrayToBeReturned.push(objToBePushed);
     }
   }
-
+  console.log('dataArraytobe ruet', dataArrayToBeReturned)
   return dataArrayToBeReturned;
 }
 

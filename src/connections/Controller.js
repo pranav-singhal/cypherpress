@@ -212,7 +212,7 @@ export async function fetchUploadedDocuments(
     );
 
     let obj = await decryptUploaded(label, _requestedObject);
-    _documentUploadedCallback(obj);
+    _documentUploadedCallback(obj, i);
   }
 }
 

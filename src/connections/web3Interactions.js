@@ -772,7 +772,7 @@ async function getDocumentInfo(_documentId, _privateKey) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .getDeligatedDocumentInfo(_documentId)
+      .getDocumentInfo(_documentId)
       .call({
         from: address
       })

@@ -19,12 +19,15 @@ export default class ViewPanel extends React.Component {
 
   async componentDidMount() {
     console.log("view panel ksj");
-    const clientAppJson = await getClientJson(this.props.appName);
+    // const clientAppJson = await getClientJson(this.props.appName);
+    const clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
     const dataInfo = clientAppJson.dataInfo;
     console.log(dataInfo);
-    const contractAddress = await getContractAddress(this.props.appName);
+    // const contractAddress = await getContractAddress(this.props.appName);
+    const contractAddress = localStorage.getItem('contractAddress');
     await doConnections(contractAddress);
+
     const fetchingLabels = dataInfo.map(field => {
       // select isFile based on field.fieldType
       console.log("viewpanel27", field.fieldType);
@@ -41,7 +44,6 @@ export default class ViewPanel extends React.Component {
     fetchUploadedDocuments(
       username,
       privateKey,
-      alicePrivateKey,
       fetchingLabels,
       this.documentUploadedCallback
     );

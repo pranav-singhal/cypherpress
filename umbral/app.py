@@ -147,7 +147,7 @@ def encryptData():
     # }
     json_data = request.form.to_dict()
     fileFieldCount= int(json_data['fileFieldCount'])
-    # textFieldCount = json_data['textFieldCount']
+
     # object that contains the files
     file_obj={}
     # object that contains all the other form fields
@@ -173,12 +173,14 @@ def encryptData():
     data_obj['form_field_obj'] = form_field_obj
     label = json_data['label']
     aliceFile = json_data['alice']
-    # username = json_data['username']
     password = json_data['password']
-
+    file_url = '/tmp/' + label + '.json'
     label = label.encode()
     hash = data_obj
-    # Test end
+    obj_to_be_stored = createDataObject(hash, json_data['label'])
+    f = open(file_url, 'w')
+    f.write(json.dumps(obj_to_be_stored))
+    f.close()
 
 
     alice_config = AliceConfiguration.from_configuration_file(
@@ -278,6 +280,41 @@ def createPolicy():
     return jsonify(data)
 
 
+def createDataObject(plaintext, label):
+    # takes a plaintext object as input and returns a data object to be viewed as a document on the webapp
+    print(plaintext)
+    decrypted_obj = plaintext
+
+    file_obj = decrypted_obj['file_obj']
+    form_field_obj = decrypted_obj['form_field_obj']
+
+    data_obj = {}
+    data_obj['fileFieldCount'] = len(file_obj.keys())
+    data_obj['textFieldCount'] = len(form_field_obj.keys())
+    fileNameArray = list(file_obj.keys())
+    print('fileNameArray',fileNameArray)
+    files = {}
+    for fileName in fileNameArray:
+        print('fileName', fileName)
+        print(file_obj[fileName])
+        file_url = '/tmp/' + fileName + label
+        f = open(file_url, 'wb')
+
+        f.write(file_obj[fileName])
+        f.close()
+        files[fileName] = 'http://localhost:5000/decrypted?fileName=' +fileName + label
+
+    data_obj['files'] = files
+
+    textFieldLabelArray = list(form_field_obj.keys())
+    textFields = {}
+    for label in textFieldLabelArray:
+        textFields[label] = form_field_obj[label]
+
+    data_obj['textFields'] = textFields
+
+    return data_obj
+
 @app.route('/decryptDelegated', methods=['POST'])
 def decryptDelegated():
     # Fetch Request Data
@@ -373,47 +410,29 @@ def decryptDelegated():
 
     plaintext = msgpack.loads(retrieved_plaintexts[0], raw=False)
 
-    # print ('\n\nplainText')
-    # print (plaintext['file1'])
-
     # the object from plaintext
-    decrypted_obj = json.loads(plaintext)
-
-    file_obj = decrypted_obj['file_obj']
-    form_field_obj = decrypted_obj['form_field_obj']
-
-    data_obj = {}
-    data_obj['fileFieldCount'] = len(file_obj.key())
-    data_obj['textFieldCount'] = len(form_field_obj.key())
-    fileNameArray = list(file_obj.keys())
-    files = {}
-    for fileName in fileNameArray:
-        file_url = '/temp/' + fileName
-        f = open(file_url)
-        f.write(file_obj[fileName])
-        f.close()
-        files[fileName] = file_url
-
-    data_obj['files'] = files
-
-    textFieldLabelArray = list(form_field_obj.key())
-    textFields = {}
-    for label in textFieldLabelArray:
-        textFields[label] = form_field_obj[label]
-
-    data_obj['textFields'] = textFields
+    data_obj = createDataObject(plaintext, json_data['label'])
 
 
     return data_obj
 
+@app.route('/fetchUploadedDocument', methods=['GET'])
+def fetchUploadedDocument():
+    label = request.args.get('label')
+    file_url = '/tmp/' + label + '.json'
+    with open(file_url) as f:
+        obj_to_be_sent = json.load(f)
 
-@app.route('/decrypted/?', methods=['GET'])
+    return  jsonify(obj_to_be_sent)
+
+
+@app.route('/decrypted', methods=['GET'])
 def decrypted():
     fileName = request.args.get('fileName')
 
-    send_file('/tmp/' + fileName, attachment_filename='success.jpeg')
-    os.remove('/tmp/out')
-    return '0'
+    return send_file('/tmp/' + fileName, attachment_filename=fileName)
+    # os.remove('/tmp/' + fileName)
+
 
 
 @app.route('/encrypt', methods=['POST'])
