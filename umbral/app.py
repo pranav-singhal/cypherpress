@@ -155,12 +155,17 @@ def encryptData():
     print("requetssss ------")
     print(request.files.to_dict())
     print(request.form.to_dict())
+    print('json_data')
+    print(json_data)
+    fileNames = json.loads(json_data['fileNames'])
+    textFields = json.loads(json_data['textFields'])
     for i in range(0, fileFieldCount):
-        file_obj[json_data.fileName[str(i)]] = request.files[str(i)].read()
 
-    textFields = list(json_data.textFields.keys())
-    for key in textFields:
-      form_field_obj[key] = json_data.textFields[key]
+        file_obj[fileNames[str(i)]] = request.files[str(i)].read()
+
+    textFieldsKeys = list(textFields.keys())
+    for key in textFieldsKeys:
+      form_field_obj[key] = textFields[key]
 
 
     data_obj = {}

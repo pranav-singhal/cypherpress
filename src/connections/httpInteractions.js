@@ -48,16 +48,22 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
   let textFields = {};
   for (let i = 0; i < _array.length; i++) {
     let element = _array[i];
+    console.log(element)
     if (element.isFile === true) {
       let fileBuffer = element.value;
+
       form.append(files.toString(), fileBuffer);
-      fileNames[files.toString()] = element.key;
+      // console.log(fileBuffer)
+      fileNames[files.toString()] = element.name;
       files++;
     } else {
-      textFields[element.key] = element.value;
+      textFields[element.name] = element.value;
       texts++;
     }
   }
+  console.log(fileNames)
+  console.log("textFields",textFields)
+
 
   form.append("fileFieldCount", files.toString());
   form.append("textFieldCount", texts.toString());
@@ -67,6 +73,8 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
   form.append("password", _password);
   form.append("alice", _aliceKey);
   form.append("label", _label);
+  console.log(form)
+
 
   let content = await axios.post(url + "/encryptData", form, {
     headers: {

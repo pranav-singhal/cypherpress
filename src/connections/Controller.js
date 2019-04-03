@@ -207,7 +207,7 @@ export async function fetchUploadedDocuments(
 //   }
  }
 
- export async function createRandomHex(length=10){
+ export function createRandomHex(length=10){
    var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 

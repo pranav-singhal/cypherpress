@@ -60,17 +60,17 @@ export default class UploadPanel extends React.Component {
   };
   handleFile = id => event => {
     event.preventDefault();
-    const reader = new window.FileReader();
-    reader.readAsArrayBuffer(event.target.files[0]);
-    reader.onloadend = () => {
-      let newFormData = this.state.formData;
-
-      let readerresult = reader.result;
-
-      newFormData[id].fieldValue = readerresult;
-
-      this.setState({ formData: newFormData });
-    };
+    // const reader = new window.FileReader();
+    // reader.readAsArrayBuffer(event.target.files[0]);
+    // reader.onloadend = () => {
+    //
+    //
+    //   let readerresult = reader.result;
+    //
+    // };
+    let newFormData = this.state.formData;
+    newFormData[id].fieldValue = event.target.files[0];
+    this.setState({ formData: newFormData });
   };
   submitForm = async () => {
     let array = this.state.formData.map(field => {
