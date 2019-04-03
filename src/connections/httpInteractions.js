@@ -48,7 +48,7 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
   let textFields = {};
   for (let i = 0; i < _array.length; i++) {
     let element = _array[i];
-    console.log(element)
+    console.log(element);
     if (element.isFile === true) {
       let fileBuffer = element.value;
 
@@ -61,9 +61,8 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
       texts++;
     }
   }
-  console.log(fileNames)
-  console.log("textFields",textFields)
-
+  console.log(fileNames);
+  console.log("textFields", textFields);
 
   form.append("fileFieldCount", files.toString());
   form.append("textFieldCount", texts.toString());
@@ -73,8 +72,7 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
   form.append("password", _password);
   form.append("alice", _aliceKey);
   form.append("label", _label);
-  console.log(form)
-
+  console.log(form);
 
   let content = await axios.post(url + "/encryptData", form, {
     headers: {
@@ -202,6 +200,33 @@ async function decryptDocument(
   return dataArrayToBeReturned;
 }
 
+async function decryptUploaded(_label, _requestedObject) {
+  let content = await axios.post(
+    url + `/fetchUploadedDocument?label=${_label}`
+  );
+  let dataArrayToBeReturned = [];
+  for (let i = 0; i < _requestedObject.length; i++) {
+    if (_requestedObject[i].isFile === true) {
+      let url = content.files[_requestedObject[i].name];
+      let objToBePushed = {
+        isFile: true,
+        name: _requestedObject[i].name,
+        value: url
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    } else {
+      let objToBePushed = {
+        isFile: false,
+        name: _requestedObject[i].name,
+        value: content.textFields[_requestedObject[i].name]
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    }
+  }
+
+  return dataArrayToBeReturned;
+}
+
 /*
     Function to decrypt deligated document
     @param {string} _alicePublicKey
@@ -252,4 +277,10 @@ async function decryptDeligatedDocument(
 //
 // testing();
 
-export { generateKeyPairs, encryptData, decryptDocument, createPolicy };
+export {
+  generateKeyPairs,
+  encryptData,
+  decryptDocument,
+  createPolicy,
+  decryptUploaded
+};

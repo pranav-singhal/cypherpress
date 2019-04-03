@@ -2,6 +2,7 @@ import {
   createPolicy,
   decryptDeligatedDocument,
   decryptDocument,
+  decryptUploaded,
   decryptUploadedDocument,
   encryptData,
   generateKeyPairs
@@ -175,47 +176,56 @@ export async function grantDocumentAccess(
 export async function fetchUploadedDocuments(
   _uploader,
   _aliceEthereumPrivateKey,
-  _alicePrivateKey,
   _requestedObject,
   _documentUploadedCallback
 ) {
   // Fetch the list of documents uploaded by the _uploader
-//   console.log("inside fetchUploadedDocuments");
-//   let arr = await getUploadedDocumentIds(_uploader, _aliceEthereumPrivateKey);
-//   console.log("arr", arr);
-//   for (let i = 0; i < arr.length; i++) {
-//     // Fetch information regarding the document
-//     let {
-//       cipherText,
-//       capsule,
-//       verifyKey,
-//       publicKey
-//     } = await getUploadedDocumentInfo(arr[i], _aliceEthereumPrivateKey);
-//
-//     // Use this info to generate the ipfs hash
-//     let ipfsHash = await decryptUploadedDocument(
-//       cipherText,
-//       capsule,
-//       _alicePrivateKey
-//     );
-//     console.log("ipfshash", ipfsHash);
-//
-//     // Fetch data using generated ipfs hash
-//     let dataArray = await getData(ipfsHash, _requestedObject);
-//     console.log(dataArray);
-//     _documentUploadedCallback(dataArray, arr[i]);
-//   }
- }
+  console.log("inside fetchUploadedDocuments");
+  let arr = await getUploadedDocumentIds(_uploader, _aliceEthereumPrivateKey);
+  console.log("arr", arr);
+  for (let i = 0; i < arr.length; i++) {
+    // Fetch information regarding the document
+    /*let {
+      cipherText,
+      capsule,
+      verifyKey,
+      publicKey
+    } = await getUploadedDocumentInfo(arr[i], _aliceEthereumPrivateKey);
 
- export function createRandomHex(length=10){
-   var text = "";
-  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    // Use this info to generate the ipfs hash
+    let ipfsHash = await decryptUploadedDocument(
+      cipherText,
+      capsule,
+      _alicePrivateKey
+    );
+    console.log("ipfshash", ipfsHash);
+
+    // Fetch data using generated ipfs hash
+    let dataArray = await getData(ipfsHash, _requestedObject);
+    console.log(dataArray);
+    _documentUploadedCallback(dataArray, arr[i]);*/
+
+    let currentDocumentId = arr[i];
+    let { label } = await getDocumentInfo(
+      currentDocumentId,
+      _aliceEthereumPrivateKey
+    );
+
+    let obj = await decryptUploaded(label, _requestedObject);
+    _documentUploadedCallback(obj);
+  }
+}
+
+export function createRandomHex(length = 10) {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
   for (var i = 0; i < length; i++)
     text += possible.charAt(Math.floor(Math.random() * possible.length));
 
   return text;
- }
+}
 
 // TODO Updated to be checked
 export async function fetchDelegatedDouments(
