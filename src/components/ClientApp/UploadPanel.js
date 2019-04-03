@@ -18,8 +18,9 @@ export default class UploadPanel extends React.Component {
     // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
   }
   async componentDidMount() {
-    // const clientAppJson = await getClientJson(this.props.appName);
-    const clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
+    let clientAppJson = await getClientJson(this.props.appName);
+    console.log("clientAppJson",clientAppJson);
+    // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
     this.setState({ clientAppJson: clientAppJson });
     this.addFormFields(clientAppJson.dataInfo);

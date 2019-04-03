@@ -48,7 +48,9 @@ clientJsons = {}
 @app.route('/setContractAddress', methods=['POST'])
 def setContractAddress():
     json_data = json.loads(request.data.decode('utf-8'))
+
     contractAddress = json_data['contractAddress']
+    print(contractAddress, "cnotract address")
     dappName = json_data['dappName']
     contractAddressList[dappName] = contractAddress
     return contractAddress
@@ -331,7 +333,9 @@ def decryptDelegated():
     policy_public_key = json_data['policy_public_key']
     alice_signing_key = json_data['alice_sig_pubkey']
     label = json_data['label']
-    username = json_data['username']
+
+    # username = json_data['username']
+
     message = json_data['message']
     data_source = json_data['data_source']
 
@@ -341,12 +345,12 @@ def decryptDelegated():
     enc = UmbralPrivateKey.from_bytes(bytes.fromhex(bob_private_keys["enc"]))
     sig = UmbralPrivateKey.from_bytes(bytes.fromhex(bob_private_keys["sig"]))
 
-    signingPublic = sig.get_pubkey()
-    bobFilePath = os.path.join(os.getcwd(), 'bob/' + username + '.json')
-    doctor_pubkeys = _get_keys(bobFilePath, UmbralPublicKey)
-    print (signingPublic == doctor_pubkeys['sig'])
-    print (signingPublic)
-    print (doctor_pubkeys['sig'])
+    # signingPublic = sig.get_pubkey()
+    # bobFilePath = os.path.join(os.getcwd(), 'bob/' + username + '.json')
+    # doctor_pubkeys = _get_keys(bobFilePath, UmbralPublicKey)
+    # print (signingPublic == doctor_pubkeys['sig'])
+    # print (signingPublic)
+    # print (doctor_pubkeys['sig'])
     print ('\n\n\n')
 
     bob_enc_keypair = DecryptingKeypair(private_key=enc)
@@ -414,7 +418,7 @@ def decryptDelegated():
     data_obj = createDataObject(plaintext, json_data['label'])
 
 
-    return data_obj
+    return jsonify(data_obj)
 
 @app.route('/fetchUploadedDocument', methods=['GET'])
 def fetchUploadedDocument():
@@ -423,7 +427,7 @@ def fetchUploadedDocument():
     with open(file_url) as f:
         obj_to_be_sent = json.load(f)
 
-    return  jsonify(obj_to_be_sent)
+    return jsonify(obj_to_be_sent)
 
 
 @app.route('/decrypted', methods=['GET'])

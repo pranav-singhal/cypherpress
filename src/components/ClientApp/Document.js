@@ -42,7 +42,7 @@ export default class Document extends React.Component {
     }
   };
   setDelegatees = async () => {
-    let alicePrivateKey = localStorage.getItem("alicePrivateKey");
+    let aliceKey = localStorage.getItem("aliceKey");
     let aliceSigningKey = localStorage.getItem("aliceSigningKey");
     let uploader = localStorage.getItem("username");
     let aliceEthereumPrivateKey = localStorage.getItem("privateKey");
@@ -61,11 +61,12 @@ export default class Document extends React.Component {
     this.state.selectedDelegatees.forEach(async delegatee => {
       this.setState({ showModal: true });
       await grantDocumentAccess(
-        this.props.documentId,
-        alicePrivateKey,
-        aliceSigningKey,
+        localStorage.getItem('password'),
         delegatee,
         uploader,
+        aliceKey,
+        this.props.label,
+        this.props.documentId,
         aliceEthereumPrivateKey,
         callingObject
       );

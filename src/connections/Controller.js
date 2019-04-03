@@ -212,7 +212,7 @@ export async function fetchUploadedDocuments(
     );
 
     let obj = await decryptUploaded(label, _requestedObject);
-    _documentUploadedCallback(obj, i);
+    _documentUploadedCallback(obj, currentDocumentId, label);
   }
 }
 
@@ -304,6 +304,7 @@ export async function getDelegatees() {
     let username = await getDelegteeUsername(i);
     usernames.push(username);
   }
+  console.log("username=>>>>", usernames);
   return usernames;
 }
 

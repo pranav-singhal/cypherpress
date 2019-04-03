@@ -176,7 +176,7 @@ async function decryptDocument(
     filesKeys: fileNames,
     textkeys: textNames
   });
-
+    content = content.data;
   let dataArrayToBeReturned = [];
   for (let i = 0; i < _requestedObject.length; i++) {
     if (_requestedObject[i].isFile === true) {

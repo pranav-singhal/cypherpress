@@ -610,6 +610,7 @@ async function deligateDocument(
     console.log(_uploader);
     console.log(_privateKey);
     console.log(_callingObject);
+    // _documentId++;
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
       .deligateDocument(_documentId, _deligatee, _uploader)

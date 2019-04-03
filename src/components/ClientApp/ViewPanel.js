@@ -19,13 +19,16 @@ export default class ViewPanel extends React.Component {
 
   async componentDidMount() {
     console.log("view panel ksj");
-    // const clientAppJson = await getClientJson(this.props.appName);
-    const clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
+    let clientAppJson = await getClientJson(this.props.appName);
+    const bobKey = localStorage.getItem('bobKey')
+    console.log(clientAppJson)
+    // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
     const dataInfo = clientAppJson.dataInfo;
     console.log(dataInfo);
-    // const contractAddress = await getContractAddress(this.props.appName);
-    const contractAddress = localStorage.getItem('contractAddress');
+    const contractAddress = await getContractAddress(this.props.appName);
+    console.log('contract address', contractAddress)
+    // const contractAddress = localStorage.getItem('contractAddress');
     await doConnections(contractAddress);
 
     const fetchingLabels = dataInfo.map(field => {
@@ -50,11 +53,11 @@ export default class ViewPanel extends React.Component {
     // console.log(
     //   await getJson("QmdPwKejYqXkpxBZwWFzttsR7Mx4SAVgXzabyWrkgmYBQu")
     // );
+
     fetchDelegatedDouments(
       username,
       privateKey,
-      alicePublicKey,
-      alicePrivateKey,
+      bobKey,
       fetchingLabels,
       this.documentFetchedCallback
     );
@@ -71,13 +74,14 @@ export default class ViewPanel extends React.Component {
       ])
     }));
   };
-  documentUploadedCallback = async (dataArray, documentId) => {
+  documentUploadedCallback = async (dataArray, documentId, label) => {
     console.log(dataArray, documentId);
     this.setState(prevState => ({
       dataArrays: prevState.dataArrays.concat([
         {
           dataArray: dataArray,
-          documentId: documentId
+          documentId: documentId,
+          label: label
         }
       ])
     }));
@@ -100,6 +104,7 @@ export default class ViewPanel extends React.Component {
                       fetchedData={false}
                       dataArray={dataArray.dataArray}
                       documentId={dataArray.documentId}
+                      label = {dataArray.label}
                       key={dataArray.documentId.toString() + id.toString()}
                     />
                   );

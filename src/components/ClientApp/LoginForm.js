@@ -17,8 +17,6 @@ export default class LoginForm extends React.Component {
     this.passwordRef = React.createRef();
   }
   async componentWillMount() {
-    // const contractAddress = localStorage.getItem("contractAddress");
-    // await doConnections(contractAddress);
     console.log("doConnections completed");
   }
   setUser = async event => {
