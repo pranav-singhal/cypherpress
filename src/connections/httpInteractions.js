@@ -99,6 +99,8 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
     @return {string} policyId of the delegation
 */
 async function createPolicy(_password, _bobName, _aliceKeys, _label) {
+  console.log("inside create policy")
+  console.log(_password,_bobName,_aliceKeys,_label)
   let content = await axios.post(url + "/createPolicy", {
     password: _password,
     bob: _bobName,
