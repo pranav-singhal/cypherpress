@@ -1,135 +1,123 @@
 import React from "react";
-import { Button, Row, Col } from "react-bootstrap";
+import {Button, Row, Col} from "react-bootstrap";
 import {
-  getClientJson,
-  getContractAddress
+    getClientJson,
+    getContractAddress
 } from "../../connections/httpInteractions";
 import Document from "./Document";
 import {
-  fetchUploadedDocuments,
-  doConnections,
-  fetchDelegatedDouments
+    fetchUploadedDocuments,
+    doConnections,
+    fetchDelegatedDouments
 } from "../../connections/Controller";
+import DocumentList from "./DocumentList";
+
 export default class ViewPanel extends React.Component {
-  state = {
-    dataArrays: [],
-    fetchingLabels: [],
-    fetchedDataArrays: []
-  };
+    state = {
+        dataArrays: [],
+        fetchingLabels: [],
+        fetchedDataArrays: [],
+        whichDocumentsToShow: 'myDocuments'
+    };
 
-  async componentDidMount() {
-    console.log("view panel ksj");
-    let clientAppJson = await getClientJson(this.props.appName);
-    const bobKey = localStorage.getItem('bobKey')
-    console.log(clientAppJson)
-    // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
-    console.log("clientAppJson:", clientAppJson);
-    const dataInfo = clientAppJson.dataInfo;
-    console.log(dataInfo);
-    const contractAddress = await getContractAddress(this.props.appName);
-    console.log('contract address', contractAddress)
-    // const contractAddress = localStorage.getItem('contractAddress');
-    await doConnections(contractAddress);
+    async componentDidMount() {
+        console.log("view panel ksj");
+        let clientAppJson = await getClientJson(this.props.appName);
+        const bobKey = localStorage.getItem('bobKey')
+        console.log(clientAppJson)
+        // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
+        console.log("clientAppJson:", clientAppJson);
+        const dataInfo = clientAppJson.dataInfo;
+        console.log(dataInfo);
+        const contractAddress = await getContractAddress(this.props.appName);
+        console.log('contract address', contractAddress)
+        // const contractAddress = localStorage.getItem('contractAddress');
+        await doConnections(contractAddress);
 
-    const fetchingLabels = dataInfo.map(field => {
-      // select isFile based on field.fieldType
-      console.log("viewpanel27", field.fieldType);
-      return { name: field.fieldName, isFile: field.fieldType === "file" };
-    });
-    this.setState({ fetchingLabels: fetchingLabels });
+        const fetchingLabels = dataInfo.map(field => {
+            // select isFile based on field.fieldType
+            console.log("viewpanel27", field.fieldType);
+            return {name: field.fieldName, isFile: field.fieldType === "file"};
+        });
+        this.setState({fetchingLabels: fetchingLabels});
 
-    const username = localStorage.getItem("username");
-    const privateKey = localStorage.getItem("privateKey");
-    const alicePrivateKey = localStorage.getItem("alicePrivateKey");
-    const alicePublicKey = localStorage.getItem("alicePublicKey");
+        const username = localStorage.getItem("username");
+        const privateKey = localStorage.getItem("privateKey");
 
-    console.log("connections done");
-    fetchUploadedDocuments(
-      username,
-      privateKey,
-      fetchingLabels,
-      this.documentUploadedCallback
-    );
-    // console.log(
-    //   await getJson("QmdPwKejYqXkpxBZwWFzttsR7Mx4SAVgXzabyWrkgmYBQu")
-    // );
+        console.log("connections done");
+        fetchUploadedDocuments(
+            username,
+            privateKey,
+            fetchingLabels,
+            this.documentUploadedCallback
+        );
 
-    fetchDelegatedDouments(
-      username,
-      privateKey,
-      bobKey,
-      fetchingLabels,
-      this.documentFetchedCallback
-    );
-  }
-  documentFetchedCallback = (dataArray, documentId) => {
-    console.log("inside doucmentFetchedCallback");
-    console.log(dataArray, documentId);
-    this.setState(prevState => ({
-      fetchedDataArrays: prevState.fetchedDataArrays.concat([
-        {
-          dataArray: dataArray,
-          documentId: documentId
-        }
-      ])
-    }));
-  };
-  documentUploadedCallback = async (dataArray, documentId, label) => {
-    console.log(dataArray, documentId);
-    this.setState(prevState => ({
-      dataArrays: prevState.dataArrays.concat([
-        {
-          dataArray: dataArray,
-          documentId: documentId,
-          label: label
-        }
-      ])
-    }));
-  };
 
-  render() {
-    return (
-      <Row className="viewClientApp">
-        <Col md={12}>
-          <div>
-            {" "}
-            <h1> Documents you have uploaded </h1>
-          </div>
-          <Col>
-            <Col md={12}>
-              <Row>
-                {this.state.dataArrays.map((dataArray, id) => {
-                  return (
-                    <Document
-                      fetchedData={false}
-                      dataArray={dataArray.dataArray}
-                      documentId={dataArray.documentId}
-                      label = {dataArray.label}
-                      key={dataArray.documentId.toString() + id.toString()}
-                    />
-                  );
-                })}
-              </Row>
-            </Col>
-          </Col>
-        </Col>
-        <Col md={12}>
-          <div>
-            {" "}
-            <h1> Documents you have acess to </h1>
-          </div>
-          {this.state.fetchedDataArrays.map((dataArray, id) => {
-            return (
-              <Document
-                fetchedData={true}
-                dataArray={dataArray.dataArray}
-                documentId={dataArray.documentId}
-                key={dataArray.name + id.toString()}
-              />
-            );
-          })}
-        </Col>
-      </Row>
-    );
-  }
+        fetchDelegatedDouments(
+            username,
+            privateKey,
+            bobKey,
+            fetchingLabels,
+            this.documentFetchedCallback
+        );
+    }
+
+    documentFetchedCallback = (dataArray, documentId) => {
+        console.log(dataArray, documentId);
+        this.setState(prevState => ({
+            fetchedDataArrays: prevState.fetchedDataArrays.concat([
+                {
+                    dataArray: dataArray,
+                    documentId: documentId
+                }
+            ])
+        }));
+    };
+    documentUploadedCallback = async (dataArray, documentId, label) => {
+        console.log(dataArray, documentId);
+        this.setState(prevState => ({
+            dataArrays: prevState.dataArrays.concat([
+                {
+                    dataArray: dataArray,
+                    documentId: documentId,
+                    label: label
+                }
+            ])
+        }));
+    };
+    switchDashboard = (whichDocumentsToShow) => {
+        this.setState({whichDocumentsToShow: whichDocumentsToShow})
+    }
+
+    render() {
+
+        return (
+            <Row className="viewClientApp">
+                <Col md={12} className={'dashboard-buttons'}>
+                    <span onClick={() => {
+                        this.switchDashboard('myDocuments')
+                    }}
+                          className={this.state.whichDocumentsToShow === 'myDocuments' ? 'active' : null}>Your Documents</span>
+                    <span onClick={() => {
+                        this.switchDashboard('sharedDocuments')
+                    }} className={this.state.whichDocumentsToShow === 'sharedDocuments' ? 'active' : null}>Shared Documents</span>
+
+                </Col>
+                <Col md={12}>
+
+                    <Col md={12}>
+                        <Row>
+                            {this.state.whichDocumentsToShow === 'myDocuments' ?
+                                <DocumentList documentArray={this.state.dataArrays} fetchedData={false}/> :
+                                <DocumentList documentArray={this.state.fetchedDataArrays} fetchedData={true}/>}
+
+                        </Row>
+                    </Col>
+
+                </Col>
+
+            </Row>
+        );
+
+    }
 }

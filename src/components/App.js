@@ -13,10 +13,11 @@ import {
     faDownload,
     faLink,
     faCheck,
-    faTimes
+    faTimes,
+    faFile
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faCheckSquare, faPlusCircle, faUpload, faDownload, faLink, faCheck, faTimes);
+library.add(faCheckSquare, faPlusCircle, faUpload, faDownload, faLink, faCheck, faTimes, faFile);
 
 class App extends Component {
     state = {
