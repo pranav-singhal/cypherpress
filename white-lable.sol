@@ -7,12 +7,13 @@ contract white_label {
 
     // Struct to store information regarding each document uploaded
     struct Document{
-        string uploader;
-        string cipherText;
-        string capsule;
-        string aliceVerifyingKey;
-        string alicePublicKey;
-        mapping(string => string) deligateeToPolicyId;
+        string alice;
+        string messageKit;
+        string dataSource;
+        string label;
+        string policyPubKey;
+        string aliceSigKey;
+        mapping(string => bool) bobArray;
     }
 
     struct DeligatedDocument {
@@ -29,7 +30,6 @@ contract white_label {
 
     // Mapping to store username to account
     mapping(string => address) usernameToAddress;
-    mapping(string => string) usernameToNucypher;
     string[] delegatees;
 
 
@@ -87,61 +87,50 @@ contract white_label {
         }
     }
 
-    function signUpUsername(string _username, string _nucypherPublic) public{
+    function signUpUsername(string _username) public{
         require(usernameToAddress[_username] == 0);
         usernameToAddress[_username] = msg.sender;
-        usernameToNucypher[_username] = _nucypherPublic;
     }
 
-    function getNucypherPublicKey(string _username) public view returns(string){
-        return( usernameToNucypher[_username]);
-    }
-
-    function uploadADocument(string _cipherText, string _capsule, string _aliceVerifyingKey, string _alicePublicKey, string _uploader) public {
+    function uploadADocument(string _messageKit, string _dataSource, string _label, string _policyPubKey, string _aliceSigKey, string _uploader) public {
         require(usernameToAddress[_uploader] == msg.sender);
-        documentList[currentId].uploader = _uploader;
-        documentList[currentId].cipherText = _cipherText;
-        documentList[currentId].capsule = _capsule;
-        documentList[currentId].aliceVerifyingKey = _aliceVerifyingKey;
-        documentList[currentId].alicePublicKey = _alicePublicKey;
-        documentList[currentId].uploader = _uploader;
+        documentList[currentId].alice = _uploader;
+        documentList[currentId].messageKit = _messageKit;
+        documentList[currentId].dataSource = _dataSource;
+        documentList[currentId].label = _label;
+        documentList[currentId].policyPubKey = _policyPubKey;
+        documentList[currentId].aliceSigKey = _aliceSigKey;
         usernameToUploadedDocuments[_uploader].push(currentId);
         currentId++;
     }
 
-    function deligateDocument(uint _documentId, string _policyId, string _deligatee, string _uploader) public{
+    function deligateDocument(uint _documentId, string _deligatee, string _uploader) public{
         require(usernameToAddress[_uploader] == msg.sender);
-        require(equal(documentList[_documentId].uploader, _uploader));
+        require(equal(documentList[_documentId].alice, _uploader));
         usernameToDeligatedDocuments[_deligatee].push(_documentId);
-        documentList[_documentId].deligateeToPolicyId[_deligatee] = _policyId;
+        documentList[_documentId].bobArray[_deligatee] = true;
     }
 
     function isDeligatee(uint _documentId, string _delegatee) public view returns(bool){
-        if(bytes(documentList[_documentId].deligateeToPolicyId[_delegatee]).length == 0){
+        if(documentList[_documentId].bobArray[_delegatee] == false){
             return false;
         }else{
             return true;
         }
     }
 
-    function getUploadedDocuments(string _uploader) public view returns(uint []){
+    function getUploadedDocumentsNumber(string _uploader) public view returns(uint []){
         require(usernameToAddress[_uploader] == msg.sender);
         return(usernameToUploadedDocuments[_uploader]);
     }
 
-    function getDeligatedDocument(string _deligatee) public view returns(uint []){
+    function getDeligatedDocumentsNumber(string _deligatee) public view returns(uint []){
         require(usernameToAddress[_deligatee] == msg.sender);
         return(usernameToDeligatedDocuments[_deligatee]);
     }
 
-    function getUploadedDocumentInfo(uint _documentId) public view returns(string, string, string, string){
+    function getDocumentInfo(uint _documentId) public view returns(string, string, string, string, string, string){
         Document memory currentDoc = documentList[_documentId];
-        return(currentDoc.cipherText, currentDoc.capsule, currentDoc.aliceVerifyingKey, currentDoc.alicePublicKey);
-    }
-
-    function getDeligatedDocumentInfo(uint _documentId, string _deligatee) public view returns(string, string, string, string, string){
-        Document memory currentDoc = documentList[_documentId];
-        string memory policyId = documentList[_documentId].deligateeToPolicyId[_deligatee];
-        return(currentDoc.cipherText, currentDoc.capsule, currentDoc.aliceVerifyingKey, currentDoc.alicePublicKey, policyId);
+        return(currentDoc.messageKit, currentDoc.dataSource, currentDoc.label, currentDoc.aliceSigKey, currentDoc.policyPubKey, currentDoc.alice);
     }
 }

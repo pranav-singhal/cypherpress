@@ -26,6 +26,7 @@ export default class ClientApp extends React.Component {
       this.props.match.params.appname
     );
     // console.log("resp", resp);
+    // const contractAddress = localStorage.getItem('contractAddress')
     await doConnections(contractAddress);
     if (username) {
       this.setState({

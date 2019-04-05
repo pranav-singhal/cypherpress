@@ -1,5 +1,7 @@
 import axios from "axios";
 let url = "http://localhost:5000";
+
+// Updated according to new flask server
 /*
     Function to generate Key Pairs from PyUmbral Library
     @return {object} : obj = {
@@ -10,17 +12,25 @@ let url = "http://localhost:5000";
                                 aliceSigner
                            }
  */
-async function generateKeyPairs() {
-  let content = await axios.get(url + "/generateKeys");
+async function generateKeyPairs(_username, _password) {
+  if (_password.length < 16) {
+    console.log("Password should be more than 16 characters");
+    return null;
+  }
+
+  let content = await axios.post(url + "/generateKeys", {
+    username: _username,
+    password: _password
+  });
+
   content = content.data;
   return {
-    alicePrivateKey: content.alicePrivate,
-    alicePublicKey: content.alicePublic,
-    aliceSigningKey: content.aliceSigning,
-    aliceVerifyingKey: content.aliceVerifying
+    aliceKey: content.alice,
+    bobKey: content.bob
   };
 }
 
+// Updated according to new flask server
 /*
     Function to encrypt ipfs hash using pyUmbral
     @param {string} _hash : ipfs hash of the data uploaded
@@ -30,18 +40,57 @@ async function generateKeyPairs() {
                                 capsule
                                 }
  */
-async function encryptData(_hash, _alicePublicKey) {
-  let content = await axios.post(url + "/encryptData", {
-    alices_public_key: _alicePublicKey,
-    hash: _hash
+async function encryptData(_username, _password, _aliceKey, _label, _array) {
+  let form = new FormData();
+  let files = 0;
+  let texts = 0;
+  let fileNames = {};
+  let textFields = {};
+  for (let i = 0; i < _array.length; i++) {
+    let element = _array[i];
+    console.log(element);
+    if (element.isFile === true) {
+      let fileBuffer = element.value;
+
+      form.append(files.toString(), fileBuffer);
+      // console.log(fileBuffer)
+      fileNames[files.toString()] = element.name;
+      files++;
+    } else {
+      textFields[element.name] = element.value;
+      texts++;
+    }
+  }
+  console.log(fileNames);
+  console.log("textFields", textFields);
+
+  form.append("fileFieldCount", files.toString());
+  form.append("textFieldCount", texts.toString());
+  form.append("fileNames", JSON.stringify(fileNames));
+  form.append("textFields", JSON.stringify(textFields));
+  form.append("username", _username);
+  form.append("password", _password);
+  form.append("alice", _aliceKey);
+  form.append("label", _label);
+  console.log(form);
+
+  let content = await axios.post(url + "/encryptData", form, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
   });
+
   content = content.data;
   return {
-    cipherText: content.cipherText,
-    capsule: content.capsule
+    messageKit: content.message,
+    label: content.label,
+    policyPubKey: content.policy_public_key,
+    aliceSigKey: content.alice_sig_pubkey,
+    dataSource: content.data_source
   };
 }
 
+// Updated according to new flask server
 /*
     Function to create a new Policy using pyUmbral
     @param {string} _alicePrivateKey
@@ -49,17 +98,21 @@ async function encryptData(_hash, _alicePublicKey) {
     @param {string} _bobPublicKey
     @return {string} policyId of the delegation
 */
-async function createPolicy(_alicePrivateKey, _aliceSigningKey, _bobPublicKey) {
+async function createPolicy(_password, _bobName, _aliceKeys, _label) {
+  console.log("inside create policy")
+  console.log(_password,_bobName,_aliceKeys,_label)
   let content = await axios.post(url + "/createPolicy", {
-    alices_private_key: _alicePrivateKey,
-    alices_signing_key: _aliceSigningKey,
-    bobs_public_key: _bobPublicKey
+    password: _password,
+    bob: _bobName,
+    alice: _aliceKeys,
+    label: _label
   });
   console.log("content:", content);
   return {
-    policyId: content.data.toString()
+    done: true
   };
 }
+
 export async function getContractAddress(dappName) {
   let contractAddress = await axios.post(url + "/getContractAddress", {
     dappName: dappName
@@ -79,6 +132,8 @@ export async function getClientJson(dappName) {
   console.log("Res", res);
   return res.data;
 }
+
+// Updated according to new flask server
 /*
     Function to decrypt uploaded Document
     @param {string} _cipherText
@@ -86,19 +141,94 @@ export async function getClientJson(dappName) {
     @param {string} _alicePrivateKey
     @return {string} hash : ipfs hash of the document to be fetched
  */
-async function decryptUploadedDocument(
-  _cipherText,
-  _capsule,
-  _alicePrivateKey
+async function decryptDocument(
+  _bobKeys,
+  _policyPubKey,
+  _aliceSigKey,
+  _label,
+  _messageKit,
+  _data_source,
+  _requestedObject
 ) {
-  let content = await axios.post(url + "/decryptUploaded", {
-    alices_private_key: _alicePrivateKey,
-    capsule: _capsule,
-    cipherText: _cipherText
+  // creating Request Object
+  let numFiles = 0;
+  let fileNames = [];
+  let numText = 0;
+  let textNames = [];
+  for (let i = 0; i < _requestedObject.length; i++) {
+    let curr = _requestedObject[i];
+    if (curr.isFile) {
+      numFiles++;
+      fileNames.push(curr.name);
+    } else {
+      numText++;
+      textNames.push(curr.name);
+    }
+  }
+
+  let content = await axios.post(url + "/decryptDelegated", {
+    bobKeys: _bobKeys,
+    policy_public_key: _policyPubKey,
+    alice_sig_pubkey: _aliceSigKey,
+    label: _label,
+    message: _messageKit,
+    data_source: _data_source,
+    fileFieldCount: numFiles,
+    textFieldCount: numText,
+    filesKeys: fileNames,
+    textkeys: textNames
   });
-  return {
-    hash: content.data
-  };
+    content = content.data;
+  let dataArrayToBeReturned = [];
+  for (let i = 0; i < _requestedObject.length; i++) {
+    if (_requestedObject[i].isFile === true) {
+      let url = content.files[_requestedObject[i].name];
+      let objToBePushed = {
+        isFile: true,
+        name: _requestedObject[i].name,
+        value: url
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    } else {
+      let objToBePushed = {
+        isFile: false,
+        name: _requestedObject[i].name,
+        value: content.textFields[_requestedObject[i].name]
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    }
+  }
+
+  return dataArrayToBeReturned;
+}
+
+async function decryptUploaded(_label, _requestedObject) {
+  let content = await axios.get(
+    url + `/fetchUploadedDocument?label=${_label}`
+  );
+  let dataArrayToBeReturned = [];
+  console.log('content',content)
+  content =content.data
+  for (let i = 0; i < _requestedObject.length; i++) {
+    if (_requestedObject[i].isFile === true) {
+      let url = content.files[_requestedObject[i].name];
+      let objToBePushed = {
+        isFile: true,
+        name: _requestedObject[i].name,
+        value: url
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    } else {
+      let objToBePushed = {
+        isFile: false,
+        name: _requestedObject[i].name,
+        value: content.textFields[_requestedObject[i].name]
+      };
+      dataArrayToBeReturned.push(objToBePushed);
+    }
+  }
+  console.log('dataArraytobe ruet', dataArrayToBeReturned)
+  return dataArrayToBeReturned;
 }
 
 /*
@@ -112,6 +242,7 @@ async function decryptUploadedDocument(
     @param {string} _policyId
     @return {string} hash : ipfs hash of the document to be fetched
  */
+/*
 async function decryptDeligatedDocument(
   _alicePublicKey,
   _aliceVerifyKey,
@@ -135,7 +266,7 @@ async function decryptDeligatedDocument(
     hash: content.data
   };
 }
-
+*/
 // async function testing() {
 //     console.log(await encryptData('hello 1111', 'A9/F09ny8rzKFP5vutqJgddo83M0rqsZST4hd+D9cTXA'));
 //     console.log(await createPolicy('XzCwNou8Q0oS3ZyO84UUcYfeEnFECqYRR0nLFfZ9ei8=', 'WKcxN1Jh/Lu42hDN70tm4Qq/vtxiajaGAbc4vJvOF34=', 'Ak70lJFy656wf0SY9ddAKqdn4acxaDODYSrHVrqRxLLs'))
@@ -153,7 +284,7 @@ async function decryptDeligatedDocument(
 export {
   generateKeyPairs,
   encryptData,
-  decryptDeligatedDocument,
-  decryptUploadedDocument,
-  createPolicy
+  decryptDocument,
+  createPolicy,
+  decryptUploaded
 };

@@ -1,6 +1,8 @@
 import {
   createPolicy,
   decryptDeligatedDocument,
+  decryptDocument,
+  decryptUploaded,
   decryptUploadedDocument,
   encryptData,
   generateKeyPairs
@@ -18,9 +20,16 @@ import {
   uploadADocument,
   isDeligatee,
   getNumberOfDeligatee,
-  getDelegteeUsername
+  getDelegteeUsername,
+  getDocumentInfo
 } from "./web3Interactions";
-import { connectNode, getData, handleUpload } from "./ipfsInteractions";
+import {
+  connectNode,
+  getData,
+  getMessageKit,
+  handleUpload,
+  uploadMessageKit
+} from "./ipfsInteractions";
 
 export async function doConnections(_contractAddress) {
   console.log("inside doConnections");
@@ -31,33 +40,47 @@ export async function doConnections(_contractAddress) {
   console.log("end of doConnections");
 }
 
+// TODO Updated to be Checked
 export async function checkUsernameAvailability(_username) {
   return await checkUsernameWeb3(_username);
 }
 
+// TODO Written To Be Checked
 export async function signUpAndGetNucypherKeys(
   _username,
   _aliceEthereumPrivateKey,
+  _password,
   _callingObject
 ) {
-  let rv = await generateKeyPairs();
+  /* let rv = await generateKeyPairs();
   await signInUser(
     _username,
     _aliceEthereumPrivateKey,
     rv.alicePublicKey,
     _callingObject
   );
+  return rv;*/
+
+  // Generating keys for nucypher
+  let rv = await generateKeyPairs(_username, _password);
+
+  // Storing username to contract
+  await signInUser(_username, _aliceEthereumPrivateKey, _callingObject);
+
   return rv;
 }
 
+// TODO Updated To be Checked
 export async function uploadDocument(
   _array,
   _uploader,
-  _alicePublicKey,
-  _aliceEthereumPrivateKey,
-  _aliceVerifyKey,
+  _password,
+  _aliceKey,
+  _label,
+  _ethereumPrivateKey,
   _callingObject
 ) {
+  /*
   // Uploading the array of data to ipfs and fetch the hash
   let hash = await handleUpload(_array);
 
@@ -74,18 +97,48 @@ export async function uploadDocument(
     _aliceEthereumPrivateKey,
     _callingObject
   );
+*/
+
+  // Encrypting data using Nucypher Devnet
+
+  let {
+    messageKit,
+    label,
+    policyPubKey,
+    aliceSigKey,
+    dataSource
+  } = await encryptData(_uploader, _password, _aliceKey, _label, _array);
+
+  // Store message kit to ipfs
+
+  let path = await uploadMessageKit(messageKit);
+
+  // Store ipfs hash and everything to contract
+
+  await uploadADocument(
+    path,
+    dataSource,
+    _label,
+    policyPubKey,
+    aliceSigKey,
+    _uploader,
+    _ethereumPrivateKey,
+    _callingObject
+  );
 }
 
+//TODO Updated to be Checked
 export async function grantDocumentAccess(
+  _password,
+  _bobName,
+  _aliceName,
+  _aliceKeys,
+  _label,
   _documentId,
-  _alicePrivateKey,
-  _aliceSigningKey,
-  _deligatee,
-  _uploader,
   _aliceEthereumPrivateKey,
   _callingObject
 ) {
-  // Fetch Bob's Public Key
+  /*// Fetch Bob's Public Key
   let bobPublicKey = await getDelegateePublicKey(_deligatee);
 
   // Generate a policy on the nucypherNetwork
@@ -104,12 +157,25 @@ export async function grantDocumentAccess(
     _aliceEthereumPrivateKey,
     _callingObject
   );
+  */
+
+  // Add bob to the policy on nucypher
+  await createPolicy(_password, _bobName, _aliceKeys, _label);
+
+  // Update contract for Document deligated
+  deligateDocument(
+    _documentId,
+    _bobName,
+    _aliceName,
+    _aliceEthereumPrivateKey,
+    _callingObject
+  );
 }
 
+// TODO to be done later...
 export async function fetchUploadedDocuments(
   _uploader,
   _aliceEthereumPrivateKey,
-  _alicePrivateKey,
   _requestedObject,
   _documentUploadedCallback
 ) {
@@ -119,7 +185,7 @@ export async function fetchUploadedDocuments(
   console.log("arr", arr);
   for (let i = 0; i < arr.length; i++) {
     // Fetch information regarding the document
-    let {
+    /*let {
       cipherText,
       capsule,
       verifyKey,
@@ -137,15 +203,35 @@ export async function fetchUploadedDocuments(
     // Fetch data using generated ipfs hash
     let dataArray = await getData(ipfsHash, _requestedObject);
     console.log(dataArray);
-    _documentUploadedCallback(dataArray, arr[i]);
+    _documentUploadedCallback(dataArray, arr[i]);*/
+
+    let currentDocumentId = arr[i];
+    let { label } = await getDocumentInfo(
+      currentDocumentId,
+      _aliceEthereumPrivateKey
+    );
+
+    let obj = await decryptUploaded(label, _requestedObject);
+    _documentUploadedCallback(obj, currentDocumentId, label);
   }
 }
 
+export function createRandomHex(length = 10) {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
+// TODO Updated to be checked
 export async function fetchDelegatedDouments(
   _deligatee,
   _aliceEthereumPrivateKey,
-  _alicePublicKey,
-  _alicePrivateKey,
+  _bobKeys,
   _requestedObject,
   _documentUploadedCallback
 ) {
@@ -154,6 +240,7 @@ export async function fetchDelegatedDouments(
   let arr = await getDeligatedDocumentIds(_deligatee, _aliceEthereumPrivateKey);
   console.log("arr:", arr);
   for (let i = 0; i < arr.length; i++) {
+    /*
     // Fetch information regarding the document
 
     let {
@@ -182,7 +269,31 @@ export async function fetchDelegatedDouments(
     // Fetch data using generated ipfs hash
     let dataArray = await getData(ipfsHash, _requestedObject);
     console.log("dataArray is awesome", dataArray);
-    _documentUploadedCallback(dataArray);
+    _documentUploadedCallback(dataArray);*/
+
+    let currentDocumentId = arr[i];
+    let {
+      ipfsPath,
+      dataSource,
+      label,
+      aliceSigKey,
+      policyPubKey,
+      alice
+    } = await getDocumentInfo(currentDocumentId, _aliceEthereumPrivateKey);
+
+    let messageKit = await getMessageKit(ipfsPath);
+
+    let obj = await decryptDocument(
+      _bobKeys,
+      policyPubKey,
+      aliceSigKey,
+      label,
+      messageKit,
+      dataSource,
+      _requestedObject
+    );
+
+    _documentUploadedCallback(obj);
   }
 }
 
@@ -193,6 +304,7 @@ export async function getDelegatees() {
     let username = await getDelegteeUsername(i);
     usernames.push(username);
   }
+  console.log("username=>>>>", usernames);
   return usernames;
 }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { Jumbotron, Row, Col, Button } from "react-bootstrap";
+
 import TransactionModal from "./TransactionModal";
 export default class Home extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ export default class Home extends React.Component {
           <Col md={4} />
           <Col md={4}>
             <p>
-              An Easy FrameWork to Create White-Labelled Data Sharing Platforms
+              The WYSIWYG for NuCypher + IPFS
             </p>
           </Col>
         </Row>

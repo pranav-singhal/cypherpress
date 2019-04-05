@@ -78,6 +78,7 @@ export default class CreateAppForm extends React.Component {
     clientAppJson.delegateInfo = this.state.delegateInfo;
     localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
     await setClientJson(this.appNameRef.current.value, clientAppJson);
+
     // get private key
     // deploy contract function
     const adminPrivateKey = this.adminPrivateKeyRef.current.value;

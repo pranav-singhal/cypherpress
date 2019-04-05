@@ -116,7 +116,27 @@ async function getData(_path, _requestedArray) {
   console.log(dataArrayToBereturned);
 }
 
-export { getData, handleUpload, connectNode };
+async function uploadMessageKit(_messageKit) {
+  let json = {
+    message: _messageKit
+  };
+  console.log(json);
+  let buffer = await Buffer.from(JSON.stringify(json));
+  let ipfsResponse = await ipfsNode.add(buffer);
+  return ipfsResponse[0].path;
+}
+
+async function getMessageKit(_path) {
+  console.log("_path", _path);
+  let response = await ipfsNode.get("/ipfs/" + _path);
+  let content = response[0].content;
+  console.log(content);
+  let json = JSON.parse(content.toString());
+  console.log(json);
+  return json.message;
+}
+
+export { getData, handleUpload, connectNode, uploadMessageKit, getMessageKit };
 // async function testing() {
 //     await connectNode();
 //     // let test = [

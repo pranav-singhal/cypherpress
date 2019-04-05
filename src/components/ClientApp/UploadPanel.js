@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Row, Col, Button, File } from "react-bootstrap";
-import { uploadDocument } from "../../connections/Controller";
+import {createRandomHex, uploadDocument} from "../../connections/Controller";
 import { getClientJson } from "../../connections/httpInteractions";
 import TransactionModal from "../TransactionModal";
 export default class UploadPanel extends React.Component {
@@ -18,10 +18,12 @@ export default class UploadPanel extends React.Component {
     // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
   }
   async componentDidMount() {
-    const clientAppJson = await getClientJson(this.props.appName);
+    let clientAppJson = await getClientJson(this.props.appName);
+    console.log("clientAppJson",clientAppJson);
+    // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
     this.setState({ clientAppJson: clientAppJson });
-    this.addFormFields();
+    this.addFormFields(clientAppJson.dataInfo);
     this.setState({ generateForm: true });
   }
   getDelegates = () => {
@@ -30,8 +32,9 @@ export default class UploadPanel extends React.Component {
   getDataInfo = () => {
     return this.state.clientAppJson.dataInfo;
   };
-  addFormFields = () => {
-    const dataInfo = this.getDataInfo();
+  addFormFields = (dataInfo) => {
+    // const dataInfo = this.getDataInfo();
+    console.log(dataInfo,'dataInfo')
     dataInfo.map((field, id) => {
       const newField = {
         fieldName: field.fieldName,
@@ -58,17 +61,17 @@ export default class UploadPanel extends React.Component {
   };
   handleFile = id => event => {
     event.preventDefault();
-    const reader = new window.FileReader();
-    reader.readAsArrayBuffer(event.target.files[0]);
-    reader.onloadend = () => {
-      let newFormData = this.state.formData;
-
-      let readerresult = reader.result;
-
-      newFormData[id].fieldValue = readerresult;
-
-      this.setState({ formData: newFormData });
-    };
+    // const reader = new window.FileReader();
+    // reader.readAsArrayBuffer(event.target.files[0]);
+    // reader.onloadend = () => {
+    //
+    //
+    //   let readerresult = reader.result;
+    //
+    // };
+    let newFormData = this.state.formData;
+    newFormData[id].fieldValue = event.target.files[0];
+    this.setState({ formData: newFormData });
   };
   submitForm = async () => {
     let array = this.state.formData.map(field => {
@@ -82,6 +85,10 @@ export default class UploadPanel extends React.Component {
     const alicePublicKey = localStorage.getItem("alicePublicKey");
     const privateKey = localStorage.getItem("privateKey");
     const aliceVerifyingKey = localStorage.getItem("aliceVerifyingKey");
+    const password = localStorage.getItem('password');
+    const aliceKey = localStorage.getItem('aliceKey');
+    const label = createRandomHex(10);
+
     const callingObject = {
       verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
         console.log(transaction, gasInEth, transactionName);
@@ -103,9 +110,10 @@ export default class UploadPanel extends React.Component {
     await uploadDocument(
       array,
       username,
-      alicePublicKey,
+      password,
+      aliceKey,
+      label,
       privateKey,
-      aliceVerifyingKey,
       callingObject
     );
 

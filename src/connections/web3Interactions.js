@@ -1,41 +1,41 @@
 import Web3 from "web3";
 
 const web3 = new Web3(
-  new Web3.providers.HttpProvider(
-    "http://127.0.0.1:8545  "
-  )
+  new Web3.providers.HttpProvider("http://127.0.0.1:8545  ")
 );
 
 const contractAbi = [
   {
-    constant: false,
-    inputs: [
-      { name: "_documentId", type: "uint256" },
-      { name: "_policyId", type: "string" },
-      { name: "_deligatee", type: "string" },
-      { name: "_uploader", type: "string" }
-    ],
-    name: "deligateDocument",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
     constant: true,
     inputs: [
-      { name: "_documentId", type: "uint256" },
-      { name: "_delegatee", type: "string" }
+      {
+        name: "_documentId",
+        type: "uint256"
+      },
+      {
+        name: "_delegatee",
+        type: "string"
+      }
     ],
     name: "isDeligatee",
-    outputs: [{ name: "", type: "bool" }],
+    outputs: [
+      {
+        name: "",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: false,
-    inputs: [{ name: "_username", type: "string" }],
+    inputs: [
+      {
+        name: "_username",
+        type: "string"
+      }
+    ],
     name: "addDeligateeAccounts",
     outputs: [],
     payable: false,
@@ -43,62 +43,19 @@ const contractAbi = [
     type: "function"
   },
   {
-    constant: false,
-    inputs: [
-      { name: "_username", type: "string" },
-      { name: "_nucypherPublic", type: "string" }
-    ],
-    name: "signUpUsername",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_deligatee", type: "string" }],
-    name: "getDeligatedDocument",
-    outputs: [{ name: "", type: "uint256[]" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_username", type: "string" }],
-    name: "getNucypherPublicKey",
-    outputs: [{ name: "", type: "string" }],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [{ name: "_documentId", type: "uint256" }],
-    name: "getUploadedDocumentInfo",
-    outputs: [
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
     constant: true,
     inputs: [
-      { name: "_documentId", type: "uint256" },
-      { name: "_deligatee", type: "string" }
+      {
+        name: "_uploader",
+        type: "string"
+      }
     ],
-    name: "getDeligatedDocumentInfo",
+    name: "getUploadedDocumentsNumber",
     outputs: [
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" },
-      { name: "", type: "string" }
+      {
+        name: "",
+        type: "uint256[]"
+      }
     ],
     payable: false,
     stateMutability: "view",
@@ -107,11 +64,30 @@ const contractAbi = [
   {
     constant: false,
     inputs: [
-      { name: "_cipherText", type: "string" },
-      { name: "_capsule", type: "string" },
-      { name: "_aliceVerifyingKey", type: "string" },
-      { name: "_alicePublicKey", type: "string" },
-      { name: "_uploader", type: "string" }
+      {
+        name: "_messageKit",
+        type: "string"
+      },
+      {
+        name: "_dataSource",
+        type: "string"
+      },
+      {
+        name: "_label",
+        type: "string"
+      },
+      {
+        name: "_policyPubKey",
+        type: "string"
+      },
+      {
+        name: "_aliceSigKey",
+        type: "string"
+      },
+      {
+        name: "_uploader",
+        type: "string"
+      }
     ],
     name: "uploadADocument",
     outputs: [],
@@ -121,36 +97,146 @@ const contractAbi = [
   },
   {
     constant: true,
-    inputs: [{ name: "_index", type: "uint256" }],
+    inputs: [
+      {
+        name: "_deligatee",
+        type: "string"
+      }
+    ],
+    name: "getDeligatedDocumentsNumber",
+    outputs: [
+      {
+        name: "",
+        type: "uint256[]"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "_documentId",
+        type: "uint256"
+      }
+    ],
+    name: "getDocumentInfo",
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      },
+      {
+        name: "",
+        type: "string"
+      },
+      {
+        name: "",
+        type: "string"
+      },
+      {
+        name: "",
+        type: "string"
+      },
+      {
+        name: "",
+        type: "string"
+      },
+      {
+        name: "",
+        type: "string"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "_index",
+        type: "uint256"
+      }
+    ],
     name: "getDelegteeUsername",
-    outputs: [{ name: "", type: "string" }],
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
     constant: true,
-    inputs: [{ name: "_username", type: "string" }],
+    inputs: [
+      {
+        name: "_username",
+        type: "string"
+      }
+    ],
     name: "usernameAvailability",
-    outputs: [{ name: "", type: "bool" }],
+    outputs: [
+      {
+        name: "",
+        type: "bool"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
   },
   {
-    constant: true,
-    inputs: [{ name: "_uploader", type: "string" }],
-    name: "getUploadedDocuments",
-    outputs: [{ name: "", type: "uint256[]" }],
+    constant: false,
+    inputs: [
+      {
+        name: "_documentId",
+        type: "uint256"
+      },
+      {
+        name: "_deligatee",
+        type: "string"
+      },
+      {
+        name: "_uploader",
+        type: "string"
+      }
+    ],
+    name: "deligateDocument",
+    outputs: [],
     payable: false,
-    stateMutability: "view",
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    constant: false,
+    inputs: [
+      {
+        name: "_username",
+        type: "string"
+      }
+    ],
+    name: "signUpUsername",
+    outputs: [],
+    payable: false,
+    stateMutability: "nonpayable",
     type: "function"
   },
   {
     constant: true,
     inputs: [],
     name: "getNumberOfDeligatee",
-    outputs: [{ name: "", type: "uint256" }],
+    outputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     payable: false,
     stateMutability: "view",
     type: "function"
@@ -177,6 +263,7 @@ async function connectToContract(_contractAddress) {
   return true;
 }
 
+// Updated, according to new contract
 async function isDeligatee(_documentId, _delegatee) {
   return new Promise(function(resolve, reject) {
     contract.methods
@@ -193,6 +280,7 @@ async function isDeligatee(_documentId, _delegatee) {
   });
 }
 
+// Updated, according to new contract
 async function getNumberOfDeligatee() {
   return new Promise(function(resolve, reject) {
     contract.methods
@@ -204,6 +292,7 @@ async function getNumberOfDeligatee() {
   });
 }
 
+// Updated, according to new contract
 async function getDelegteeUsername(_idx) {
   return new Promise(function(resolve, reject) {
     contract.methods
@@ -215,7 +304,7 @@ async function getDelegteeUsername(_idx) {
   });
 }
 
-// TODO OK Tested
+// Updated, according to new contract
 /*
     Function to check if a certain username is available for use
     @param {string} _username
@@ -237,7 +326,7 @@ async function checkUsernameWeb3(_username) {
   });
 }
 
-// TODO OK Tested
+// Updated, according to new contract
 /*
     Function to signInUser to the contract to store his username to contract
     @param {string} _username : Username of user to be added
@@ -264,16 +353,11 @@ async function checkUsernameWeb3(_username) {
         }
 
  */
-async function signInUser(
-  _username,
-  _privateKey,
-  _alicePublicKey,
-  _callingObject
-) {
+async function signInUser(_username, _privateKey, _callingObject) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .signUpUsername(_username, _alicePublicKey)
+      .signUpUsername(_username)
       .estimateGas({
         from: address
       })
@@ -285,9 +369,7 @@ async function signInUser(
             from: web3.utils.toChecksumAddress(address),
             to: web3.utils.toChecksumAddress(contractAddress),
             gas: gasAmount + 10,
-            data: contract.methods
-              .signUpUsername(_username, _alicePublicKey)
-              .encodeABI()
+            data: contract.methods.signUpUsername(_username).encodeABI()
           };
 
           web3.eth.getBalance(address).then(bal => {
@@ -336,21 +418,23 @@ async function signInUser(
   });
 }
 
-async function getDelegateePublicKey(_delegatee) {
-  return new Promise(function(resolve, reject) {
-    contract.methods
-      .getNucypherPublicKey(_delegatee)
-      .call()
-      .then(function(_bobPublicKey) {
-        resolve(_bobPublicKey);
-      });
-  });
-}
+// Not Required with devnet
+//
+// async function getDelegateePublicKey(_delegatee) {
+//   return new Promise(function(resolve, reject) {
+//     contract.methods
+//       .getNucypherPublicKey(_delegatee)
+//       .call()
+//       .then(function(_bobPublicKey) {
+//         resolve(_bobPublicKey);
+//       });
+//   });
+// }
 
-// TODO can't fetch return value. Either use as it is or make an event in solidity
+// Updated, according to new contract
 /*
     Function to upload a document to the network without setting any deligatee
-    @param {string} _cipherText : cipher text from pyUmbral
+    @param {string} _messageKit : cipher text from pyUmbral
     @param {string} _capsule : capsule from pyUmbral
     @param {string} _aliceVerifyKey : alice's verifying key
     @param {string} _alicePublicKey : alice's public key
@@ -380,32 +464,35 @@ async function getDelegateePublicKey(_delegatee) {
         }
  */
 async function uploadADocument(
-  _cipherText,
-  _capsule,
-  _aliceVerifyKey,
-  _alicePublicKey,
-  _uploader,
+  _messageKit,
+  _dataSource,
+  _label,
+  _policyPubKey,
+  _aliceSigKey,
+  _alice,
   _privateKey,
   _callingObject
 ) {
   console.log("inside uploadDocument");
-  console.log("_cipherText", _cipherText);
-  console.log("_capsule", _capsule);
-  console.log("_aliceVerifyKey", _aliceVerifyKey);
-  console.log("uploader", _uploader);
-  console.log("_alicePublicKey", _alicePublicKey);
+  console.log("_messageKit", _messageKit);
+  console.log("_dataSource", _dataSource);
+  console.log("_label", _label);
+  console.log("_policyPubKey", _policyPubKey);
+  console.log("_aliceSigKey", _aliceSigKey);
   console.log("_privateKey", _privateKey);
+  console.log("_alice", _alice);
 
   return new Promise(function(resolve, reject) {
-    console.log('inside upload document');
+    console.log("inside upload document");
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
       .uploadADocument(
-        _cipherText,
-        _capsule,
-        _aliceVerifyKey,
-        _alicePublicKey,
-        _uploader
+        _messageKit,
+        _dataSource,
+        _label,
+        _policyPubKey,
+        _aliceSigKey,
+        _alice
       )
       .estimateGas({
         from: address
@@ -421,11 +508,12 @@ async function uploadADocument(
             gas: gasAmount + 1000,
             data: contract.methods
               .uploadADocument(
-                _cipherText,
-                _capsule,
-                _aliceVerifyKey,
-                _alicePublicKey,
-                _uploader
+                _messageKit,
+                _dataSource,
+                _label,
+                _policyPubKey,
+                _aliceSigKey,
+                _alice
               )
               .encodeABI()
           };
@@ -478,7 +566,7 @@ async function uploadADocument(
   });
 }
 
-// TODO Ok Tested
+// Updated, according to new contract
 /*
     Function to deligate a document to someone
     @param {string} _documentId : unique document id returned by contract
@@ -511,7 +599,6 @@ async function uploadADocument(
  */
 async function deligateDocument(
   _documentId,
-  _policyId,
   _deligatee,
   _uploader,
   _privateKey,
@@ -519,15 +606,14 @@ async function deligateDocument(
 ) {
   return new Promise(function(resolve, reject) {
     console.log(_documentId);
-    console.log(_policyId);
     console.log(_deligatee);
     console.log(_uploader);
     console.log(_privateKey);
     console.log(_callingObject);
-    _policyId = _policyId.policyId;
+    // _documentId++;
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .deligateDocument(_documentId, _policyId, _deligatee, _uploader)
+      .deligateDocument(_documentId, _deligatee, _uploader)
       .estimateGas({
         from: address
       })
@@ -540,7 +626,7 @@ async function deligateDocument(
             to: web3.utils.toChecksumAddress(contractAddress),
             gas: gasAmount + 1000,
             data: contract.methods
-              .deligateDocument(_documentId, _policyId, _deligatee, _uploader)
+              .deligateDocument(_documentId, _deligatee, _uploader)
               .encodeABI()
           };
 
@@ -591,7 +677,7 @@ async function deligateDocument(
   });
 }
 
-// TODO OK Tested
+// Updated, according to new contract
 /*
     Function to get the list of documents uploaded by a particular username in the form of document ids
     @param {string} _uploader : username of the uploader of the document
@@ -602,7 +688,7 @@ async function getUploadedDocumentIds(_uploader, _privateKey) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .getUploadedDocuments(_uploader)
+      .getUploadedDocumentsNumber(_uploader)
       .call({
         from: address
       })
@@ -613,7 +699,7 @@ async function getUploadedDocumentIds(_uploader, _privateKey) {
   });
 }
 
-// TODO Ok Tested
+// Updated, according to new contract
 /*
     Function to get the list of documents deligated to the user
     @param {string} _deligatee : username of the deligatee of the document
@@ -624,7 +710,7 @@ async function getDeligatedDocumentIds(_deligatee, _privateKey) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .getDeligatedDocument(_deligatee)
+      .getDeligatedDocumentsNumber(_deligatee)
       .call({
         from: address
       })
@@ -647,6 +733,7 @@ async function getDeligatedDocumentIds(_deligatee, _privateKey) {
                                     publicKey
                                 }
  */
+/*
 async function getUploadedDocumentInfo(_documentId, _privateKey) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
@@ -666,7 +753,9 @@ async function getUploadedDocumentInfo(_documentId, _privateKey) {
       });
   });
 }
+*/
 
+// Updated, according to new contract
 /*
     Function to fetch the information regarding a deligated document
     @param {string} _documentId : unique Id of the document to be fetched
@@ -680,21 +769,22 @@ async function getUploadedDocumentInfo(_documentId, _privateKey) {
                                     policyId
                                 }
  */
-async function getDeligatedDocumentInfo(_documentId, _deligatee, _privateKey) {
+async function getDocumentInfo(_documentId, _privateKey) {
   return new Promise(function(resolve, reject) {
     let address = web3.eth.accounts.privateKeyToAccount(_privateKey).address;
     contract.methods
-      .getDeligatedDocumentInfo(_documentId, _deligatee)
+      .getDocumentInfo(_documentId)
       .call({
         from: address
       })
       .then(function(response) {
         let rv = {
-          cipherText: response["0"],
-          capsule: response["1"],
-          verifyKey: response["2"],
-          publicKey: response["3"],
-          policyId: response["4"]
+          ipfsPath: response["0"],
+          dataSource: response["1"],
+          label: response["2"],
+          aliceSigKey: response["3"],
+          policyPubKey: response["4"],
+          alice: response["5"]
         };
         resolve(rv);
       });
@@ -702,8 +792,6 @@ async function getDeligatedDocumentInfo(_documentId, _deligatee, _privateKey) {
 }
 
 export {
-  getDeligatedDocumentInfo,
-  getUploadedDocumentInfo,
   getDeligatedDocumentIds,
   getUploadedDocumentIds,
   deligateDocument,
@@ -711,10 +799,10 @@ export {
   signInUser,
   checkUsernameWeb3,
   connectToContract,
-  getDelegateePublicKey,
   isDeligatee,
   getNumberOfDeligatee,
-  getDelegteeUsername
+  getDelegteeUsername,
+  getDocumentInfo
 };
 
 /*

@@ -9,8 +9,11 @@
 /coverage
 
 # production
+/.idea/
 /build
-/ubmbral/__pycache__/
+/umbral/__pycache__/
+/umbral/alice
+/umbral/bob
 # misc
 .DS_Store
 .env.local
