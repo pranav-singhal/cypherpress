@@ -6,7 +6,17 @@
 
 .container {
 }
+.admin-dashboard{
+  .button, .button:hover{
+    min-width:200px;
+    padding: 30px 10px;
+    font-size: 3em;
+    background: black;
+  }
+}
+.app-form{
 
+}
 h1.title {
   text-align: center;
   text-transform: capitalize;

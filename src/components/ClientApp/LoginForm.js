@@ -68,7 +68,7 @@ export default class LoginForm extends React.Component {
       <Container>
         <Row>
           <Col>
-            <Form>
+            <Form className ={'app-form'}>
               <Form.Group controlId="username">
                 <Form.Label>Username</Form.Label>
                 <Form.Control
