@@ -21,7 +21,7 @@ import {
   isDeligatee,
   getNumberOfDeligatee,
   getDelegteeUsername,
-  getDocumentInfo
+  getDocumentInfo, getNumberOfUsers
 } from "./web3Interactions";
 import {
   connectNode,
@@ -310,4 +310,15 @@ export async function getDelegatees() {
 
 export async function isDelegatee(_documentId, _delegatee) {
   return await isDeligatee(_documentId, _delegatee);
+}
+
+export async function getUsernames() {
+  let usernames = [];
+  let number = await getNumberOfUsers();
+  for (let i = 0; i < number; i++) {
+    let username = await getUsernames(i);
+    usernames.push(username);
+  }
+  console.log("username=>>>>", usernames);
+  return usernames;
 }

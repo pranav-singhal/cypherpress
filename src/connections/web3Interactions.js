@@ -6,246 +6,279 @@ const web3 = new Web3(
 
 const contractAbi = [
   {
-    constant: true,
-    inputs: [
+    "constant": true,
+    "inputs": [
       {
-        name: "_documentId",
-        type: "uint256"
+        "name": "_documentId",
+        "type": "uint256"
       },
       {
-        name: "_delegatee",
-        type: "string"
+        "name": "_delegatee",
+        "type": "string"
       }
     ],
-    name: "isDeligatee",
-    outputs: [
+    "name": "isDeligatee",
+    "outputs": [
       {
-        name: "",
-        type: "bool"
+        "name": "",
+        "type": "bool"
       }
     ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    constant: false,
-    inputs: [
+    "constant": false,
+    "inputs": [
       {
-        name: "_username",
-        type: "string"
+        "name": "_username",
+        "type": "string"
       }
     ],
-    name: "addDeligateeAccounts",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "addDeligateeAccounts",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    constant: true,
-    inputs: [
+    "constant": true,
+    "inputs": [
       {
-        name: "_uploader",
-        type: "string"
+        "name": "_uploader",
+        "type": "string"
       }
     ],
-    name: "getUploadedDocumentsNumber",
-    outputs: [
+    "name": "getUploadedDocumentsNumber",
+    "outputs": [
       {
-        name: "",
-        type: "uint256[]"
+        "name": "",
+        "type": "uint256[]"
       }
     ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    constant: false,
-    inputs: [
+    "constant": false,
+    "inputs": [
       {
-        name: "_messageKit",
-        type: "string"
+        "name": "_messageKit",
+        "type": "string"
       },
       {
-        name: "_dataSource",
-        type: "string"
+        "name": "_dataSource",
+        "type": "string"
       },
       {
-        name: "_label",
-        type: "string"
+        "name": "_label",
+        "type": "string"
       },
       {
-        name: "_policyPubKey",
-        type: "string"
+        "name": "_policyPubKey",
+        "type": "string"
       },
       {
-        name: "_aliceSigKey",
-        type: "string"
+        "name": "_aliceSigKey",
+        "type": "string"
       },
       {
-        name: "_uploader",
-        type: "string"
+        "name": "_uploader",
+        "type": "string"
       }
     ],
-    name: "uploadADocument",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
+    "name": "uploadADocument",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    constant: true,
-    inputs: [
+    "constant": true,
+    "inputs": [
       {
-        name: "_deligatee",
-        type: "string"
+        "name": "_deligatee",
+        "type": "string"
       }
     ],
-    name: "getDeligatedDocumentsNumber",
-    outputs: [
+    "name": "getDeligatedDocumentsNumber",
+    "outputs": [
       {
-        name: "",
-        type: "uint256[]"
+        "name": "",
+        "type": "uint256[]"
       }
     ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    constant: true,
-    inputs: [
+    "constant": true,
+    "inputs": [],
+    "name": "getNumberOfUsers",
+    "outputs": [
       {
-        name: "_documentId",
-        type: "uint256"
+        "name": "",
+        "type": "uint256"
       }
     ],
-    name: "getDocumentInfo",
-    outputs: [
-      {
-        name: "",
-        type: "string"
-      },
-      {
-        name: "",
-        type: "string"
-      },
-      {
-        name: "",
-        type: "string"
-      },
-      {
-        name: "",
-        type: "string"
-      },
-      {
-        name: "",
-        type: "string"
-      },
-      {
-        name: "",
-        type: "string"
-      }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    constant: true,
-    inputs: [
+    "constant": true,
+    "inputs": [
       {
-        name: "_index",
-        type: "uint256"
+        "name": "_documentId",
+        "type": "uint256"
       }
     ],
-    name: "getDelegteeUsername",
-    outputs: [
+    "name": "getDocumentInfo",
+    "outputs": [
       {
-        name: "",
-        type: "string"
-      }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [
-      {
-        name: "_username",
-        type: "string"
-      }
-    ],
-    name: "usernameAvailability",
-    outputs: [
-      {
-        name: "",
-        type: "bool"
-      }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
-      {
-        name: "_documentId",
-        type: "uint256"
+        "name": "",
+        "type": "string"
       },
       {
-        name: "_deligatee",
-        type: "string"
+        "name": "",
+        "type": "string"
       },
       {
-        name: "_uploader",
-        type: "string"
-      }
-    ],
-    name: "deligateDocument",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: false,
-    inputs: [
+        "name": "",
+        "type": "string"
+      },
       {
-        name: "_username",
-        type: "string"
-      }
-    ],
-    name: "signUpUsername",
-    outputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "getNumberOfDeligatee",
-    outputs: [
+        "name": "",
+        "type": "string"
+      },
       {
-        name: "",
-        type: "uint256"
+        "name": "",
+        "type": "string"
+      },
+      {
+        "name": "",
+        "type": "string"
       }
     ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    payable: false,
-    stateMutability: "nonpayable",
-    type: "constructor"
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDelegteeUsername",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_username",
+        "type": "string"
+      }
+    ],
+    "name": "usernameAvailability",
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_documentId",
+        "type": "uint256"
+      },
+      {
+        "name": "_deligatee",
+        "type": "string"
+      },
+      {
+        "name": "_uploader",
+        "type": "string"
+      }
+    ],
+    "name": "deligateDocument",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUsername",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_username",
+        "type": "string"
+      }
+    ],
+    "name": "signUpUsername",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getNumberOfDeligatee",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   }
 ];
 let contract;
@@ -301,6 +334,30 @@ async function getDelegteeUsername(_idx) {
       .then(function(_name) {
         resolve(_name);
       });
+  });
+}
+
+// Updated, according to new contract
+export async function getNumberOfUsers() {
+  return new Promise(function(resolve, reject) {
+    contract.methods
+        .getNumberOfUsers()
+        .call()
+        .then(function(_num) {
+          resolve(_num);
+        });
+  });
+}
+
+// Updated, according to new contract
+export async function getUsername(_idx) {
+  return new Promise(function(resolve, reject) {
+    contract.methods
+        .getUsername(_idx)
+        .call()
+        .then(function(_name) {
+          resolve(_name);
+        });
   });
 }
 

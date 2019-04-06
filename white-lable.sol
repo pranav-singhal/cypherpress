@@ -31,6 +31,7 @@ contract white_label {
     // Mapping to store username to account
     mapping(string => address) usernameToAddress;
     string[] delegatees;
+    string[] usernames;
 
 
     // Mapping to store documents ids uploaded by a certain username
@@ -68,6 +69,7 @@ contract white_label {
 
     function addDeligateeAccounts(string _username) public{
         require(msg.sender == owner);
+        require(usernameToAddress[_username] != 0);
         delegatees.push(_username);
     }
 
@@ -77,6 +79,14 @@ contract white_label {
 
     function getDelegteeUsername(uint _index) public view returns(string){
         return delegatees[_index];
+    }
+
+    function getNumberOfUsers() public view returns(uint){
+        return usernames.length;
+    }
+
+    function getUsername(uint _index) public view returns(string){
+        return usernames[_index];
     }
 
     function usernameAvailability(string _username) public view returns(bool){
@@ -90,6 +100,7 @@ contract white_label {
     function signUpUsername(string _username) public{
         require(usernameToAddress[_username] == 0);
         usernameToAddress[_username] = msg.sender;
+        usernames.push(_username);
     }
 
     function uploadADocument(string _messageKit, string _dataSource, string _label, string _policyPubKey, string _aliceSigKey, string _uploader) public {
