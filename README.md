@@ -1,68 +1,88 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# CypherPress
 
-## Available Scripts
+A WYSIWYG for creating decentralised databases using IPFS and NuCypher
 
-In the project directory, you can run:
+## USPs
 
-### `npm start`
+✅ No knowledge of NuCypher or IPFS required to create decentralised databases
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+✅ Applications you create will allow your users complete control over who has access to data that they share
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## Use Cases
 
-### `npm test`
+- Create a secret sharing app for your friends
+- Build a medical record file system for your hospital where patients can choose which doctors to share their reports with
+- Create a academic record file system for your university where students can share their academic transcripts with professors or employers
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Installation
 
-### `npm run build`
+1. Run a local fleet of Ursulas
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+    git clone https://github.com/nucypher/nucypher.git
+    cd nucypher
+    sh scripts/local_fleet/run_local_fleet.sh
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Install Ganache-Cli (A Local Ethereum Blockchain)<br>
+   You can install ganache-cli by running the following command
 
-### `npm run eject`
+   ```bash
+   npm intall -g ganache-cli
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+   Then it can be initiated using `ganache-cli`<br>
+   This will provide a list of 10 account addresses and private keys.<br>
+   Make sure that only these Private Keys are to be used in the webapp, just for the
+   sake of fast transaction confirmations.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. Clone The repo
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+   ```bash
+   git clone https://github.com/pranav-singhal/cypherpress.git
+   cd cypherpress
+   npm install #install dependencies
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+   ```
 
-## Learn More
+4. Start the python server
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+   ```bash
+    cd umbral
+    export FLASK_APP=app.py
+    flask run
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+   ```
 
-### Code Splitting
+5. Run the WebApp
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+   ```bash
+      cd ..  #go to the root directory
+      yarn start
+   ```
 
-### Analyzing the Bundle Size
+6. Move to the `http://localhost:2000` to view the app
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## Example Use Case (Medical Record File System)
 
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+- Consider a scenario where a hospital wants to build a system where the patient's data (like name, age, height etc)
+    and his previous medical record is to be stored privately by the patient itself. And the 
+    patient has the sole right to decide who will have the access to his data (it can be doctors
+    in this case).
+- Clearly, Nucypher's proxy re-encryption can be used in this scenario, the hospital will have
+    to hire a developer who will build an application handling this use case.
+- **Cypherpress** will be there to rescue in this situation, an admin who has no knowledge about how to 
+    use Nucypher, can create an account on Nucypher as an administrator.
+- He will make the fields such as Name, Blood Group, X-Ray Report which can be filled by the users
+    of his application and give a name to his application, and then click render app.
+     #####This is where Magic Happens
+- An application that has all the fields as made by the admin will be created. Now any patient
+    of the hospital can use this app built by Cypherpress to upload his data, and this app will
+    use proxy re-encryption by Nucypher and give the right to the uploader to decide which doctor
+    can access his data. (**Caution:** Admin will have to decide who will be those who can be granted
+    access by the patients (Doctors in this case) just to make sure patients don't use this app
+    to share data amongst their friends).
+- A similar application can be built by any school's administration, where students upload their
+    performance reports and grant access to their teachers and future employers.    
+    
