@@ -176,7 +176,7 @@ async function decryptDocument(
     filesKeys: fileNames,
     textkeys: textNames
   });
-    content = content.data;
+  content = content.data;
   let dataArrayToBeReturned = [];
   for (let i = 0; i < _requestedObject.length; i++) {
     if (_requestedObject[i].isFile === true) {
@@ -201,12 +201,10 @@ async function decryptDocument(
 }
 
 async function decryptUploaded(_label, _requestedObject) {
-  let content = await axios.get(
-    url + `/fetchUploadedDocument?label=${_label}`
-  );
+  let content = await axios.get(url + `/fetchUploadedDocument?label=${_label}`);
   let dataArrayToBeReturned = [];
-  console.log('content',content)
-  content =content.data
+  console.log("content", content);
+  content = content.data;
   for (let i = 0; i < _requestedObject.length; i++) {
     if (_requestedObject[i].isFile === true) {
       let url = content.files[_requestedObject[i].name];
@@ -225,7 +223,7 @@ async function decryptUploaded(_label, _requestedObject) {
       dataArrayToBeReturned.push(objToBePushed);
     }
   }
-  console.log('dataArraytobe ruet', dataArrayToBeReturned)
+  console.log("dataArraytobe ruet", dataArrayToBeReturned);
   return dataArrayToBeReturned;
 }
 
@@ -278,6 +276,43 @@ async function decryptDeligatedDocument(
 // }
 //
 // testing();
+
+// Authentication Functions
+
+export async function register(username, password) {
+  let { data } = await axios.post(url + "/register", {
+    username: username,
+    password: password
+  });
+  console.log(data);
+  return data.bool;
+}
+
+export async function login(username, password) {
+  let { data } = await axios.post(url + "/login", {
+    username: username,
+    password: password
+  });
+  console.log(data);
+  return data.bool;
+}
+
+export async function addProject(username, project_name) {
+  let { data } = await axios.post(url + "/addProject", {
+    username: username,
+    projectName: project_name
+  });
+  console.log(data);
+  return data.bool;
+}
+
+export async function getProjects(username) {
+  let { data } = await axios.post(url + "/getProject", {
+    username: username
+  });
+  console.log(data);
+  return data.projects;
+}
 
 export {
   generateKeyPairs,
