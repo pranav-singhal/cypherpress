@@ -1,14 +1,13 @@
 import React, {Component} from "react";
-import logo from "../logo.svg";
+
 import "../App.scss";
-import Home from "./Home";
-import CreateAppForm from "./devApp/CreateAppForm";
+
+
 import {library} from "@fortawesome/fontawesome-svg-core";
-import Button from 'react-bootstrap';
+import {Container, Row,Col} from 'react-bootstrap';
 
 import {
     faCheckSquare,
-    faCoffee,
     faPlusCircle,
     faUpload,
     faDownload,
@@ -27,8 +26,17 @@ class App extends Component {
     state = {
 
         adminUsername: '',
-        adminPassword: ''
+        adminPassword: '',
+        showLoginForm: false,
+        showRegisterForm: true
     };
+    toggleForms = (form) => {
+        if(form === 'loginForm'){
+            this.setState({showLoginForm: true, showRegisterForm: false})
+        }else{
+            this.setState({showLoginForm: false, showRegisterForm: true})
+        }
+    }
 
 
     render() {
@@ -36,35 +44,55 @@ class App extends Component {
             return (
 
 
-                <AdminDashboard setRoute = {(route) => {this.props.history.push(route)}}></AdminDashboard>
+                <AdminDashboard setRoute={(route) => {
+                    this.props.history.push(route)
+                }}/>
 
             );
         } else {
             return (
-                <div>
-                    
-                    <AdminLogin
-                        setUsername={(username) => {
-                            this.setState({adminUsername: username})
-                        }}
-                        setPassword={(password) => {
-                            this.setState({adminPassword: password})
-                        }}/>
+                <Container className={'admin-auth'}>
+                    <Row>
+                        <Col md={12}>
+                        <h1 className={'title'}>CypherPress</h1>
+                            </Col>
+                    </Row>
+                    <Row>
+                        <Col md={12} className={'dashboard-buttons'}>
+                            <span onClick={()=>{this.setState({showLoginForm: true, showRegisterForm:false})}}> Login </span>
+                            <span onClick={()=> {this.setState({showLoginForm:false, showRegisterForm:true})}}>Register</span>
+                        </Col>
+                    </Row>
+                    <Row className={this.state.showLoginForm? null:'hidden'}>
 
+                        <Col md={12}>
 
-                    <AdminRegister
-                        setUsername={(username) => {
-                            this.setState({adminUsername: username})
-                        }}
-                        setPassword={(password) => {
-                            this.setState({adminPassword: password})
-                        }}/>
+                        <AdminLogin
+                            setUsername={(username) => {
+                                this.setState({adminUsername: username})
+                            }}
+                            setPassword={(password) => {
+                                this.setState({adminPassword: password})
+                            }}/>
+                            </Col>
 
+                    </Row>
+                    <Row className={this.state.showRegisterForm? null:'hidden'}>
+                        <Col md={12}>
+                        <AdminRegister
+                            setUsername={(username) => {
+                                this.setState({adminUsername: username})
+                            }}
+                            setPassword={(password) => {
+                                this.setState({adminPassword: password})
+                            }}/>
+                        </Col>
+                    </Row>
 
-                </div>
+                </Container>
             );
         }
-        ;
+
 
     }
 }
