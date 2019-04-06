@@ -45,6 +45,10 @@ EnricoS  = 0
 
 contractAddressList ={}
 clientJsons = {}
+users={
+    "pranav":"hello123"
+};
+projects={};
 @app.route('/setContractAddress', methods=['POST'])
 def setContractAddress():
     json_data = json.loads(request.data.decode('utf-8'))
@@ -449,7 +453,66 @@ def encrypt():
 
 
 
+@app.route('/login', methods=['POST'])
+def login():
+   json_data = json.loads(request.data.decode('utf-8'))
+   print(json_data)
+   username = json_data['username']
+   password = json_data['password']
+   usernamearray = users.keys()
+   if (username in usernamearray):
+       return jsonify({"bool": False})
+   elif(users[username] == password):
+       return jsonify({"bool" : True})
+   else:
+       return jsonify({"bool" : False})
 
+
+@app.route('/register', methods=['POST'])
+def register():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print(json_data)
+    username = json_data['username']
+    password = json_data['password']
+    usernamearray = users.keys()
+    if(username in usernamearray):
+        return jsonify({"bool" : False})
+    else:
+        users[username] = password
+        projects[username] = []
+        return jsonify({"bool" : True})
+
+
+@app.route('/addProject', methods=['POST'])
+def addProject():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print(json_data)
+    username = json_data['username']
+    projectname = json_data['projectName']
+
+    usernamearray = users.keys()
+    if (username in usernamearray):
+        return jsonify({"bool": False})
+    else:
+        projects[username].append(projectname)
+        return jsonify({"bool" : True})
+
+
+@app.route('/getProject', methods=['POST'])
+def getProject():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print(json_data)
+    username = json_data['username']
+    usernamearray = users.keys()
+    if (username in usernamearray):
+        return jsonify({"projects": []})
+    else:
+        projectsMade = projects[username]
+        return jsonify({"projects" : projectsMade})
+
+
+
+# Helper Functions
 
 def _get_keys(file, key_class):
     if not os.path.isfile(file):
