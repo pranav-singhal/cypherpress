@@ -75,7 +75,7 @@ A WYSIWYG for creating decentralised databases using IPFS and NuCypher
 - **Cypherpress** will be there to rescue in this situation, an admin who has no knowledge about how to 
     use Nucypher, can create an account on Nucypher as an administrator.
 - He will make the fields such as Name, Blood Group, X-Ray Report which can be filled by the users
-    of his application and give a name to his application, and then click render app.
+    of his application and give a name to his application, and then click render app.<br>
      **_This is where Magic Happens_**
 - An application that has all the fields as made by the admin will be created. Now any patient
     of the hospital can use this app built by Cypherpress to upload his data, and this app will
