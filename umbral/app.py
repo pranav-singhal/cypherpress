@@ -512,6 +512,22 @@ def getProject():
 
 
 
+@app.route('/getProjectOwner', methods=['POST'])
+def getProjectOwner():
+    json_data = json.loads(request.data.decode('utf-8'))
+    print(json_data)
+    projectname = json_data['projectName']
+    usernamearray = projects.keys()
+    for user in usernamearray :
+        userProjects = projects[user]
+        if projectname in userProjects:
+            return jsonify({"owner" : user})
+        else:
+            continue
+
+    return jsonify({"owner" : False})
+
+
 # Helper Functions
 
 def _get_keys(file, key_class):

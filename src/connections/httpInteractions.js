@@ -319,6 +319,18 @@ async function getProjects(username) {
     return data.projects;
 }
 
+export async function getProjectOwnerName(projectName) {
+    let {data} = await axios.post(url + '/getProjectOwner', {
+        projectName : projectName
+    });
+    console.log(data);
+    if(data.owner){
+        return data.owner;
+    }else{
+        return Error('Invalid Project Name');
+    }
+}
+
 export {
     generateKeyPairs,
     addProject,
