@@ -8,6 +8,7 @@ A WYSIWYG for creating decentralised databases using IPFS and NuCypher
 
 ✅ Applications you create will allow your users complete control over who has access to data that they share
 
+✅ Works on Ethereum Smart-Contracts - which means no 'single-point-of-failure'
 ## Use Cases
 
 - Create a secret sharing app for your friends
