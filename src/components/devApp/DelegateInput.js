@@ -2,7 +2,7 @@ import React, {PropTypes} from "react";
 import {Dropdown} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {connectToContract, deligateAccess} from "../../connections/web3Dev";
-import {doConnections} from "../../connections/Controller";
+import {canBeAPotentialDelegatee, doConnections} from "../../connections/Controller";
 
 export default class DelegateInput extends React.Component {
     state = {
@@ -16,15 +16,21 @@ export default class DelegateInput extends React.Component {
         console.log("safas")
         await this.props.getUsers();
         console.log(this.props.listOfUsers);
-        const users = this.props.listOfUsers.map( (username) => {
-            return {username: username, hasAcess: false}
+        const users_promise_array = this.props.listOfUsers.map( async(username) => {
+            let hasAcess = await canBeAPotentialDelegatee(username);
+            hasAcess = !hasAcess
+            return {username: username, hasAcess: hasAcess}
         });
-        this.setState({users: users}, () => {
+        console.log('users_promise_array', users_promise_array)
+        let users_array = await Promise.all(users_promise_array)
+        console.log('users_array', users_array)
+        this.setState({users: users_array}, () => {
             console.log(this.state.users);
             this.setState({usersFetched: true})
         })
 
     };
+
     grantAccess = async (event, username) => {
         event.stopPropagation();
         console.log("address ======>", this.props.contractAddress)
