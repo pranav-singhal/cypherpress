@@ -1,4 +1,5 @@
 import axios from "axios";
+
 let url = "http://localhost:5000";
 
 // Updated according to new flask server
@@ -13,21 +14,21 @@ let url = "http://localhost:5000";
                            }
  */
 async function generateKeyPairs(_username, _password) {
-  if (_password.length < 16) {
-    console.log("Password should be more than 16 characters");
-    return null;
-  }
+    if (_password.length < 16) {
+        console.log("Password should be more than 16 characters");
+        return null;
+    }
 
-  let content = await axios.post(url + "/generateKeys", {
-    username: _username,
-    password: _password
-  });
+    let content = await axios.post(url + "/generateKeys", {
+        username: _username,
+        password: _password
+    });
 
-  content = content.data;
-  return {
-    aliceKey: content.alice,
-    bobKey: content.bob
-  };
+    content = content.data;
+    return {
+        aliceKey: content.alice,
+        bobKey: content.bob
+    };
 }
 
 // Updated according to new flask server
@@ -41,53 +42,53 @@ async function generateKeyPairs(_username, _password) {
                                 }
  */
 async function encryptData(_username, _password, _aliceKey, _label, _array) {
-  let form = new FormData();
-  let files = 0;
-  let texts = 0;
-  let fileNames = {};
-  let textFields = {};
-  for (let i = 0; i < _array.length; i++) {
-    let element = _array[i];
-    console.log(element);
-    if (element.isFile === true) {
-      let fileBuffer = element.value;
+    let form = new FormData();
+    let files = 0;
+    let texts = 0;
+    let fileNames = {};
+    let textFields = {};
+    for (let i = 0; i < _array.length; i++) {
+        let element = _array[i];
+        console.log(element);
+        if (element.isFile === true) {
+            let fileBuffer = element.value;
 
-      form.append(files.toString(), fileBuffer);
-      // console.log(fileBuffer)
-      fileNames[files.toString()] = element.name;
-      files++;
-    } else {
-      textFields[element.name] = element.value;
-      texts++;
+            form.append(files.toString(), fileBuffer);
+            // console.log(fileBuffer)
+            fileNames[files.toString()] = element.name;
+            files++;
+        } else {
+            textFields[element.name] = element.value;
+            texts++;
+        }
     }
-  }
-  console.log(fileNames);
-  console.log("textFields", textFields);
+    console.log(fileNames);
+    console.log("textFields", textFields);
 
-  form.append("fileFieldCount", files.toString());
-  form.append("textFieldCount", texts.toString());
-  form.append("fileNames", JSON.stringify(fileNames));
-  form.append("textFields", JSON.stringify(textFields));
-  form.append("username", _username);
-  form.append("password", _password);
-  form.append("alice", _aliceKey);
-  form.append("label", _label);
-  console.log(form);
+    form.append("fileFieldCount", files.toString());
+    form.append("textFieldCount", texts.toString());
+    form.append("fileNames", JSON.stringify(fileNames));
+    form.append("textFields", JSON.stringify(textFields));
+    form.append("username", _username);
+    form.append("password", _password);
+    form.append("alice", _aliceKey);
+    form.append("label", _label);
+    console.log(form);
 
-  let content = await axios.post(url + "/encryptData", form, {
-    headers: {
-      "Content-Type": "multipart/form-data"
-    }
-  });
+    let content = await axios.post(url + "/encryptData", form, {
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    });
 
-  content = content.data;
-  return {
-    messageKit: content.message,
-    label: content.label,
-    policyPubKey: content.policy_public_key,
-    aliceSigKey: content.alice_sig_pubkey,
-    dataSource: content.data_source
-  };
+    content = content.data;
+    return {
+        messageKit: content.message,
+        label: content.label,
+        policyPubKey: content.policy_public_key,
+        aliceSigKey: content.alice_sig_pubkey,
+        dataSource: content.data_source
+    };
 }
 
 // Updated according to new flask server
@@ -99,38 +100,40 @@ async function encryptData(_username, _password, _aliceKey, _label, _array) {
     @return {string} policyId of the delegation
 */
 async function createPolicy(_password, _bobName, _aliceKeys, _label) {
-  console.log("inside create policy")
-  console.log(_password,_bobName,_aliceKeys,_label)
-  let content = await axios.post(url + "/createPolicy", {
-    password: _password,
-    bob: _bobName,
-    alice: _aliceKeys,
-    label: _label
-  });
-  console.log("content:", content);
-  return {
-    done: true
-  };
+    console.log("inside create policy")
+    console.log(_password, _bobName, _aliceKeys, _label)
+    let content = await axios.post(url + "/createPolicy", {
+        password: _password,
+        bob: _bobName,
+        alice: _aliceKeys,
+        label: _label
+    });
+    console.log("content:", content);
+    return {
+        done: true
+    };
 }
 
-export async function getContractAddress(dappName) {
-  let contractAddress = await axios.post(url + "/getContractAddress", {
-    dappName: dappName
-  });
-  return contractAddress.data;
+async function getContractAddress(dappName) {
+    let contractAddress = await axios.post(url + "/getContractAddress", {
+        dappName: dappName
+    });
+    return contractAddress.data;
 }
+
 export async function setClientJson(dappName, clientJson) {
-  await axios.post(url + "/setClientJson", {
-    dappName: dappName,
-    clientJson: JSON.stringify(clientJson)
-  });
+    await axios.post(url + "/setClientJson", {
+        dappName: dappName,
+        clientJson: JSON.stringify(clientJson)
+    });
 }
+
 export async function getClientJson(dappName) {
-  const res = await axios.post(url + "/getClientJson", {
-    dappName: dappName
-  });
-  console.log("Res", res);
-  return res.data;
+    const res = await axios.post(url + "/getClientJson", {
+        dappName: dappName
+    });
+    console.log("Res", res);
+    return res.data;
 }
 
 // Updated according to new flask server
@@ -142,91 +145,91 @@ export async function getClientJson(dappName) {
     @return {string} hash : ipfs hash of the document to be fetched
  */
 async function decryptDocument(
-  _bobKeys,
-  _policyPubKey,
-  _aliceSigKey,
-  _label,
-  _messageKit,
-  _data_source,
-  _requestedObject
+    _bobKeys,
+    _policyPubKey,
+    _aliceSigKey,
+    _label,
+    _messageKit,
+    _data_source,
+    _requestedObject
 ) {
-  // creating Request Object
-  let numFiles = 0;
-  let fileNames = [];
-  let numText = 0;
-  let textNames = [];
-  for (let i = 0; i < _requestedObject.length; i++) {
-    let curr = _requestedObject[i];
-    if (curr.isFile) {
-      numFiles++;
-      fileNames.push(curr.name);
-    } else {
-      numText++;
-      textNames.push(curr.name);
+    // creating Request Object
+    let numFiles = 0;
+    let fileNames = [];
+    let numText = 0;
+    let textNames = [];
+    for (let i = 0; i < _requestedObject.length; i++) {
+        let curr = _requestedObject[i];
+        if (curr.isFile) {
+            numFiles++;
+            fileNames.push(curr.name);
+        } else {
+            numText++;
+            textNames.push(curr.name);
+        }
     }
-  }
 
-  let content = await axios.post(url + "/decryptDelegated", {
-    bobKeys: _bobKeys,
-    policy_public_key: _policyPubKey,
-    alice_sig_pubkey: _aliceSigKey,
-    label: _label,
-    message: _messageKit,
-    data_source: _data_source,
-    fileFieldCount: numFiles,
-    textFieldCount: numText,
-    filesKeys: fileNames,
-    textkeys: textNames
-  });
-  content = content.data;
-  let dataArrayToBeReturned = [];
-  for (let i = 0; i < _requestedObject.length; i++) {
-    if (_requestedObject[i].isFile === true) {
-      let url = content.files[_requestedObject[i].name];
-      let objToBePushed = {
-        isFile: true,
-        name: _requestedObject[i].name,
-        value: url
-      };
-      dataArrayToBeReturned.push(objToBePushed);
-    } else {
-      let objToBePushed = {
-        isFile: false,
-        name: _requestedObject[i].name,
-        value: content.textFields[_requestedObject[i].name]
-      };
-      dataArrayToBeReturned.push(objToBePushed);
+    let content = await axios.post(url + "/decryptDelegated", {
+        bobKeys: _bobKeys,
+        policy_public_key: _policyPubKey,
+        alice_sig_pubkey: _aliceSigKey,
+        label: _label,
+        message: _messageKit,
+        data_source: _data_source,
+        fileFieldCount: numFiles,
+        textFieldCount: numText,
+        filesKeys: fileNames,
+        textkeys: textNames
+    });
+    content = content.data;
+    let dataArrayToBeReturned = [];
+    for (let i = 0; i < _requestedObject.length; i++) {
+        if (_requestedObject[i].isFile === true) {
+            let url = content.files[_requestedObject[i].name];
+            let objToBePushed = {
+                isFile: true,
+                name: _requestedObject[i].name,
+                value: url
+            };
+            dataArrayToBeReturned.push(objToBePushed);
+        } else {
+            let objToBePushed = {
+                isFile: false,
+                name: _requestedObject[i].name,
+                value: content.textFields[_requestedObject[i].name]
+            };
+            dataArrayToBeReturned.push(objToBePushed);
+        }
     }
-  }
 
-  return dataArrayToBeReturned;
+    return dataArrayToBeReturned;
 }
 
 async function decryptUploaded(_label, _requestedObject) {
-  let content = await axios.get(url + `/fetchUploadedDocument?label=${_label}`);
-  let dataArrayToBeReturned = [];
-  console.log("content", content);
-  content = content.data;
-  for (let i = 0; i < _requestedObject.length; i++) {
-    if (_requestedObject[i].isFile === true) {
-      let url = content.files[_requestedObject[i].name];
-      let objToBePushed = {
-        isFile: true,
-        name: _requestedObject[i].name,
-        value: url
-      };
-      dataArrayToBeReturned.push(objToBePushed);
-    } else {
-      let objToBePushed = {
-        isFile: false,
-        name: _requestedObject[i].name,
-        value: content.textFields[_requestedObject[i].name]
-      };
-      dataArrayToBeReturned.push(objToBePushed);
+    let content = await axios.get(url + `/fetchUploadedDocument?label=${_label}`);
+    let dataArrayToBeReturned = [];
+    console.log("content", content);
+    content = content.data;
+    for (let i = 0; i < _requestedObject.length; i++) {
+        if (_requestedObject[i].isFile === true) {
+            let url = content.files[_requestedObject[i].name];
+            let objToBePushed = {
+                isFile: true,
+                name: _requestedObject[i].name,
+                value: url
+            };
+            dataArrayToBeReturned.push(objToBePushed);
+        } else {
+            let objToBePushed = {
+                isFile: false,
+                name: _requestedObject[i].name,
+                value: content.textFields[_requestedObject[i].name]
+            };
+            dataArrayToBeReturned.push(objToBePushed);
+        }
     }
-  }
-  console.log("dataArraytobe ruet", dataArrayToBeReturned);
-  return dataArrayToBeReturned;
+    console.log("dataArraytobe ruet", dataArrayToBeReturned);
+    return dataArrayToBeReturned;
 }
 
 /*
@@ -282,44 +285,47 @@ async function decryptDeligatedDocument(
 // Authentication Functions
 
 export async function register(username, password) {
-  let { data } = await axios.post(url + "/register", {
-    username: username,
-    password: password
-  });
-  console.log(data);
-  return data.bool;
+    let {data} = await axios.post(url + "/register", {
+        username: username,
+        password: password
+    });
+    console.log(data);
+    return data.bool;
 }
 
 export async function login(username, password) {
-  let { data } = await axios.post(url + "/login", {
-    username: username,
-    password: password
-  });
-  console.log(data);
-  return data.bool;
+    let {data} = await axios.post(url + "/login", {
+        username: username,
+        password: password
+    });
+    console.log(data);
+    return data.bool;
 }
 
-export async function addProject(username, project_name) {
-  let { data } = await axios.post(url + "/addProject", {
-    username: username,
-    projectName: project_name
-  });
-  console.log(data);
-  return data.bool;
+async function addProject(username, project_name) {
+    let {data} = await axios.post(url + "/addProject", {
+        username: username,
+        projectName: project_name
+    });
+    console.log(data);
+    return data.bool;
 }
 
-export async function getProjects(username) {
-  let { data } = await axios.post(url + "/getProject", {
-    username: username
-  });
-  console.log(data);
-  return data.projects;
+async function getProjects(username) {
+    let {data} = await axios.post(url + "/getProject", {
+        username: username
+    });
+    console.log(data);
+    return data.projects;
 }
 
 export {
-  generateKeyPairs,
-  encryptData,
-  decryptDocument,
-  createPolicy,
-  decryptUploaded
+    generateKeyPairs,
+    addProject,
+    getContractAddress,
+    encryptData,
+    getProjects,
+    decryptDocument,
+    createPolicy,
+    decryptUploaded
 };

@@ -21,6 +21,32 @@ export default class AdminLogin extends React.Component {
         localStorage.setItem('adminPassword', this.state.password)
 
     }
+     setPrivateKey =(e) => {
+        localStorage.setItem('adminPrivateKey', e.target.value)
+    }
+    getPrivateKey =() => {
+        if(!localStorage.getItem('adminPrivateKey')){
+            return(
+            <Form.Group controlId={'formBasicPrivateKey'} >
+                     <h2>
+                         <Form.Label>
+                             Enter Private key
+                         </Form.Label>
+
+                     </h2>
+                     <p>It will not leave your browser(scout's honor)</p>
+                     <Form.Control type={'text'} placeholder={'Private Key'} onChange={(e) => {this.setPrivateKey(e)}} />
+                {/* take pvt key input here for admin and store it to localstorage*/}
+                </Form.Group>
+        )
+        }
+        else{
+            return(
+                null
+            )
+        }
+
+    }
 
     render() {
         return (
@@ -45,6 +71,7 @@ export default class AdminLogin extends React.Component {
                         this.setPassword(e)
                     }}/>
                 </Form.Group>
+                {this.getPrivateKey()}
 
                 <Button variant="primary" type="submit" onClick={this.handleSubmit} className={'button'}>
                     Login

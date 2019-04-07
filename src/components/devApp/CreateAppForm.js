@@ -6,6 +6,7 @@ import {
   Navbar,
   Nav,
   Form,
+  Dropdown,
   Button
 } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +19,7 @@ import {
   connectToContract,
   deligateAccess
 } from "../../connections/web3Dev";
-import { setClientJson } from "../../connections/httpInteractions";
+import {addProject, setClientJson} from "../../connections/httpInteractions";
 
 export default class CreateAppForm extends React.Component {
   state = {
@@ -38,7 +39,7 @@ export default class CreateAppForm extends React.Component {
     super(props);
 
     this.appNameRef = React.createRef();
-    this.adminPrivateKeyRef = React.createRef();
+    // this.adminPrivateKeyRef = React.createRef();
   }
   componentDidMount() {
     console.log("mounted");
@@ -81,7 +82,8 @@ export default class CreateAppForm extends React.Component {
 
     // get private key
     // deploy contract function
-    const adminPrivateKey = this.adminPrivateKeyRef.current.value;
+    const adminPrivateKey = localStorage.getItem('adminPrivateKey')
+    console.log('adminprivatekey',adminPrivateKey)
     const callingObject = {
       verifyTransaction: (transaction, gasInEth, transactionName, callback) => {
         this.setState({ transaction, gasInEth, transactionName });
@@ -100,6 +102,7 @@ export default class CreateAppForm extends React.Component {
       adminPrivateKey,
       callingObject
     );
+    console.log("contract address", contractAddress)
     this.setState({ showModal: false });
     await fetch("http://localhost:5000/setContractAddress", {
       method: "POST",
@@ -112,6 +115,7 @@ export default class CreateAppForm extends React.Component {
 
     console.log("contract addess set");
     window.open(`/client-app/${this.appNameRef.current.value}`, "_blank");
+    await addProject(localStorage.getItem('adminUsername'), this.appNameRef.current.value)
     //create a clientJson and store it in localstorage
   };
   addDelegate = async () => {
@@ -145,7 +149,7 @@ export default class CreateAppForm extends React.Component {
         this.setState({ showModal: true });
         await deligateAccess(
           delegate.username,
-          this.adminPrivateKeyRef.current.value,
+          localStorage.getItem('adminPrivateKey'),
           callingObject
         );
         this.setState({ showModal: false });
@@ -199,19 +203,19 @@ export default class CreateAppForm extends React.Component {
                       This will be the name of your new decentralised DataBase
                     </Form.Text>
                   </Form.Group>
-                  <Form.Group>
-                    <h2>
-                      <Form.Label> Enter Your Private Key</Form.Label>
-                    </h2>
-                    <Form.Control
-                      ref={this.adminPrivateKeyRef}
-                      placeholder="Enter Private Key Here"
-                    />
-                    <Form.Text>
-                      We Promise that your private key will not leave your
-                      browser(Buffy's honor)
-                    </Form.Text>
-                  </Form.Group>
+                  {/*<Form.Group>*/}
+                  {/*  <h2>*/}
+                  {/*    <Form.Label> Enter Your Private Key</Form.Label>*/}
+                  {/*  </h2>*/}
+                  {/*  <Form.Control*/}
+                  {/*    ref={this.adminPrivateKeyRef}*/}
+                  {/*    placeholder="Enter Private Key Here"*/}
+                  {/*  />*/}
+                  {/*  <Form.Text>*/}
+                  {/*    We Promise that your private key will not leave your*/}
+                  {/*    browser(Buffy's honor)*/}
+                  {/*  </Form.Text>*/}
+                  {/*</Form.Group>*/}
                 </Col>
               </Row>
               <Row>
@@ -259,32 +263,33 @@ export default class CreateAppForm extends React.Component {
               </Button>
 
               <Row>
-                <Col md={12}>
-                  {this.state.delegates.map((input, id) => {
-                    return (
-                      <DelegateInput
-                        key={input}
-                        toggleButtonState={bool => {
-                          this.toggleButtonState("delegateButtonState", bool);
-                        }}
-                        handleDelegaInfoChange={(username, publicKey) => {
-                          this.handleDelegaInfoChange(id, username, publicKey);
-                        }}
-                      />
-                    );
-                  })}
-                </Col>
-                <Col>
-                  <Button
-                    className="button"
-                    variant="primary"
-                    onClick={this.addDelegateInfo}
-                    disabled={this.state.delegateButtonState}
-                  >
-                    Add a delegate
-                  </Button>
-                </Col>
-                <Col sm={12} />
+                {/*<Col md={12}>*/}
+                {/*  {this.state.delegates.map((input, id) => {*/}
+                {/*    return (*/}
+                {/*      <DelegateInput*/}
+                {/*        key={input}*/}
+                {/*        toggleButtonState={bool => {*/}
+                {/*          this.toggleButtonState("delegateButtonState", bool);*/}
+                {/*        }}*/}
+                {/*        handleDelegaInfoChange={(username, publicKey) => {*/}
+                {/*          this.handleDelegaInfoChange(id, username, publicKey);*/}
+                {/*        }}*/}
+                {/*      />*/}
+                {/*    );*/}
+                {/*  })}*/}
+                {/*</Col>*/}
+                {/*<Col>*/}
+                {/*  <Button*/}
+                {/*    className="button"*/}
+                {/*    variant="primary"*/}
+                {/*    onClick={this.addDelegateInfo}*/}
+                {/*    disabled={this.state.delegateButtonState}*/}
+                {/*  >*/}
+                {/*    Add a delegate*/}
+                {/*  </Button>*/}
+                {/*</Col>*/}
+                {/*<Col sm={12} />*/}
+
               </Row>
             </Form>
           </Col>

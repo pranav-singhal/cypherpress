@@ -5,6 +5,10 @@ import Button from 'react-bootstrap/Button'
 import {Col, Jumbotron, Row} from "react-bootstrap";
 
 export default class AdminDashboard extends React.Component {
+    componentDidMount() {
+        localStorage.removeItem('clientAppJson')
+    }
+
     render() {
         return (
 
@@ -29,6 +33,9 @@ export default class AdminDashboard extends React.Component {
                                 variant="primary"
                                 type="submit"
                                 className="button"
+                                onClick={() => {
+                                    this.props.setRoute('/admin-apps')
+                                }}
                             >
                                 Your Previous Apps
                             </Button>

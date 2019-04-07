@@ -18,7 +18,7 @@ export default class DataType extends React.Component {
         labelVisible: true,
         labelType: "PlainText"
       });
-    } else if (event.target.value === "file") {
+    } else if (event.target.value === "file" || event.target.value ==='File') {
       this.setState({
         labelPlaceholder: "enter a name for the file",
         labelVisible: true,
@@ -37,7 +37,7 @@ export default class DataType extends React.Component {
           <Form.Control as="select" onChange={this.handleSelect}>
             <option>choose</option>
             <option>Plain text</option>
-            <option>file</option>
+            <option>File</option>
           </Form.Control>
 
           {this.state.labelVisible ? (

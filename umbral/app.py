@@ -491,7 +491,7 @@ def addProject():
     projectname = json_data['projectName']
 
     usernamearray = users.keys()
-    if (username in usernamearray):
+    if username not in usernamearray:
         return jsonify({"bool": False})
     else:
         projects[username].append(projectname)
@@ -504,7 +504,7 @@ def getProject():
     print(json_data)
     username = json_data['username']
     usernamearray = users.keys()
-    if (username in usernamearray):
+    if username not in usernamearray:
         return jsonify({"projects": []})
     else:
         projectsMade = projects[username]

@@ -5,6 +5,7 @@ import App from "./App";
 
 import ClientApp from "./ClientApp/ClientApp";
 import CreateAppForm from "./devApp/CreateAppForm";
+import AdminApps from "./devApp/AdminApps";
 const Router = props => {
   return (
     <BrowserRouter>
@@ -12,6 +13,7 @@ const Router = props => {
         <Route exact path="/" component={App} />
         <Route path="/client-app/:appname" component={ClientApp} />
         <Route path="/create-new-app" component={CreateAppForm} />
+        <Route path="/admin-apps" component={AdminApps} />
       </Switch>
     </BrowserRouter>
   );
