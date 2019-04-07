@@ -322,3 +322,13 @@ export async function getUsernames() {
   console.log("username=>>>>", usernames);
   return usernames;
 }
+
+export async function canBeAPotentialDelegatee(_username) {
+  let availableUsers = await getUsernames();
+  let availableDelegatees = await getDelegatees();
+  if(availableUsers.includes(_username) && !availableDelegatees.includes(_username)){
+    return true;
+  }else {
+    return false;
+  }
+}

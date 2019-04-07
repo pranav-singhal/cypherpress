@@ -164,7 +164,7 @@ export default class Document extends React.Component {
                             </ul>
                         </Col>
                         <Col md={2} style={{marginTop: '20px'}}>
-                            <Dropdown>
+                            {this.props.fetchedData ? null : <Dropdown>
                                 <Dropdown.Toggle>
                                     Share File
                                 </Dropdown.Toggle>
@@ -188,7 +188,8 @@ export default class Document extends React.Component {
 
                                 </Dropdown.Menu>
 
-                            </Dropdown>
+                            </Dropdown>}
+
                         </Col>
                     </Row>
 
