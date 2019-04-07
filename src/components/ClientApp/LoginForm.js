@@ -6,10 +6,12 @@ import {
     signUpAndGetNucypherKeys
 } from "../../connections/Controller";
 import TransactionModal from "../TransactionModal";
+import {getProjectOwnerName} from "../../connections/httpInteractions";
 
 export default class LoginForm extends React.Component {
     state = {
-        showModal: false
+        showModal: false,
+        projectAdmin: ''
     };
 
     constructor(props) {
@@ -22,6 +24,9 @@ export default class LoginForm extends React.Component {
     async componentWillMount() {
         console.log("doConnections completed");
         console.log("appname", this.props.appname)
+        const projectAdmin = await getProjectOwnerName(this.props.appname)
+        console.log('project admin',projectAdmin)
+        this.setState({projectAdmin: projectAdmin});
     }
 
     setUser = async event => {
@@ -78,7 +83,7 @@ export default class LoginForm extends React.Component {
                         <Row className={'creator-credits'}>
                             <Col md={10}/>
                             <Col md={2}>
-                                <h4>Created By admin</h4>
+                                <h4>Created By {<span> {this.state.projectAdmin} </span>}</h4>
                             </Col>
                         </Row>
                     </Col>

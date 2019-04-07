@@ -518,6 +518,7 @@ def getProjectOwner():
     print(json_data)
     projectname = json_data['projectName']
     usernamearray = projects.keys()
+    print("usernamearray=>>>>>", projects)
     for user in usernamearray :
         userProjects = projects[user]
         if projectname in userProjects:

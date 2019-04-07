@@ -80,6 +80,7 @@
   }
 
   .app-controller {
+    margin-bottom: 100px;
 
     .col-md-11 {
       background-color: #007bff;
@@ -203,6 +204,7 @@
     font-size: 4em;
     font-family: "Pacifico";
     text-align: center;
+    text-transform: capitalize;
   }
 
   input:focus,
@@ -232,6 +234,7 @@ h1.title {
   text-align: center;
   text-transform: capitalize;
   font-family: "Pacifico";
+
 }
 
 span.cypherPress {
@@ -359,6 +362,7 @@ h2 {
   h1.title{
     color:black;
     font-size: 4em;
+    text-transform: capitalize;
   }
   .description {
     padding-top: 4px;
@@ -426,6 +430,7 @@ h2 {
 
   h1.title {
     margin: 40px 0 10px 0;
+    text-transform: capitalize;
   }
 
   input:focus,
