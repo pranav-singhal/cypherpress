@@ -6,19 +6,22 @@ import UploadPanel from "./UploadPanel";
 import ViewPanel from "./ViewPanel";
 import { Container, Row, Col } from "react-bootstrap";
 import { doConnections } from "../../connections/Controller";
-import { getContractAddress } from "../../connections/httpInteractions";
+import {getClientJson, getContractAddress} from "../../connections/httpInteractions";
 export default class ClientApp extends React.Component {
   state = {
     username: "",
     privateKey: "",
     panel: "UploadPanel",
-    appname: ""
+    appname: "",
+    description:""
   };
   constructor(props) {
     super(props);
   }
   async componentWillMount() {
     console.log("ss");
+    const clientAppJson = await getClientJson(this.props.match.params.appname)
+    this.setState({description: clientAppJson.description })
     const username = localStorage.getItem("username");
     const privateKey = localStorage.getItem("privateKey");
     // const contractAddress = localStorage.getItem("contractAddress");
@@ -44,7 +47,7 @@ export default class ClientApp extends React.Component {
     if (!this.state.username) {
       return (
         <Container>
-          <LoginForm />
+          <LoginForm appname={ this.props.match.params.appname}/>
         </Container>
       );
     }
@@ -55,13 +58,30 @@ export default class ClientApp extends React.Component {
           changePanel={panel => {
             this.setPanel(panel);
           }}
+          appname ={this.state.appname}
         />
         <Row>
-          <Col className="title">
+          <Col className="title" md={12}>
             <h1 className="title"> {this.state.appname}</h1>{" "}
-            <span> Powered By: CypherPress</span>
+            <span style={{'display': 'none'}}> Powered By: <a href="/" target={'_blank'}> CypherPress</a> </span>
           </Col>
+
+
         </Row>
+
+        <Row className={'description'}>
+           <Col md={12} >
+             <h4>App Description:</h4>
+            <p>
+            {this.state.description}
+            </p>
+          </Col>
+
+          {/*<Col md={12}>*/}
+          {/*  <hr/>*/}
+          {/*</Col>*/}
+        </Row>
+
         <Row>
           {this.state.panel === "UploadPanel" ? (
             <UploadPanel appName={this.props.match.params.appname} />

@@ -39,6 +39,7 @@ export default class CreateAppForm extends React.Component {
     super(props);
 
     this.appNameRef = React.createRef();
+    this.descriptionRef = React.createRef();
     // this.adminPrivateKeyRef = React.createRef();
   }
   componentDidMount() {
@@ -77,6 +78,9 @@ export default class CreateAppForm extends React.Component {
     const clientAppJson = {};
     clientAppJson.dataInfo = this.state.dataInfo;
     clientAppJson.delegateInfo = this.state.delegateInfo;
+    clientAppJson.description = this.descriptionRef.current.value;
+    console.log("description", this.descriptionRef.current.value)
+
     localStorage.setItem("clientAppJson", JSON.stringify(clientAppJson));
     await setClientJson(this.appNameRef.current.value, clientAppJson);
 
@@ -184,6 +188,22 @@ export default class CreateAppForm extends React.Component {
           <Col md={12}>
             <h1 className="title"> CypherPress</h1>
           </Col>
+          <Col>
+            <Row className={'create-app-description'}>
+              <Col md={1}/>
+              <Col md={10}>
+            <p>
+              CypherPress is a WYSIWYG for building data sharing platforms. Use the form below
+              to describe the kind of "documents" that you want your users to be able to create using your app.
+            </p>
+                <p>
+                  Once you have filled out the form, click on  <i>render app </i> to create your app. You can then share its link with your
+                  friends or clients. Once people start using your application, you can then select which users can use it to share data.
+                </p>
+                </Col>
+              <Col md={1}/>
+              </Row>
+          </Col>
         </Row>
         <Row className="CreateAppForm">
           <Col md={3} />
@@ -203,6 +223,19 @@ export default class CreateAppForm extends React.Component {
                       This will be the name of your new decentralised DataBase
                     </Form.Text>
                   </Form.Group>
+                    <Form.Group>
+                        <h2>
+                            <Form.Label>
+                                Enter a small description
+                            </Form.Label>
+                            <Form.Control
+                            ref={this.descriptionRef}
+                            as={'textarea'}
+                            placeholder={'enter a small description explaining your application'}
+                            />
+                        </h2>
+
+                    </Form.Group>
                   {/*<Form.Group>*/}
                   {/*  <h2>*/}
                   {/*    <Form.Label> Enter Your Private Key</Form.Label>*/}

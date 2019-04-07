@@ -7,15 +7,27 @@
 .hidden {
   display: none;
 }
+.client-auth{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  .creator-credits{
+    h4{
 
+      font-size: 1em;
+    }
+  }
+}
 .container {
   .dashboard-buttons {
     padding-left: 40px;
     margin-bottom: 10px;
+    margin-right: 4px;
+
+
 
     span {
+      border-radius: 2px;
+      transition: background-color 0.5s;
 
-      border: 1px solid black;
       font-size: 2em;
       padding: 4px;
 
@@ -26,8 +38,9 @@
     }
 
     .active {
-      background-color: black;
-      color:white
+      //background-color: black;
+      background-color:#007bff;
+      color: white;
     }
   }
 }
@@ -41,26 +54,125 @@
   }
 
 }
-.admin-apps{
+
+.admin-apps {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 30px;
-  .nav{
-    background:black;
-    color:white;
-    width:100%;
+  .dashboard-description{
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .nav {
+    background: black;
+    color: white;
+    width: 100%;
     border-radius: 4px;
     padding-left: 4px;
 
+    .nav-item {
+      a.nav-link, a.nav-link:hover {
+        color: white
+      }
+    }
+
   }
-  .app-controller{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    h1{
+
+  .app-controller {
+
+    .col-md-11 {
+      background-color: #007bff;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      color: white;
+      border-radius: 8px;
+
+      h1 {
+        a, a:hover {
+          color: white;
+          text-decoration: none;
+        }
+
+
+        a:hover {
+          .tooltip-text {
+            visibility: visible;
+            opacity: 0.8;
+            top: 4px;
+
+          }
+        }
+
+        a {
+          position: relative;
+          display: inline-block;
+
+          .tooltip-text {
+            font-size: 0.24em;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 240ms ease-in-out;
+            width: 80px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 1px 0;
+            position: absolute;
+
+            top: 8px;
+            z-index: 1;
+          }
+        }
+      }
+    }
+
+    .app-description {
+      border: 2px solid white;
+      border-radius: 4px;
+    }
+
+    h1 {
       text-align: center;
       text-transform: capitalize;
     }
+
+    .get-user-list {
+      padding-bottom: 6px;
+
+      p {
+        margin-bottom: .4em;
+        font-style: italic;
+        text-align: center;
+      }
+
+      padding-top: 10px;
+
+      span {
+        background-color: black;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border-radius: 4px;
+
+        padding: 6px;
+
+
+      }
+
+      span:hover {
+        cursor: pointer;
+      }
+
+      .btn {
+        padding-top: 0;
+        display: block;
+        margin: 0 auto;
+      }
+
+    }
   }
 }
-.admin-auth {
+
+.admin-auth, .client-auth{
   background: rgb(233, 236, 239);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding-top: 30px;
@@ -68,19 +180,29 @@
   font-family: "Roboto";
   font-size: 1.2em;
 
+  .dashboard-buttons {
+    margin-top: 20px;
+  }
+
   .button {
 
     font-size: 2em;
   }
 
+  .button:hover {
+    background-color: black;
+    border: none;
+  }
+
   h2 {
     text-align: left;
   }
-  h1.title{
+
+  h1.title {
     margin-top: 10px;
-  font-size: 4em;
-  font-family: "Pacifico";
-  text-align: center;
+    font-size: 4em;
+    font-family: "Pacifico";
+    text-align: center;
   }
 
   input:focus,
@@ -112,19 +234,26 @@ h1.title {
   font-family: "Pacifico";
 }
 
-.title {
-  span {
+span.cypherPress {
     background: black;
+    font-size: 0.6em;
+
+  display: block;
+  text-align: right;
     padding: 6px 6px;
     border-radius: 4px;
     font-style: italic;
     font-family: "Nova Flat";
     color: white;
     position: relative;
-    top: -110px;
-    left: 750px;
-    z-index: 10;
+
+    a:hover {
+      text-decoration: none;
+      color: #007bff;
+    }
   }
+.title {
+
 }
 
 h1.main {
@@ -138,6 +267,14 @@ h1.main {
   height: 100vh;
   margin: 0;
   font-family: "Pacifico";
+  a{
+    i{
+      color:black;
+      font-size: 1.8em;
+      margin-top: -16px;
+
+    }
+  }
 
   p {
     margin-top: 50px;
@@ -154,6 +291,14 @@ h1.main {
 }
 
 .devApp {
+  .create-app-description{
+    margin-top: 10px;
+    p{
+      padding-top: 20px;
+      text-align: center;
+      font-weight: bold;
+    }
+  }
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding-top: 10px;
   font-family: "Roboto";
@@ -210,6 +355,35 @@ h2 {
 }
 
 .clientApp {
+
+  h1.title{
+    color:black;
+    font-size: 4em;
+  }
+  .description {
+    padding-top: 4px;
+    .col-md-12:first-child{
+          font-weight: bold;
+
+      h4{
+          padding-left: 8px;
+      }
+      text-transform: capitalize;
+      //background-color: white;
+      //border:2px solid white;
+      //box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 4px;
+      p{
+
+        //border:1px solid black;
+        padding-left: 8px;
+      }
+
+    }
+    color: black;
+    margin-top: 10px;
+  }
+
   h2 {
     text-align: left;
     padding-left: 12px;
@@ -225,6 +399,14 @@ h2 {
         text-transform: capitalize;
         margin-right: 100px;
       }
+    }
+    .brand{
+          position: absolute;
+    right: 20px;
+      text-transform: capitalize;
+      color:white;
+      font-size: 1.5em;
+
     }
   }
 
@@ -243,7 +425,7 @@ h2 {
   font-family: "Roboto";
 
   h1.title {
-    margin: 50px 0;
+    margin: 40px 0 10px 0;
   }
 
   input:focus,
@@ -265,18 +447,51 @@ h2 {
     border-left: none;
     border-right: none;
   }
+  .client-upload-form{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding-top: 20px;
+    margin-bottom: 50px;
+  }
 }
 
 .viewClientApp {
+  .documents-description{
+    padding-left: 50px;
+    color:black;
+    font-size: 2em;
+    font-weight: bold;
+  }
   h1 {
     //text-align: center;
     padding-left: 20px;
   }
 
+  @keyframes fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   .document {
+
+    .document-author{
+      color:grey;
+      text-align: right;
+      text-transform: capitalize;
+    }
+    animation: fadein 0.2s;
+
     .container {
+      background-color: #007bff;
+      background-color: white;
+      color:black;
+      font-weight: bold;
       width: 100%;
       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 8px;
 
 
       min-height: 200px;
@@ -294,18 +509,27 @@ h2 {
           h5 {
             font-size: 2em;
             text-transform: capitalize;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
           }
 
           p {
             padding-left: 10px;
+            margin-bottom: 50px;
             font-size: 1.2em;
-            color: grey;
+            color: rgb(51, 51, 51);
           }
         }
       }
     }
-
+    li.file-download{
+      margin-right: 30px;
+      svg{
+        color:rgb(30, 100, 243);;
+      }
+      span.file-name{
+        color:rgb(30, 100, 243);;
+      }
+    }
     .documentFields {
       a, a:hover {
         text-align: center;
@@ -313,8 +537,8 @@ h2 {
         color: black;
         text-decoration: none;
 
-        svg {
-          font-size: 2.6em;
+        svg:first-child {
+          font-size: 3.6em;
           margin: 0 auto;
         }
 
@@ -352,6 +576,112 @@ h2 {
       }
     }
 
+
+  }
+}
+.toggle-delegate-status {
+          float: right;
+          font-size: 1.2em;
+
+        }
+
+        .fa-check {
+          color: green;
+          float:right;
+        }
+
+        .fa-times {
+          color: red;
+          float:right;
+        }
+
+ //modal SCSS
+.modal {
+  .modal-dialog {
+    .modal-content{
+      border:none;
+    }
+    $count: 10;
+    $time: 2; //in seconds
+    $size: 100;
+    $color: #ffffff;
+
+    .holder {
+      position: absolute;
+      left: 0px;
+      top: 200px;
+      bottom: 0px;
+      right: 0px;
+      width: 100%;
+      height: 100%;
+      background-color: #2D2F48;
+    }
+
+    .preloader {
+      /* size */
+      width: $size + px;
+      height: $size + px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translateX(-50%) translateY(-50%);
+      animation: rotatePreloader $time + s infinite ease-in;
+    }
+
+    @keyframes rotatePreloader {
+      0% {
+        transform: translateX(-50%) translateY(-50%) rotateZ(0deg);
+      }
+      100% {
+        transform: translateX(-50%) translateY(-50%) rotateZ(-360deg);
+      }
+    }
+
+    .preloader div {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+
+    .preloader div:before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0%;
+      width: 10%;
+      height: 10%;
+      background-color: $color;
+      transform: translateX(-50%);
+      border-radius: 50%;
+    }
+
+    @for $i from 1 through $count {
+      .preloader div:nth-child(#{$i}) {
+        transform: rotateZ(((360 / $count) * ($i - 1)) + deg);
+        animation: rotateCircle + $i $time + s infinite linear;
+        z-index: $count - $i;
+      }
+      @keyframes rotateCircle#{$i} {
+        #{percentage(((50 / $count) * ($i - 1)) / 100)} {
+          opacity: 0;
+        }
+        #{percentage((((50 / $count) + 0.0001) * ($i - 1)) / 100)} {
+          opacity: 1;
+          transform: rotateZ((0 - ((360 / $count) * ($i - 2))) + deg);
+        }
+        #{percentage((((50 / $count) * ($i - 0)) + 2) / 100)} {
+          transform: rotateZ((0 - ((360 / $count) * ($i - 1))) + deg);
+        }
+        #{percentage(((50 + ((50 / $count) * ($i - 0))) + 2) / 100)} {
+          transform: rotateZ((0 - ((360 / $count) * ($i - 1))) + deg);
+        }
+        100% {
+          transform: rotateZ((0 - ((360 / $count) * ($count - 1))) + deg);
+          opacity: 1;
+        }
+      }
+    }
 
   }
 }

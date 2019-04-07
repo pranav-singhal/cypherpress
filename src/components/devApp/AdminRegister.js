@@ -42,9 +42,6 @@ export default class AdminRegister extends React.Component {
                     <Form.Label>Username</Form.Label>
                         </h2>
                     <Form.Control type="text" placeholder="Enter Username" onChange = {(e) => {this.setUsername(e)}}/>
-                    <Form.Text className="text-muted">
-                        Enter your username
-                    </Form.Text>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">
@@ -59,13 +56,13 @@ export default class AdminRegister extends React.Component {
                     <h2>
                     <Form.Label>Confirm Password</Form.Label>
                         </h2>
-                    <Form.Control type="password" placeholder="Password" onChange ={(e) => {this.setPassword(e)}}/>
+                    <Form.Control type="password" placeholder="Re-enter Password" onChange ={(e) => {this.setPassword(e)}}/>
                 </Form.Group>
 
                  <Form.Group controlId={'formBasicPrivateKey'} >
                      <h2>
                          <Form.Label>
-                             Enter Private key
+                             Enter your Ethereum Private key
                          </Form.Label>
 
                      </h2>

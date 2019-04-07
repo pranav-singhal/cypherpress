@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
+
   }
 
   render() {
@@ -38,7 +39,14 @@ export default class Header extends React.Component {
                   &nbsp; view{" "}
                 </Nav.Link>
               </Nav.Item>
+
             </Nav>
+            <Nav as={'ul'} className={'justify-content-end brand'}>
+                            <Nav.Item>
+
+                              {this.props.appname}
+                            </Nav.Item>
+                        </Nav>
           </Navbar>
         </Col>
       </Row>

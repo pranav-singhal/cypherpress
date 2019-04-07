@@ -14,13 +14,14 @@ import {
     faLink,
     faCheck,
     faTimes,
-    faFile
+    faFile,
+    faExclamation
 } from "@fortawesome/free-solid-svg-icons";
 import AdminDashboard from "./devApp/AdminDashboard";
 import AdminLogin from "./devApp/AdminLogin";
 import AdminRegister from "./devApp/AdminRegister";
 
-library.add(faCheckSquare, faPlusCircle, faUpload, faDownload, faLink, faCheck, faTimes, faFile);
+library.add(faCheckSquare,faPlusCircle, faUpload, faDownload, faLink, faCheck, faTimes, faFile,faExclamation);
 
 class App extends Component {
     state = {
@@ -58,14 +59,15 @@ class App extends Component {
                             </Col>
                     </Row>
                     <Row>
-                        <Col md={12} className={'dashboard-buttons'}>
-                            <span onClick={()=>{this.setState({showLoginForm: true, showRegisterForm:false})}}> Login </span>
-                            <span onClick={()=> {this.setState({showLoginForm:false, showRegisterForm:true})}}>Register</span>
+                        <Col md={4}/>
+                        <Col md={4} className={'dashboard-buttons'}>
+                            <span className={this.state.showLoginForm?'active':''} onClick={()=>{this.setState({showLoginForm: true, showRegisterForm:false})}}> Login </span>
+                            <span className={this.state.showRegisterForm?'active':''} onClick={()=> {this.setState({showLoginForm:false, showRegisterForm:true})}}>Register</span>
                         </Col>
                     </Row>
                     <Row className={this.state.showLoginForm? null:'hidden'}>
-
-                        <Col md={12}>
+                        <Col md={3}/>
+                        <Col md={6}>
 
                         <AdminLogin
                             setUsername={(username) => {
@@ -78,7 +80,8 @@ class App extends Component {
 
                     </Row>
                     <Row className={this.state.showRegisterForm? null:'hidden'}>
-                        <Col md={12}>
+                        <Col md={3}/>
+                        <Col md={6}>
                         <AdminRegister
                             setUsername={(username) => {
                                 this.setState({adminUsername: username})

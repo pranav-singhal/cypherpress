@@ -103,6 +103,14 @@ export default class ViewPanel extends React.Component {
                     }} className={this.state.whichDocumentsToShow === 'sharedDocuments' ? 'active' : null}>Shared Documents</span>
 
                 </Col>
+                <Col className={'documents-description'}>
+                    {this.state.whichDocumentsToShow === 'myDocuments' ?
+                        <p>Below are the documents you have created using {this.props.appName}. Click on  <i> share this
+                            document </i> &nbsp; to see people you can share it with</p>: <p>
+                            Below are the documents other people have created using {this.props.appName} and shared with you
+                        </p>}
+
+                </Col>
                 <Col md={12}>
 
                     <Col md={12}>

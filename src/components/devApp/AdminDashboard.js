@@ -24,6 +24,12 @@ export default class AdminDashboard extends React.Component {
                             <p>
                                 The WYSIWYG for NuCypher + IPFS
                             </p>
+                            <p>
+                                <a href="https://github.com/pranav-singhal/cypherpress" target={'_blank'}>
+                                    <i className="fab fa-github"></i>
+                                </a>
+
+                            </p>
                         </Col>
                     </Row>
                     <Row>

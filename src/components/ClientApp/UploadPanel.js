@@ -12,13 +12,15 @@ export default class UploadPanel extends React.Component {
     clientAppJson: {},
     formData: [],
     generateForm: false,
-    showModal: false
+    showModal: false,
+    description:''
   };
   async componentWillMount() {
     // const clientAppJson = JSON.parse(localStorage.getItem("clientAppJson"));
   }
   async componentDidMount() {
     let clientAppJson = await getClientJson(this.props.appName);
+    this.setState({description: clientAppJson.description})
     console.log("clientAppJson",clientAppJson);
     // clientAppJson = JSON.parse(localStorage.getItem('clientAppJson'));
     console.log("clientAppJson:", clientAppJson);
@@ -163,18 +165,19 @@ export default class UploadPanel extends React.Component {
     });
   };
   render() {
-    return (
-      <Col>
+    return (<>
+        <Col md={2}/>
+      <Col className={'client-upload-form'} md={8}>
         <Form>
           {this.state.generateForm ? this.generateForm() : null}
           <Form.Group>
             <Button className="button" onClick={this.submitForm}>
-              Submit
+              Upload Document
             </Button>
           </Form.Group>
         </Form>
         <TransactionModal showModal={this.state.showModal} />
-      </Col>
+      </Col></>
     );
   }
 }

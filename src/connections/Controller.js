@@ -293,7 +293,7 @@ export async function fetchDelegatedDouments(
       _requestedObject
     );
 
-    _documentUploadedCallback(obj);
+    _documentUploadedCallback(obj, alice);
   }
 }
 

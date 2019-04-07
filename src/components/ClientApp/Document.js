@@ -41,16 +41,19 @@ export default class Document extends React.Component {
             );
         } else {
             return (
-                <div>
-                    <li key={data.name + id.toString()} className="documentFields"
-                        style={{display: 'inline-block', marginRight: '10px'}}>
+
+                    <li key={data.name + id.toString()} className={"documentFields file-download"}
+                        style={{display: 'inline-block'}}>
 
 
                         <a href={data.value} target="_blank">
                             <div>
                                 <FontAwesomeIcon icon="file"/>
                                 <br/>
+                                <FontAwesomeIcon icon="link"/>
+                                <span className={'file-name'}>
                                 {data.name}
+                                </span>
                             </div>
                         </a>
 
@@ -58,7 +61,7 @@ export default class Document extends React.Component {
                     </li>
 
 
-                </div>
+
 
             );
         }
@@ -156,17 +159,20 @@ export default class Document extends React.Component {
                 <section class="container">
 
                     <Row style={{minHeight: '100px'}}>
-                        <Col md={10}>
+                        <Col md={this.props.fetchedData?12:10}>
                             <ul>
+                                <div>
                                 {this.props.dataArray.map((data, id) => {
                                     return this.displayData(data, id);
                                 })}
+                                    {this.props.fetchedData? <p className={'document-author'}> this document was created by {this.props.documentId} </p>:null}
+                                </div>
                             </ul>
                         </Col>
                         <Col md={2} style={{marginTop: '20px'}}>
                             {this.props.fetchedData ? null : <Dropdown>
                                 <Dropdown.Toggle>
-                                    Share File
+                                    Share This Document
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     {this.state.delegatees.map((delegate, id) => {

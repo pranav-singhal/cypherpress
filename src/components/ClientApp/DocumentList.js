@@ -8,6 +8,7 @@ export default class DocumentList extends React.Component {
                 this.props.documentArray.map((dataArray, id) => {
                     return (<Document
                         fetchedData={this.props.fetchedData}
+                        creator ={dataArray.creator}
                         dataArray={dataArray.dataArray}
                         documentId={dataArray.documentId}
                         label={dataArray.label}

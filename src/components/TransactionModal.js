@@ -14,7 +14,20 @@ export default class TransactionModal extends React.Component {
   render() {
     return (
       <Modal show={this.props.showModal} onHide={this.handleClose}>
-        Loading...
+        <div className="holder">
+          <div className="preloader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
       </Modal>
     );
   }

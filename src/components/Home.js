@@ -1,6 +1,6 @@
 import React from "react";
 import { Jumbotron, Row, Col, Button } from "react-bootstrap";
-
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import TransactionModal from "./TransactionModal";
 export default class Home extends React.Component {
   constructor(props) {
@@ -18,7 +18,9 @@ export default class Home extends React.Component {
           <Col md={4}>
             <p>
               The WYSIWYG for NuCypher + IPFS
+              <i className="fab fa-github"></i>
             </p>
+            <p>  asdfasdf</p>
           </Col>
         </Row>
         <Row>

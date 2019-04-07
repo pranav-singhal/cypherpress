@@ -30,7 +30,7 @@ export default class AdminLogin extends React.Component {
             <Form.Group controlId={'formBasicPrivateKey'} >
                      <h2>
                          <Form.Label>
-                             Enter Private key
+                             Enter your Ethereum Private key
                          </Form.Label>
 
                      </h2>
@@ -58,9 +58,6 @@ export default class AdminLogin extends React.Component {
                     <Form.Control type="text" placeholder="Enter Username" onChange={(e) => {
                         this.setUsername(e)
                     }}/>
-                    <Form.Text className="text-muted">
-                        Enter your username
-                    </Form.Text>
                 </Form.Group>
 
                 <Form.Group controlId="formBasicPassword">

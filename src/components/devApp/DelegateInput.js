@@ -1,5 +1,5 @@
 import React, {PropTypes} from "react";
-import {Dropdown} from "react-bootstrap";
+import {Col, Dropdown, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {connectToContract, deligateAccess} from "../../connections/web3Dev";
 import {canBeAPotentialDelegatee, doConnections} from "../../connections/Controller";
@@ -16,7 +16,7 @@ export default class DelegateInput extends React.Component {
         console.log("safas")
         await this.props.getUsers();
         console.log(this.props.listOfUsers);
-        const users_promise_array = this.props.listOfUsers.map( async(username) => {
+        const users_promise_array = this.props.listOfUsers.map(async (username) => {
             let hasAcess = await canBeAPotentialDelegatee(username);
             hasAcess = !hasAcess
             return {username: username, hasAcess: hasAcess}
@@ -37,29 +37,29 @@ export default class DelegateInput extends React.Component {
         await connectToContract(this.props.contractAddress)
 
         const callingObject = {
-          verifyTransaction: (
-            transaction,
-            gasInEth,
-            transactionName,
-            callback
-          ) => {
-            console.log("inside deligteeacesss");
-            callback();
-          },
-          transactionMining: hash => {
-            console.log("hash:", hash);
-          },
-          insufficientFunds: () => {
-            console.log("insufficientFunds");
-          }
+            verifyTransaction: (
+                transaction,
+                gasInEth,
+                transactionName,
+                callback
+            ) => {
+                console.log("inside deligteeacesss");
+                callback();
+            },
+            transactionMining: hash => {
+                console.log("hash:", hash);
+            },
+            insufficientFunds: () => {
+                console.log("insufficientFunds");
+            }
         };
         await deligateAccess(username, localStorage.getItem('adminPrivateKey'), callingObject)
 
         const newUserArray = this.state.users.map(user => {
-            if(user.username !== username){
+            if (user.username !== username) {
                 return user
 
-            }else{
+            } else {
                 return {...user, hasAcess: true}
             }
         })
@@ -79,13 +79,13 @@ export default class DelegateInput extends React.Component {
                         {this.state.users.map((user, id) => {
                             return (<Dropdown.Item key={user.username}> {user.username}
                                 {/*{user.username}*/}
-                            {user.hasAcess ?
-                                                    <FontAwesomeIcon className={'toggle-delegate-status'}
-                                                                     icon={'check'}/> :
-                                                    <FontAwesomeIcon className={'toggle-delegate-status'} icon={'times'}
-                                                                     onClick={(event) => {
-                                                                         this.grantAccess(event, user.username)
-                                                                     }}/>}
+                                {user.hasAcess ?
+                                    <FontAwesomeIcon className={'toggle-delegate-status'}
+                                                     icon={'check'}/> :
+                                    <FontAwesomeIcon className={'toggle-delegate-status'} icon={'times'}
+                                                     onClick={(event) => {
+                                                         this.grantAccess(event, user.username)
+                                                     }}/>}
                             </Dropdown.Item>)
                         })}
                     </Dropdown.Menu>
@@ -103,10 +103,16 @@ export default class DelegateInput extends React.Component {
     render() {
 
         return (
-            <div>
-                <span onClick={this.setUsers}>get users</span>
-                {this.state.usersFetched ? this.showUserList() : null}
-            </div>
+            <Row>
+                <Col md={3}/>
+                <Col md={6}>
+                    <div className={'get-user-list'}>
+                        <span  className={this.state.usersFetched? 'hidden':null} onClick={this.setUsers}>See Who is Using Your App</span>
+                        {this.state.usersFetched ? this.showUserList() : null}
+                    </div>
+                </Col>
+                <Col md={3}/>
+            </Row>
         );
     }
 }
