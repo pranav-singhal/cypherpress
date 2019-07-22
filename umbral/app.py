@@ -107,7 +107,6 @@ def generateKeys():
     alice_config = AliceConfiguration(
         domains={'TEMPORARY_DOMAIN'},
         config_root=os.path.join(ALICE_DIR),
-        is_me=True,
         known_nodes={ursula},
         start_learning_now=False,
         federated_only=True,
@@ -151,42 +150,43 @@ def encryptData():
     #     "label": "1stlabel"
     #
     # }
-    json_data = request.form.to_dict()
-    fileFieldCount= int(json_data['fileFieldCount'])
-
-    # object that contains the files
-    file_obj={}
-    # object that contains all the other form fields
-    form_field_obj ={}
-    print("requetssss ------")
-    print(request.files.to_dict())
-    print(request.form.to_dict())
-    print('json_data')
-    print(json_data)
-    fileNames = json.loads(json_data['fileNames'])
-    textFields = json.loads(json_data['textFields'])
-    for i in range(0, fileFieldCount):
-
-        file_obj[fileNames[str(i)]] = request.files[str(i)].read()
-
-    textFieldsKeys = list(textFields.keys())
-    for key in textFieldsKeys:
-      form_field_obj[key] = textFields[key]
-
-
-    data_obj = {}
-    data_obj['file_obj'] = file_obj
-    data_obj['form_field_obj'] = form_field_obj
+    json_data = json.loads(request.data.decode('utf-8'))
+    # fileFieldCount= int(json_data['fileFieldCount'])
+    #
+    # # object that contains the files
+    # file_obj={}
+    # # object that contains all the other form fields
+    # form_field_obj ={}
+    # print("requetssss ------")
+    # print(request.files.to_dict())
+    # print(request.form.to_dict())
+    # print('json_data')
+    # print(json_data)
+    # fileNames = json.loads(json_data['fileNames'])
+    # textFields = json.loads(json_data['textFields'])
+    # for i in range(0, fileFieldCount):
+    #
+    #     file_obj[fileNames[str(i)]] = request.files[str(i)].read()
+    #
+    # textFieldsKeys = list(textFields.keys())
+    # for key in textFieldsKeys:
+    #   form_field_obj[key] = textFields[key]
+    #
+    #
+    # data_obj = {}
+    # data_obj['file_obj'] = file_obj
+    # data_obj['form_field_obj'] = form_field_obj
+    hash = json_data['msg']
     label = json_data['label']
     aliceFile = json_data['alice']
     password = json_data['password']
-    file_url = '/tmp/' + label + '.json'
+    # file_url = '/tmp/' + label + '.json'
     label = label.encode()
-    hash = data_obj
-    obj_to_be_stored = createDataObject(hash, json_data['label'])
-    f = open(file_url, 'w')
-    f.write(json.dumps(obj_to_be_stored))
-    f.close()
+    # hash = data_obj
+    # obj_to_be_stored = createDataObject(hash, json_data['label'])
+    # f = open(file_url, 'w')
+    # f.write(json.dumps(obj_to_be_stored))
+    # f.close()
 
 
     alice_config = AliceConfiguration.from_configuration_file(
@@ -194,13 +194,15 @@ def encryptData():
         known_nodes={ursula},
         start_learning_now=False,
     )
+    print(alice_config)
 
+    alice_config.attach_keyring()
     alice_config.keyring.unlock(password=password)
     alicia = alice_config(domains={'TEMPORARY_DOMAIN'})
 
     alicia.start_learning_loop(now=True)
 
-    policy_pubkey = alicia.get_policy_pubkey_from_label(label)
+    policy_pubkey = alicia.get_policy_encrypting_key_from_label(label)
 
     # Initialise Enrico
     enrico = Enrico(policy_encrypting_key=policy_pubkey)
@@ -251,7 +253,9 @@ def createPolicy():
         known_nodes={ursula},
         start_learning_now=False,
     )
+    print(alice_config)
 
+    alice_config.attach_keyring()
     alice_config.keyring.unlock(password=password)
     alicia = alice_config(domains={'TEMPORARY_DOMAIN'})
 
@@ -419,10 +423,9 @@ def decryptDelegated():
     plaintext = msgpack.loads(retrieved_plaintexts[0], raw=False)
 
     # the object from plaintext
-    data_obj = createDataObject(plaintext, json_data['label'])
+    # data_obj = createDataObject(plaintext, json_data['label'])
 
-
-    return jsonify(data_obj)
+    return jsonify(plaintext)
 
 @app.route('/fetchUploadedDocument', methods=['GET'])
 def fetchUploadedDocument():
